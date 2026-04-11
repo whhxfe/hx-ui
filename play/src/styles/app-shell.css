@@ -1,0 +1,15 @@
+/**
+ * 全屏壳层：禁止 document 滚动，仅由布局内 .main-content 滚动，
+ * 避免出现「body + 主内容区」双重滚动条。
+ */
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+#app {
+  height: 100%;
+  overflow: hidden;
+}

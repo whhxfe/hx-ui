@@ -1,0 +1,24 @@
+From: sender@example.com
+To: receiver@example.com
+Subject: hx-ui 组件库测试邮件
+Date: Thu, 9 Apr 2026 10:00:00 +0800
+MIME-Version: 1.0
+Content-Type: text/html; charset=UTF-8
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>测试邮件</title>
+</head>
+<body>
+  <h1>hx-ui 组件库</h1>
+  <p>这是一封用于测试 EML 文件预览功能的示例邮件。</p>
+  <p>支持的邮件内容包括：</p>
+  <ul>
+    <li>纯文本邮件</li>
+    <li>HTML 邮件</li>
+    <li>附件信息</li>
+  </ul>
+</body>
+</html>

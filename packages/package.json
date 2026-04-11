@@ -1,0 +1,71 @@
+{
+  "name": "@hx/ui",
+  "version": "0.0.1",
+  "description": "基于 Vue 3 + TypeScript + Element Plus 的业务组件库",
+  "main": "dist/index.es.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.es.js",
+      "default": "./dist/index.es.js"
+    },
+    "./index.css": "./dist/index.css",
+    "./dist/index.css": "./dist/index.css"
+  },
+  "sideEffects": [
+    "**/*.css",
+    "**/*.scss",
+    "**/*.vue"
+  ],
+  "files": [
+    "dist",
+    "Readme.md"
+  ],
+  "license": "ISC",
+  "packageManager": "pnpm@10.18.3",
+  "peerDependencies": {
+    "@element-plus/icons-vue": ">=2.3.2",
+    "@iconify/vue": ">=4.3.0",
+    "@wangeditor/editor": "^5.1.23",
+    "@wangeditor/editor-for-vue": "5.1.12",
+    "dayjs": ">=1.11.0",
+    "element-plus": "^2.13.5",
+    "flv.js": "^1.6.2",
+    "hls.js": "^1.5.19",
+    "pdfjs-dist": "^4.10.38",
+    "qrcode": "^1.5.4",
+    "vue": "^3.5.30"
+  },
+  "peerDependenciesMeta": {
+    "@element-plus/icons-vue": {
+      "optional": true
+    },
+    "@wangeditor/editor": {
+      "optional": true
+    },
+    "@wangeditor/editor-for-vue": {
+      "optional": true
+    },
+    "flv.js": {
+      "optional": true
+    },
+    "hls.js": {
+      "optional": true
+    },
+    "pdfjs-dist": {
+      "optional": true
+    },
+    "qrcode": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@rolldown/binding-win32-x64-msvc": "1.0.0-rc.9",
+    "@types/qrcode": "^1.5.6",
+    "dayjs": "^1.11.20",
+    "sass": "^1.86.0",
+    "vue-json-pretty": "^2.6.0"
+  }
+}

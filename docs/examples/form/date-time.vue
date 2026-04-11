@@ -1,0 +1,32 @@
+<template>
+  <hx-form
+    v-model="formData"
+    :columns="columns"
+    :cols="2"
+  />
+  <hx-content-text :data="formData" :json-default-expanded="true" />
+</template>
+
+<script setup lang="ts">
+import { ref } from "vue"
+import { HxForm as Form, HxContentText } from "@hx/ui"
+import type { FormColumn } from "@hx/ui"
+
+const formData = ref({
+  date: "",
+  dateRange: [],
+  datetime: "",
+  datetimerange: [],
+  time: "",
+  timeRange: [],
+})
+
+const columns: FormColumn[] = [
+  { prop: "date", label: "日期", type: "date", placeholder: "请选择日期" },
+  { prop: "dateRange", label: "日期范围", type: "daterange", placeholder: "请选择日期范围" },
+  { prop: "datetime", label: "日期时间", type: "datetime", placeholder: "请选择日期时间" },
+  { prop: "datetimerange", label: "日期时间范围", type: "datetimerange", placeholder: "请选择范围" },
+  { prop: "time", label: "时间", type: "time", placeholder: "请选择时间" },
+  { prop: "timeRange", label: "时间范围", type: "timerange", placeholder: "请选择时间范围" },
+]
+</script>

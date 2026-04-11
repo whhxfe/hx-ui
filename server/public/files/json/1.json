@@ -1,0 +1,30 @@
+{
+  "name": "@hx/ui",
+  "version": "0.0.1",
+  "description": "基于 Vue 3 + TypeScript + Element Plus 的业务组件二次封装库",
+  "main": "dist/index.es.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
+  "license": "ISC",
+  "author": "hx-admin",
+  "keywords": [
+    "vue3",
+    "component",
+    "element-plus",
+    "ui"
+  ],
+  "scripts": {
+    "build:ui": "vite build",
+    "dev": "vite",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "vue": "^3.5.30",
+    "element-plus": "^2.13.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.5",
+    "typescript": "~5.7.3",
+    "vite": "^6.3.5"
+  }
+}

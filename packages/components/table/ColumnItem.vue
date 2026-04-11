@@ -1,0 +1,94 @@
+<template>
+  <el-table-column v-if="column.type" :type="column.type" v-bind="columnBindings" />
+
+  <el-table-column v-else-if="column.children?.length" v-bind="columnBindings">
+    <template v-for="(child, idx) in visibleChildren" :key="child.prop || idx">
+      <TableColumnItem :column="child" :col-index="idx" />
+    </template>
+  </el-table-column>
+
+  <el-table-column v-else-if="column.render" v-bind="columnBindings">
+    <template v-if="column.headerRender" #header="{ column: col, $index }">
+      <component :is="() => column.headerRender!(column, $index)" />
+    </template>
+    <template v-else-if="column.headerSlot && tableSlots[column.headerSlot]" #header="{ column: col, $index }">
+      <component :is="tableSlots[column.headerSlot!]" :column="col" :index="$index" />
+    </template>
+    <template #default="{ row, $index }">
+      <component :is="() => column.render!(row, $index)" />
+    </template>
+  </el-table-column>
+
+  <el-table-column v-else-if="column.slot" v-bind="columnBindings">
+    <template v-if="column.headerRender" #header="{ column: col, $index }">
+      <component :is="() => column.headerRender!(column, $index)" />
+    </template>
+    <template v-else-if="column.headerSlot && tableSlots[column.headerSlot]" #header="{ column: col, $index }">
+      <component :is="tableSlots[column.headerSlot!]" :column="col" :index="$index" />
+    </template>
+    <template #default="{ row, $index }">
+      <component v-if="tableSlots[column.slot!]" :is="tableSlots[column.slot!]" :row="row" :index="$index" />
+    </template>
+  </el-table-column>
+
+  <el-table-column v-else v-bind="columnBindings">
+    <template v-if="column.headerRender" #header="{ column: col, $index }">
+      <component :is="() => column.headerRender!(column, $index)" />
+    </template>
+    <template v-else-if="column.headerSlot && tableSlots[column.headerSlot]" #header="{ column: col, $index }">
+      <component :is="tableSlots[column.headerSlot!]" :column="col" :index="$index" />
+    </template>
+  </el-table-column>
+</template>
+
+<script lang="ts" setup>
+import { computed, inject } from 'vue'
+import type { Slots } from 'vue'
+import { TABLE_SLOTS_KEY } from '../../constants'
+import type { TableColumn } from './types'
+
+defineOptions({ name: 'TableColumnItem' })
+
+const props = defineProps<{
+  column: TableColumn
+  colIndex: number
+}>()
+
+const tableSlots = inject<Slots>(TABLE_SLOTS_KEY, {})
+
+const columnBindings = computed(() => {
+  const col = props.column
+  const bindings: Record<string, any> = {}
+
+  const directProps = [
+    'prop',
+    'label',
+    'width',
+    'minWidth',
+    'align',
+    'headerAlign',
+    'sortable',
+    'fixed',
+    'formatter',
+    'showOverflowTooltip',
+    'className',
+    'labelClassName',
+    'resizable',
+    'type',
+  ] as const
+
+  for (const key of directProps) {
+    if (col[key] !== undefined) {
+      bindings[key] = col[key]
+    }
+  }
+
+  if (col.columnProps) {
+    Object.assign(bindings, col.columnProps)
+  }
+
+  return bindings
+})
+
+const visibleChildren = computed(() => props.column.children?.filter((c) => !c.hidden) || [])
+</script>

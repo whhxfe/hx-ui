@@ -1,0 +1,7 @@
+id,name,category,status
+1,表单组件,Form,active
+2,选择器,Select,active
+3,级联选择器,Cascader,active
+4,文件预览,FilePreview,active
+5,富文本编辑器,RichEditor,active
+6,已禁用组件,Disabled,disabled

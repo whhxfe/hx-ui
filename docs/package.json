@@ -1,0 +1,12 @@
+{
+  "name": "docs",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.18.3",
+  "dependencies": {
+    "@hx/ui": "workspace:*",
+    "markdown-it-container": "^4.0.0",
+    "unocss": "^66.6.6",
+    "vite-plugin-svg-icons": "^2.0.1"
+  }
+}

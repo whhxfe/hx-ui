@@ -1,0 +1,56 @@
+// ================================
+// 通用过渡动画
+// ================================
+
+// 淡入淡出 + 内容缩放动画
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+// 内容缩放动画（配合 fade 使用）
+.fade-enter-active [class*="__content"],
+.fade-leave-active [class*="__content"] {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.fade-enter-from [class*="__content"],
+.fade-leave-to [class*="__content"] {
+  transform: translateY(-20px) scale(0.95);
+  opacity: 0;
+}
+
+// 折叠动画（附件列表等）
+.collapse-enter-active,
+.collapse-leave-active {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  overflow: hidden;
+}
+
+.collapse-enter-from,
+.collapse-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+
+.collapse-enter-to,
+.collapse-leave-from {
+  max-height: 1000px;
+  opacity: 1;
+}
+
+// 旋转加载动画
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 0.8s linear infinite;
+}

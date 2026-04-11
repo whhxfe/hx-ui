@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "Bundler",
+    "paths": {
+      "@hx/ui": ["../packages/index.ts"]
+    }
+  },
+  "include": [
+    "examples/**/*.vue",
+    ".vitepress/**/*.ts",
+    ".vitepress/**/*.mts",
+    "examples/**/*.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.vue"
+  ]
+}

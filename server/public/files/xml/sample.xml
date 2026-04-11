@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <config>
+    <name>hx-ui</name>
+    <version>0.0.1</version>
+    <description>基于 Vue 3 + TypeScript + Element Plus 的业务组件二次封装库</description>
+  </config>
+  <components>
+    <component name="Form" description="表单组件" />
+    <component name="Select" description="选择器" />
+    <component name="Cascader" description="级联选择器" />
+    <component name="FilePreview" description="文件预览" />
+    <component name="RichEditor" description="富文本编辑器" />
+  </components>
+</root>

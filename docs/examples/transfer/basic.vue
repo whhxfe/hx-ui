@@ -1,0 +1,51 @@
+<template>
+  <div class="demo-grid">
+    <!-- 单选 + 静态 options -->
+    <div class="demo-item">
+      <p class="demo-label">单选（静态 options）</p>
+      <hx-transfer
+        v-model="value1"
+        :options="staticOptions"
+        config-text="人员"
+        title="选择人员"
+        left-width="280px"
+        height="320px"
+      />
+      <p class="demo-value">值: {{ value1 }}</p>
+    </div>
+
+    <!-- 多选 + 静态 options -->
+    <div class="demo-item">
+      <p class="demo-label">多选（静态 options）</p>
+      <hx-transfer
+        v-model="value2"
+        :options="staticOptions"
+        config-text="人员"
+        title="选择人员"
+        multiple
+        height="320px"
+      />
+      <p class="demo-value">值: {{ value2 }}</p>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from "vue"
+import { HxTransfer } from "@hx/ui"
+import type { TransferOption } from "@hx/ui"
+
+const value1 = ref("")
+const value2 = ref("")
+
+const staticOptions: TransferOption[] = [
+  { label: "张三", value: "1" },
+  { label: "李四", value: "2" },
+  { label: "王五", value: "3" },
+  { label: "赵六", value: "4", disabled: true },
+  { label: "钱七", value: "5" },
+  { label: "孙八", value: "6" },
+  { label: "周九", value: "7" },
+  { label: "吴十", value: "8" },
+]
+</script>
