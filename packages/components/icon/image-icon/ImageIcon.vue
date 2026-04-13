@@ -54,7 +54,6 @@ const props = withDefaults(defineProps<ImageIconProps>(), {
   cdnBaseUrl: '',
   baseUrl: '',
   ext: 'png',
-  source: 'auto',
 })
 
 const normalizedGroup = computed(() =>
@@ -71,7 +70,7 @@ const iconSrc = computed(() => {
   if (props.src?.trim()) return props.src.trim()
 
   // 外部传入的 cdnBaseUrl（优先级高于 config）
-  const externalBase = props.cdnBaseUrl?.trim() || props.baseUrl?.trim()
+  const externalBase = props.baseUrl?.trim() || props.cdnBaseUrl?.trim()
   // 当前生效的 source，props > config > 默认为 'auto'
   const source = (props.source ?? config.imageIcon.source ?? 'auto') as 'auto' | 'local' | 'cdn'
   const configCdnBase = config.imageIcon.cdnBaseUrl?.trim()

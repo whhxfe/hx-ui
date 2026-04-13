@@ -12,9 +12,9 @@ const imageIconModules = import.meta.glob<{ default: string }>(
 const iconConfig = {
   svg: {},
   image: {
+    source: "auto" as const,
     imageIconModules: [imageIconModules],
     cdnBaseUrl: '/icons',
-    source: "auto" as const,
   },
   /**
    * iconify 图标集配置
