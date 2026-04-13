@@ -35,7 +35,7 @@ const staticOptions: OptionItem[] = [
 ]
 
 const remoteConfig: RemoteConfig = {
-  url: "http://localhost:4300/api/options/select",
+  url: "/api/options/select",
   labelKey: "label",
   valueKey: "value",
 }

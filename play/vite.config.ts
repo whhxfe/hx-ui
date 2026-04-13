@@ -1,11 +1,12 @@
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+const env = loadEnv('', process.cwd(), '')
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -37,10 +38,10 @@ export default defineConfig({
     },
   },
   server: {
-    port: 4000,
+    port: Number(env.PORT_PLAY) || 4002,
     // proxy: {
     //   '/api': {
-    //     target: 'http://localhost:3000',
+    //     target: `${env.VITE_API_BASE_URL}`,
     //     changeOrigin: true,
     //   },
     // },

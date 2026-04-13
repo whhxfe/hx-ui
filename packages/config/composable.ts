@@ -1,5 +1,5 @@
 import { inject, type InjectionKey } from 'vue'
-import type { HxConfig, ImageIconSourceItem } from './types'
+import type { HxConfig, ImageIconSourceItem, IconifyIconConfig } from './types'
 
 /** App-wide injection key */
 export const HxConfigKey: InjectionKey<HxConfig> = Symbol('hx-config')
@@ -75,12 +75,19 @@ export function buildImageSourceMap(
 
 function getDefaultConfig(): HxConfig {
   return {
+    svgIcon: {
+      symbolPrefix: 'icon',
+    },
     imageIcon: {
       cdnBaseUrl: '',
       source: 'auto',
       sourceMap: {},
       groups: [],
       defaultGroup: 'title',
+    },
+    iconifyIcon: {
+      source: { source: 'offline', cdnUrl: undefined },
+      offlineCollections: [],
     },
   }
 }

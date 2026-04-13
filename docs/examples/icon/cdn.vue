@@ -32,7 +32,7 @@
           name="1"
           size="32px"
           source="cdn"
-          cdn-base-url="http://localhost:2999/static/icons"
+          cdn-base-url="/icons"
           
         />
         

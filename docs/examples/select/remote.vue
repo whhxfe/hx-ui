@@ -61,10 +61,10 @@ const staticOptions: OptionItem[] = [
 ]
 
 const remoteConfig: RemoteConfig = {
-  url: "http://localhost:4300/api/options/select",
+  url: "/api/options/select",
 }
 
 const groupRemoteConfig: RemoteConfig = {
-  url: "http://localhost:4300/api/options/select-group",
+  url: "/api/options/select-group",
 }
 </script>

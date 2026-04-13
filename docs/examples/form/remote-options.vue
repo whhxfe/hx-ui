@@ -24,7 +24,7 @@ const columns: FormColumn[] = [
     label: "性别",
     type: "radio",
     remote: {
-      url: "http://localhost:4300/api/options/gender",
+      url: "/api/options/gender",
       labelKey: "label",
       valueKey: "value",
     },
@@ -36,7 +36,7 @@ const columns: FormColumn[] = [
     placeholder: "请选择民族",
     filterable: true,
     remote: {
-      url: "http://localhost:4300/api/options/ethnicity",
+      url: "/api/options/ethnicity",
       labelKey: "label",
       valueKey: "value",
     },
@@ -49,7 +49,7 @@ const columns: FormColumn[] = [
     filterable: true,
     clearable: true,
     remote: {
-      url: "http://localhost:4300/api/options/cascader",
+      url: "/api/options/cascader",
       labelKey: "label",
       valueKey: "value",
       childrenKey: "children",

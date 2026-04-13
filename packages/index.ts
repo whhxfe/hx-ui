@@ -1,6 +1,7 @@
 // 注意：uno.css 由使用方在 uno.config.ts 中配置并在其入口处 import
 export * from './components'
 export { HxConfigProvider } from './config'
+export type { IconifyCollectionName } from './config'
 
 // 兼容全局注册（HxUI.install 会按需注册 hx-* 标签名）
 import { HxButton, HxTable, HxIcon, HxLabelText, HxFilePreview, HxForm, HxSelect, HxRadio, HxCheckbox, HxRichEditor, HxTransfer, HxQrCode } from './components'

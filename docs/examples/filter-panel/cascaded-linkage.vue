@@ -42,7 +42,7 @@ import type { FilterConfig, FilterState } from '@hx/ui'
  *   remote.url / method / labelKey / valueKey : 与普通远程请求一致
  * =============================================================
  */
-const BASE_URL = 'http://localhost:4300/api/options/linked'
+const BASE_URL = '/api/options/linked'
 
 const filters: FilterConfig[] = [
   // ── 第1级：省份（远程，请求时 parent='province'）─────────────────

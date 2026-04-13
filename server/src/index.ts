@@ -28,7 +28,7 @@ app.route("/api", uploadRouter);
 app.get("/health", (c) => c.json({ code: 0, message: "ok" }));
 
 // 启动服务
-const port = 4300;
+const port = Number(process.env.PORT_SERVER) || 4003;
 console.log(`Mock Server 运行在 http://localhost:${port}`);
 
 serve({

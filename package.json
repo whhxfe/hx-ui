@@ -8,9 +8,9 @@
   "packageManager": "pnpm@10.18.3",
   "scripts": {
     "build:ui": "vite build",
-    "docs:dev": "vitepress dev docs --host --port 5174",
+    "docs:dev": "vitepress dev docs --host --port 4001",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs --host --port 5174",
+    "docs:preview": "vitepress preview docs --host --port 4001",
     "play:dev": "pnpm --filter play dev",
     "play:build": "pnpm --filter play build",
     "play:preview": "pnpm --filter play preview",

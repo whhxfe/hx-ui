@@ -1,21 +1,25 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import path from "path";
 
-export default defineConfig({
-  root: ".",
-  server: {
-    port: 3000,
-    host: true,
-  },
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+
+  return {
+    root: ".",
+    server: {
+      port: Number(env.PORT_PLAY) || 4002,
+      host: true,
     },
-  },
-  build: {
-    outDir: "dist",
-    rollupOptions: {
-      input: "./src/index.ts",
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+      },
     },
-  },
+    build: {
+      outDir: "dist",
+      rollupOptions: {
+        input: "./src/index.ts",
+      },
+    },
+  }
 });

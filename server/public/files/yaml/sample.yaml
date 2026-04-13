@@ -4,7 +4,7 @@ description: "基于 Vue 3 + TypeScript + Element Plus 的业务组件二次封�
 
 server:
   host: "0.0.0.0"
-  port: 3000
+  port: 4003
 
 components:
   - Form

@@ -24,7 +24,7 @@ const columns: FormColumn[] = [
     placeholder: "请选择",
     filterable: true,
     remote: {
-      url: "http://localhost:4300/api/options/select-group",
+      url: "/api/options/select-group",
       labelKey: "label",
       valueKey: "value",
     },
@@ -36,7 +36,7 @@ const columns: FormColumn[] = [
     placeholder: "请选择",
     filterable: true,
     remote: {
-      url: "http://localhost:4300/api/options/select",
+      url: "/api/options/select",
       labelKey: "label",
       valueKey: "value",
     },

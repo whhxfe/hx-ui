@@ -1,7 +1,7 @@
 <template>
   <div class="demo-row">
     <hx-file-preview
-      url="http://localhost:4300/files/text/sample.txt"
+      url="/files/text/sample.txt"
       preview-width="120px"
       preview-height="80px"
     />

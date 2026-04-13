@@ -19,8 +19,8 @@
 将测试文件放入对应文件夹后，通过以下方式访问：
 
 ```
-http://localhost:3000/files/images/demo.png
-http://localhost:3000/files/pdf/sample.pdf
+http://localhost:4003/files/images/demo.png
+http://localhost:4003/files/pdf/sample.pdf
 ...
 ```
 

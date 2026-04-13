@@ -4,24 +4,50 @@
 
 <script setup lang="ts">
 import { provide } from 'vue'
+import { addAPIProvider } from '@iconify/vue'
 import type { HxConfig, HxConfigProviderProps } from '../types'
 import { HxConfigKey } from '../composable'
 import { buildImageSourceMap } from '../composable'
+import { registerOfflineCollections } from '../offline-icons'
 
 const props = withDefaults(defineProps<HxConfigProviderProps>(), {
   icon: () => ({}),
 })
 
-const sourceMap = buildImageSourceMap(props.icon?.imageIconModules ?? [])
+const iconSvgConfig = props.icon?.svg
+const iconImageConfig = props.icon?.image
+const iconifyConfig = props.icon?.iconify
+
+const iconifySource = iconifyConfig?.source ?? 'offline'
+const iconifyCdnUrl = iconifyConfig?.cdnUrl
+const iconifyCollections = iconifyConfig?.collections ?? []
+
+if (iconifySource === 'cdn' && iconifyCdnUrl) {
+  addAPIProvider('', {
+    resources: [iconifyCdnUrl],
+  })
+} else {
+  registerOfflineCollections(iconifyCollections)
+}
+
+const imageIconModules = iconImageConfig?.imageIconModules ?? []
+const sourceMap = buildImageSourceMap(imageIconModules)
 const groups = Object.keys(sourceMap).sort()
 
 const config: HxConfig = {
+  svgIcon: {
+    symbolPrefix: iconSvgConfig?.symbolPrefix ?? 'icon',
+  },
   imageIcon: {
-    cdnBaseUrl: props.icon?.cdnBaseUrl ?? '',
-    source: (props.icon?.source ?? 'auto') as 'auto' | 'local' | 'cdn',
+    cdnBaseUrl: iconImageConfig?.cdnBaseUrl ?? '',
+    source: (iconImageConfig?.source ?? 'auto') as 'auto' | 'local' | 'cdn',
     sourceMap,
     groups,
     defaultGroup: groups[0] ?? 'title',
+  },
+  iconifyIcon: {
+    source: { source: iconifySource, cdnUrl: iconifyCdnUrl },
+    offlineCollections: iconifyCollections,
   },
 }
 

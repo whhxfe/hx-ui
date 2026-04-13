@@ -1,89 +1,129 @@
 <template>
   <div>
     <p class="desc">
-      Image 图标支持两种资源挂载方式：<strong>本地 glob 模式</strong>（默认）和 <strong>CDN 模式</strong>（需配置 cdnBaseUrl）。
-      通过 <code>source</code> 属性控制资源加载策略。
+      Image 图标通过 <code>source</code> 属性切换资源加载策略：<code>local</code> 从本地 glob 加载，<code>cdn</code> 从配置的 CDN 地址加载。
+      props 配置优先级高于全局 <code>HxConfigProvider</code> 配置。
     </p>
 
-    <h4 class="sub-title">source 资源来源说明</h4>
+    <h4 class="sub-title">source 加载策略</h4>
     <table class="config-table">
       <thead>
         <tr>
-          <th>source 值</th>
-          <th>行为</th>
+          <th>属性</th>
+          <th>说明</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td><code>'auto'</code>（默认）</td>
-          <td>优先使用 CDN 地址（cdnBaseUrl 有配置就用），无配置则 fallback 到本地 glob 资源</td>
+          <td><code>source="local"</code></td>
+          <td>从本地 glob 资源加载，忽略 CDN 配置</td>
         </tr>
         <tr>
-          <td><code>'local'</code></td>
-          <td>始终使用本地 glob 资源，忽略 CDN 配置</td>
+          <td><code>source="cdn"</code></td>
+          <td>从 CDN 地址加载，需配合 <code>cdnBaseUrl</code></td>
         </tr>
         <tr>
-          <td><code>'cdn'</code></td>
-          <td>始终使用 CDN 地址（cdnBaseUrl 必须有配置，否则返回空）</td>
+          <td><code>cdnBaseUrl</code></td>
+          <td>CDN 基础路径，props 优先级高于全局配置</td>
         </tr>
       </tbody>
     </table>
 
-    <h4 class="sub-title">CDN 模式 — 使用全局 cdnBaseUrl</h4>
+    <!-- Local 模式需要独立的 HxConfigProvider（不设置 cdnBaseUrl，强制使用本地资源） -->
+    <h4 class="sub-title">Local 模式 — 本地 glob 资源</h4>
     <p class="desc sub-desc">
-      在 <code>HxConfigProvider</code> 中配置 <code>cdnBaseUrl</code> 后，组件使用 <code>source="cdn"</code> 即可加载：
-      <code>{cdnBaseUrl}/{group}/{name}.{ext}</code>
+      图片存放在 <code>@/assets/icons/</code> 目录下，glob 自动扫描后注入组件。
+      <code>source="local"</code> 强制使用本地资源。
     </p>
-    <div class="icon-list">
-      <div class="icon-item">
-        <hx-icon type="image" group="app" name="alipay" size="32px" source="cdn" />
-        <span>app/alipay</span>
-        <span class="tag">cdn + 全局 url</span>
+    <hx-config-provider :icon="localIconConfig">
+      <div class="icon-list">
+        <div class="icon-item">
+          <hx-icon type="image" group="app" name="qq" size="32px" ext="webp" source="local" />
+          <span>app/qq</span>
+          <span class="tag">local glob</span>
+        </div>
+        <div class="icon-item">
+          <hx-icon type="image" group="test" name="马年恭喜发财" size="32px" source="local" />
+          <span>test/马年恭喜发财</span>
+          <span class="tag">local glob</span>
+        </div>
       </div>
-      <div class="icon-item">
-        <hx-icon type="image" group="menu" name="stock" size="32px" source="cdn" />
-        <span>menu/stock</span>
-        <span class="tag">cdn + 全局 url</span>
-      </div>
-    </div>
+    </hx-config-provider>
 
-    <h4 class="sub-title">CDN 模式 — 使用 props 单独指定 cdnBaseUrl</h4>
+    <h4 class="sub-title">CDN 模式 — 使用 props cdnBaseUrl</h4>
     <p class="desc sub-desc">
-      通过 props 的 <code>cdn-base-url</code> 可覆盖全局配置（优先级最高）。
+      通过 <code>cdn-base-url</code> prop 单独指定 CDN 地址，覆盖全局配置。
+      <code>{cdnBaseUrl}/{group}/{name}.{ext}</code>
     </p>
     <div class="icon-list">
       <div class="icon-item">
         <hx-icon
           type="image"
-          group="gif"
-          name="1"
+          group="app"
+          name="alipay"
           size="32px"
           source="cdn"
-          cdn-base-url="http://localhost:2999/static"
-          ext="gif"
+          cdn-base-url="/icons"
         />
-        <span>gif/1</span>
-        <span class="tag">cdn + props url</span>
+        <span>app/alipay</span>
+        <span class="tag">cdn + /icons</span>
+      </div>
+      <div class="icon-item">
+        <hx-icon
+          type="image"
+          group="menu"
+          name="stock"
+          size="32px"
+          source="cdn"
+          cdn-base-url="/icons"
+        />
+        <span>menu/stock</span>
+        <span class="tag">cdn + /icons</span>
+      </div>
+      <div class="icon-item">
+        <hx-icon
+          type="image"
+          group="title"
+          name="location"
+          size="32px"
+          source="cdn"
+          cdn-base-url="/icons"
+        />
+        <span>title/location</span>
+        <span class="tag">cdn + /icons</span>
       </div>
     </div>
 
-    <h4 class="sub-title">本地 glob 模式（默认）</h4>
+    <h4 class="sub-title">CDN 模式 — 使用全局 cdnBaseUrl</h4>
     <p class="desc sub-desc">
-      图片放在 <code>@/assets/icons/</code> 目录下，通过 <code>HxConfigProvider</code> 注入 glob 结果自动扫描。
-      使用 <code>source="local"</code> 可显式强制走本地资源。
+      在 <code>HxConfigProvider</code> 中配置 <code>cdnBaseUrl</code> 后，组件无需单独指定。
+      <code>/icons</code> 会通过 docs 代理到 server。
     </p>
     <div class="icon-list">
       <div class="icon-item">
-        <hx-icon type="image" group="test" name="alipay" size="32px" source="local" />
-        <span>test/alipay</span>
-        <span class="tag">local glob</span>
+        <hx-icon type="image" group="app" name="alipay" size="32px" source="cdn" />
+        <span>app/alipay</span>
+        <span class="tag">全局配置</span>
+      </div>
+      <div class="icon-item">
+        <hx-icon type="image" group="menu" name="stock" size="32px" source="cdn" />
+        <span>menu/stock</span>
+        <span class="tag">全局配置</span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { HxIcon as Icon } from "@hx/ui"
+import { HxIcon as Icon, HxConfigProvider } from "@hx/ui"
+
+/** Local 模式：imageIconModules 自动扫描本地资源，不设置 cdnBaseUrl */
+const localIconConfig = {
+  image: {
+    imageIconModules: [import.meta.glob<{ default: string }>('@/assets/icons/**/*', { eager: true })],
+    source: "local" as const,
+  },
+}
 </script>
 
 <style scoped>

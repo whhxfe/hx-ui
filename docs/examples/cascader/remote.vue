@@ -51,6 +51,6 @@ const staticOptions = [
 ]
 
 const remoteConfig: RemoteConfig = {
-  url: "http://localhost:4300/api/options/cascader",
+  url: "/api/options/cascader",
 }
 </script>

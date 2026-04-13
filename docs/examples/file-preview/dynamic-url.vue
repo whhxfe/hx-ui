@@ -39,7 +39,7 @@
 import { computed, ref } from 'vue'
 import { HxFilePreview as FilePreview } from "@hx/ui"
 
-const BASE = 'http://localhost:4300/files'
+const BASE = '/files'
 
 interface FileOption {
   label: string

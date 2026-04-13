@@ -10,7 +10,7 @@ import DemoBlock from './components/DemoBlock.vue'
 import DemoContainer from './components/DemoContainer.vue'
 import './style.css'
 /** 注册 Iconify 图标集（离线），使 <hx-icon type="iconify"> 可正常渲染 */
-import './iconify'
+// import './iconify'
 
 export default {
   extends: DefaultTheme,

@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { Icon } from '@iconify/vue/offline'
+import { Icon } from '@iconify/vue'
+import { Icon as OfflineIcon } from '@iconify/vue/offline'
 import { computed } from 'vue'
 import type { IconifyIconProps } from '../types'
+import { useConfig } from '../../../config/composable'
 
 defineOptions({
   name: 'HxIconifyIcon',
@@ -14,6 +16,9 @@ const props = withDefaults(defineProps<IconifyIconProps>(), {
   color: 'currentColor',
   inline: false,
 })
+
+const config = useConfig()
+const isOffline = computed(() => config.iconifyIcon.source.source === 'offline')
 
 const widthHeight = computed(() =>
   typeof props.size === 'number' ? props.size : props.size,
@@ -28,7 +33,16 @@ const iconStyle = computed(() => ({
 
 <template>
   <span class="hx-iconify-icon" v-bind="$attrs">
+    <OfflineIcon
+      v-if="isOffline"
+      :icon="props.icon"
+      :width="widthHeight"
+      :height="widthHeight"
+      :style="iconStyle"
+      aria-hidden="true"
+    />
     <Icon
+      v-else
       :icon="props.icon"
       :width="widthHeight"
       :height="widthHeight"

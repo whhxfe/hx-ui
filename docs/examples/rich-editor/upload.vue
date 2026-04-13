@@ -21,7 +21,7 @@ import { HxRichEditor } from "@hx/ui"
 const content3 = ref("<p>支持<em>图片</em>和<em>视频</em>上传，可通过 <code>uploadUrl</code> 或 <code>uploadImage</code> / <code>uploadVideo</code> 分别配置。</p>")
 
 /** 上传接口地址，请替换为实际接口 */
-const uploadUrl = "http://localhost:4300/api/upload"
+const uploadUrl = "/api/upload"
 </script>
 
 <style scoped>

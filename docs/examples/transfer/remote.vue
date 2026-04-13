@@ -75,10 +75,10 @@ const staticOptions: TransferOption[] = [
 
 /** 与 group.vue 一致：分组 label + options，子项 label + value（默认字段名即可） */
 const remoteConfig: TransferRemoteConfig = {
-  url: "http://localhost:4300/api/options/select",
+  url: "/api/options/select",
 }
 
 const groupRemoteConfig: TransferRemoteConfig = {
-  url: "http://localhost:4300/api/options/select-group",
+  url: "/api/options/select-group",
 }
 </script>

@@ -49,7 +49,7 @@ const filters: FilterConfig[] = [
     label: '城市（远程）',
     multiple: true,
     remote: {
-      url: 'http://localhost:4300/api/options/select',
+      url: '/api/options/select',
       labelKey: 'label',
       valueKey: 'value',
     },

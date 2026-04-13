@@ -58,7 +58,7 @@ const remoteSingleValue = ref("")
 const remoteMultipleValue = ref("")
 
 const remoteConfig: TransferRemoteConfig = {
-  url: "http://localhost:3000/api/mock/transfer-options",
+  url: `${import.meta.env.VITE_API_BASE_URL}/api/mock/transfer-options`,
   method: "get",
   params: { type: "transfer" },
   labelKey: "label",

@@ -1,11 +1,12 @@
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { defineConfig } from 'vitepress'
+import { defineConfig, loadEnv } from 'vitepress'
 import markdownItContainer from 'markdown-it-container'
 import UnoCSS from 'unocss/vite'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+const env = loadEnv('', process.cwd(), '')
 /** 与 play 共用 SVG 资源目录，保证文档与 playground 行为一致 */
 const svgIconDir = resolve(__dirname, '../../play/src/assets/svg')
 
@@ -145,6 +146,27 @@ export default defineConfig({
     },
   },
   vite: {
+    server: {
+      port: Number(env.PORT_DOCS) || 4001,
+      proxy: {
+        '/api': {
+          target: `${env.VITE_API_BASE_URL}`,
+          changeOrigin: true,
+        },
+        '/files': {
+          target: `${env.VITE_API_BASE_URL}`,
+          changeOrigin: true,
+        },
+        '/icons': {
+          target: `${env.VITE_API_BASE_URL}`,
+          changeOrigin: true,
+        },
+        '/uploads': {
+          target: `${env.VITE_API_BASE_URL}`,
+          changeOrigin: true,
+        },
+      },
+    },
     plugins: [
       // VitePress 内置 Vite 5 与根目录 Vite 8 插件类型不兼容，运行时正常
       UnoCSS() as any,
@@ -164,6 +186,7 @@ export default defineConfig({
     },
     resolve: {
       alias: [
+        { find: '@', replacement: resolve(__dirname, '../../play/src') },
         { find: '@hx/ui/index.css', replacement: resolve(__dirname, '../../packages/dist/index.css') },
         { find: '@hx/ui', replacement: resolve(__dirname, '../../packages/index.ts') },
       ],
