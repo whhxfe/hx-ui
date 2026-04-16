@@ -20,6 +20,7 @@ packages/*/dist
 packages/*/dist-types
 packages/*/dist/types
 play/dist
+server/public/uploads
 
 # Local env files
 *.local

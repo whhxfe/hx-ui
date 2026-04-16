@@ -158,36 +158,12 @@
 
 <script setup lang="ts">
 import { ref, computed, nextTick, watch } from "vue"
-import type { TransferOption, TransferGroup } from "./types"
+import type { TransferOption, TransferGroup, TransferProps, TransferExpose } from "./types"
 import { useRemoteOptions } from "../../hooks/useRemoteOptions"
 
 defineOptions({ inheritAttrs: false })
 
-const props = withDefaults(defineProps<{
-	modelValue?: string | string[]
-	modelValueType?: "string" | "array"
-	options?: TransferOption[] | TransferGroup[]
-	remote?: {
-		url: string
-		method?: "get" | "post"
-		params?: Record<string, any>
-		body?: Record<string, any>
-		groupNameKey?: string
-		groupOptionsKey?: string
-		labelKey?: string
-		valueKey?: string
-	}
-	groupNameKey?: string
-	groupOptionsKey?: string
-	labelKey?: string
-	valueKey?: string
-	title?: string
-	leftWidth?: string
-	configText?: string
-	placeholder?: string
-	multiple?: boolean
-	height?: string
-}>(), {
+const props = withDefaults(defineProps<TransferProps>(), {
 	modelValue: "",
 	leftWidth: "300px",
 	configText: "人员",
@@ -512,7 +488,7 @@ watch(searchKeyword, () => {
 	})
 })
 
-defineExpose({ loading })
+defineExpose({ loading: loading.value } satisfies TransferExpose)
 </script>
 
 <!-- 库构建时样式进入 dist/ui.css；不使用 scoped，避免业务项目未与打包产物 scopeId 对齐时布局类名不生效 -->

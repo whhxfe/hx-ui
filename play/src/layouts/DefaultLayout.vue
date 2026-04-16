@@ -38,6 +38,12 @@ const menuItems = [
     title: '动态表单 Form',
     icon: 'ep:edit',
   },
+  {
+    index: '/components/upload',
+    title: '动态表单 Upload',
+    icon: 'ep:uploads',
+  },
+  
 ]
 
 const activeMenu = ref(route.path)

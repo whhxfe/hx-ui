@@ -120,6 +120,7 @@ export default defineConfig({
           text: '文件预览',
           items: [
             { text: 'FilePreview 文件预览', link: '/components/file-preview' },
+            { text: 'Upload 上传', link: '/components/upload' },
           ],
         },
         {

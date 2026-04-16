@@ -60,21 +60,33 @@ const columnBindings = computed(() => {
   const col = props.column
   const bindings: Record<string, any> = {}
 
+  // el-table-column 支持的所有原生属性
   const directProps = [
-    'prop',
+    'type',
+    'columnKey',
+    'index',
     'label',
+    'prop',
     'width',
     'minWidth',
+    'fixed',
+    'render',
+    'renderHeader',
+    'sortable',
+    'sortOrders',
+    'sortMethod',
+    'resizable',
+    'showOverflowTooltip',
     'align',
     'headerAlign',
-    'sortable',
-    'fixed',
-    'formatter',
-    'showOverflowTooltip',
     'className',
     'labelClassName',
-    'resizable',
-    'type',
+    'selectable',
+    'reserveSelection',
+    'filters',
+    'filterMethod',
+    'filteredValue',
+    'tooltipEffect',
   ] as const
 
   for (const key of directProps) {

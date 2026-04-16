@@ -1,4 +1,4 @@
-import type { RemoteConfig } from "./form/types"
+import type { RemoteConfig } from "../form/types"
 
 /** 基础选项 */
 export interface TransferOption {

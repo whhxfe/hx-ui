@@ -29,12 +29,12 @@ const iconConfig = {
    */
   iconify: {
     // ===== Offline 模式 =====
-    // source: "offline" as const,
-    // collections: ['ep', 'mdi', 'logos', 'twemoji'] as IconifyCollectionName[],
+    source: "offline" as const,
+    collections: ['ep', 'mdi', 'logos', 'twemoji'] as IconifyCollectionName[],
 
     // ===== CDN 模式 =====
-    source: "cdn" as const,
-    cdnUrl: "https://api.iconify.design",
+    // source: "cdn" as const,
+    // cdnUrl: "https://api.iconify.design",
   },
 };
 </script>

@@ -32,9 +32,8 @@
 		/>
 
 		<!-- 上传 -->
-		<el-upload
+		<HxUpload
 			v-else-if="column.type === 'upload'"
-			ref="uploadRef"
 			v-model="innerValue"
 			:action="column.action"
 			:accept="column.accept"
@@ -42,40 +41,26 @@
 			:multiple="column.multiple"
 			:disabled="column.disabled"
 			:list-type="column.listType ?? 'text'"
-			:auto-upload="!!column.action"
-			:on-change="handleUploadChange"
-			:on-remove="handleUploadRemove"
-			:on-success="handleUploadSuccess"
-			:on-exceed="handleUploadExceed"
-			v-bind="column.componentProps"
+			:placeholder="column.placeholder"
+			:value-mapper="column.uploadValueMapper"
+			:response-mapper="column.uploadResponseMapper"
+			:file-render="column.uploadFileRender"
+			:file-preview-render="column.uploadFilePreviewRender"
+			:preview-fetch-url="column.previewUrl"
+			:component-props="column.componentProps"
 		>
-			<!-- 自定义文件列表项 -->
-			<template v-if="formSlots[column.prop + '-file'] || column.uploadFileRender" #file="{ file }">
+			<template
+				v-if="formSlots[column.prop + '-file'] || column.uploadFileRender"
+				#file="{ file, remove }"
+			>
 				<component
 					v-if="formSlots[column.prop + '-file']"
 					:is="formSlots[column.prop + '-file']"
 					:file="file"
-					:remove="() => uploadRef?.handleRemove(file)"
-				/>
-				<component
-					v-else-if="column.uploadFileRender"
-					:is="() => column.uploadFileRender!(file, { remove: () => uploadRef?.handleRemove(file) })"
+					:remove="remove"
 				/>
 			</template>
-			<!-- 触发器 -->
-			<el-icon v-if="column.listType === 'picture-card'"><i class="i-mdi-plus" /></el-icon>
-			<el-button v-else type="primary" :disabled="column.disabled">
-				{{ column.placeholder || "点击上传" }}
-			</el-button>
-			<!-- 提示 -->
-			<template v-if="column.accept || column.limit" #tip>
-				<div class="el-upload__tip">
-					<span v-if="column.accept">支持 {{ column.accept }} 格式</span>
-					<span v-if="column.accept && column.limit">，</span>
-					<span v-if="column.limit">最多 {{ column.limit }} 个文件</span>
-				</div>
-			</template>
-		</el-upload>
+		</HxUpload>
 
 		<!-- 文本输入类：input / textarea -->
 		<HxInput
@@ -152,7 +137,7 @@
 		/>
 
 		<!-- 下拉选择 -->
-		<Select
+		<HxSelect
 			v-else-if="column.type === 'select'"
 			v-model="innerValue"
 			:options="effectiveOptions"
@@ -166,7 +151,7 @@
 		/>
 
 		<!-- 单选组 -->
-		<Radio
+		<HxRadio
 			v-else-if="column.type === 'radio'"
 			v-model="innerValue"
 			:options="effectiveOptions"
@@ -177,7 +162,7 @@
 		/>
 
 		<!-- 单选按钮组 -->
-		<Radio
+		<HxRadio
 			v-else-if="column.type === 'radio-btn'"
 			v-model="innerValue"
 			:options="effectiveOptions"
@@ -188,7 +173,7 @@
 		/>
 
 		<!-- 多选组 -->
-		<Checkbox
+		<HxCheckbox
 			v-else-if="column.type === 'checkbox'"
 			v-model="innerValue"
 			:options="effectiveOptions"
@@ -207,16 +192,17 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, ref } from "vue"
+import { computed, inject } from "vue"
 import type { Slots } from "vue"
 import { FORM_SLOTS_KEY } from "../../constants"
 import type { FormColumn, FormFieldProps, FormFieldEmits } from "./types"
-import Select from "../select/Select.vue"
-import Radio from "../radio/Radio.vue"
-import Checkbox from "../checkbox/Checkbox.vue"
+import HxSelect from "../select/Select.vue"
+import HxRadio from "../radio/Radio.vue"
+import HxCheckbox from "../checkbox/Checkbox.vue"
 import HxRichEditor from "../rich-editor/RichEditor.vue"
 import HxInput from "../input/Input.vue"
 import HxCascader from "../cascader/Cascader.vue"
+import HxUpload from "../upload/Upload.vue"
 import { useRemoteOptions } from "../../hooks/useRemoteOptions"
 
 const props = defineProps<FormFieldProps>()
@@ -224,7 +210,6 @@ const props = defineProps<FormFieldProps>()
 const emit = defineEmits<FormFieldEmits>()
 
 const formSlots = inject<Slots>(FORM_SLOTS_KEY, {})
-const uploadRef = ref()
 
 // ==========================================================================
 // innerValue
@@ -311,29 +296,6 @@ const datePickerProps = computed(() => {
 // ==========================================================================
 function getDisabledDate(time: Date): boolean {
 	return !!(props.column.disableFutureTime && time.getTime() > Date.now())
-}
-
-// ==========================================================================
-// 上传处理
-// ==========================================================================
-function handleUploadChange(_file: any, fileList: any[]) {
-	if (!props.column.uploadValueMapper) {
-		innerValue.value = fileList
-	}
-}
-
-function handleUploadSuccess(_response: any, _file: any, fileList: any[]) {
-	innerValue.value = fileList
-}
-
-function handleUploadRemove(_file: any, fileList: any[]) {
-	innerValue.value = fileList
-}
-
-function handleUploadExceed() {
-	if (props.column.limit) {
-		console.warn(`[HxFormField] ${props.column.label}: 最多上传 ${props.column.limit} 个文件`)
-	}
 }
 </script>
 

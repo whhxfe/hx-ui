@@ -62,6 +62,8 @@ export { HxLink } from './link'
 export type { HxLinkProps } from './link'
 export { HxText } from './text'
 export type { HxTextProps } from './text'
+export { HxUpload } from './upload'
+export type { UploadProps } from './upload'
 
 export { useRemoteOptions } from '../hooks'
 export type { UseRemoteOptionsOptions } from '../hooks'

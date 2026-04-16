@@ -8,6 +8,43 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const env = loadEnv('', process.cwd(), '')
 
+interface CustomLogger {
+  info(msg: string, options?: { timestamp?: boolean }): void
+  warn(msg: string, options?: { timestamp?: boolean }): void
+  warnOnce(msg: string, options?: { timestamp?: boolean }): void
+  error(msg: string, options?: { timestamp?: boolean; error?: Error }): void
+  clearScreen(type: string): void
+  hasErrorLogged(error: Error): boolean
+  hasWarned: boolean
+}
+
+// 屏蔽特定插件重复应用的警告
+const customLogger: CustomLogger = {
+  info(msg: string, options) {
+    if (!msg.includes('Plugin has already been applied')) {
+      console.log(msg)
+    }
+  },
+  warn(msg: string, options) {
+    if (!msg.includes('Plugin has already been applied')) {
+      console.warn(msg)
+    }
+  },
+  warnOnce(msg: string, options) {
+    if (!msg.includes('Plugin has already been applied')) {
+      console.warn(msg)
+    }
+  },
+  error(msg: string, options) {
+    console.error(msg)
+  },
+  clearScreen() {},
+  hasWarned: false,
+  hasErrorLogged() {
+    return false
+  },
+}
+
 // https://vite.dev/config/
 export default defineConfig({
   css: {
@@ -17,6 +54,7 @@ export default defineConfig({
       },
     },
   },
+  customLogger,
   plugins: [
     /** 显式指向仓库根 uno.config，避免仅依赖 cwd 向上查找 */
     UnoCSS({ configFile: resolve(__dirname, '../uno.config.ts') }),
@@ -39,11 +77,23 @@ export default defineConfig({
   },
   server: {
     port: Number(env.PORT_PLAY) || 4002,
-    // proxy: {
-    //   '/api': {
-    //     target: `${env.VITE_API_BASE_URL}`,
-    //     changeOrigin: true,
-    //   },
-    // },
+    proxy: {
+      '/api': {
+        target: env.VITE_API_BASE_URL || 'http://localhost:4003',
+        changeOrigin: true,
+      },
+      '/files': {
+        target: env.VITE_API_BASE_URL || 'http://localhost:4003',
+        changeOrigin: true,
+      },
+      '/icons': {
+        target: env.VITE_API_BASE_URL || 'http://localhost:4003',
+        changeOrigin: true,
+      },
+      '/uploads': {
+        target: env.VITE_API_BASE_URL || 'http://localhost:4003',
+        changeOrigin: true,
+      },
+    },
   },
 })

@@ -151,8 +151,8 @@ export interface FormColumn {
 	accept?: string
 	/** 最大上传数量 */
 	limit?: number
-	/** 列表展示类型：text / picture / picture-card */
-	listType?: "text" | "picture" | "picture-card"
+	/** 列表展示类型：text / picture / picture-card / file-preview（文件预览模式，点击弹窗预览） */
+	listType?: "text" | "picture" | "picture-card" | "file-preview"
 	/**
 	 * 上传文件值映射：从 el-upload 的 file 对象中提取需要保存到表单的值
 	 *
@@ -170,6 +170,20 @@ export interface FormColumn {
 	 */
 	uploadValueMapper?: (file: any) => any
 	/**
+	 * 上传响应值映射：从服务端响应中提取需要存储的值（如 fileId）
+	 *
+	 * 优先级高于 uploadValueMapper
+	 * 上传成功后，formData[prop] = uploadResponseMapper(response, file)
+	 *
+	 * @param response 服务端返回的完整响应对象
+	 * @param file el-upload 的文件对象
+	 * @returns 需要保存的值（如 fileId）
+	 *
+	 * @example 返回文件 ID
+	 * uploadResponseMapper: (res) => res.data.id
+	 */
+	uploadResponseMapper?: (response: any, file: any) => any
+	/**
 	 * 自定义上传文件列表项渲染函数
 	 *
 	 * @param file el-upload 的文件对象
@@ -177,6 +191,23 @@ export interface FormColumn {
 	 * @returns VNode
 	 */
 	uploadFileRender?: (file: any, actions: { remove: () => void }) => VNode
+	/**
+	 * 自定义上传文件预览渲染（与 uploadFileRender 互斥，优先级低于 uploadFileRender）
+	 *
+	 * @param file el-upload 的文件对象
+	 * @param actions 操作方法：{ remove: 删除该文件 }
+	 * @returns VNode
+	 */
+	uploadFilePreviewRender?: (file: any, actions: { remove: () => void }) => VNode
+	/**
+	 * 文件预览接口地址（listType=file-preview 时使用）
+	 *
+	 * 点击文件后，组件会调用 GET `${previewUrl}/${fileId}` 获取文件信息，
+	 * 再将返回的 url 传给 HxFilePreview 进行弹窗预览。
+	 *
+	 * @example previewUrl: '/api/upload' → GET /api/upload/{fileId}
+	 */
+	previewUrl?: string
 
 	// ========== 透传给 Element Plus 组件的原生属性 ==========
 	/** 直接透传给底层 el-xxx 组件的 props */

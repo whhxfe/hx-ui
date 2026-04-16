@@ -57,6 +57,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../pages/components/QrCodePage.vue'),
         meta: { title: '二维码 QrCode', category: 'components' },
       },
+      {
+        path: 'upload',
+        name: 'upload',
+        component: () => import('../pages/components/UploadPage.vue'),
+        meta: { title: '上传 Upload', category: 'components' },
+      },
     ],
   },
 ]
