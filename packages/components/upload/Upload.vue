@@ -136,17 +136,51 @@ function formatFileSize(size?: number): string {
 	return `${(size / 1024 / 1024 / 1024).toFixed(1)} GB`
 }
 
+const MODEL_VALUE_SEPARATOR = ','
+
 const props = withDefaults(defineProps<UploadProps>(), {
 	placeholder: '点击上传',
 	listType: 'file-preview',
 	autoUpload: true,
 	showDownload: true,
+	modelValueType: 'array',
 })
 
 const emit = defineEmits<{
-	(e: 'update:modelValue', value: any): void
+	(e: 'update:modelValue', value: string | string[]): void
 	(e: 'success', response: any, file: any, fileList: any[]): void
 }>()
+
+// ——————————————————————————————————
+// modelValue 类型处理（参考 Transfer 组件）
+// ——————————————————————————————————
+
+/** 解析 v-model 绑定的值为内部统一数组格式 */
+const parseModelValue = (value: string | string[] | undefined): string[] => {
+	if (!value) return []
+	if (Array.isArray(value)) return value.map(v => String(v)).filter(Boolean)
+	if (typeof value === 'string') {
+		return value.split(MODEL_VALUE_SEPARATOR).map(s => s.trim()).filter(Boolean)
+	}
+	return []
+}
+
+/**
+ * 将内部数组格式化为符合 modelValueType 的输出值。
+ * - modelValueType="array" → 返回字符串数组
+ * - modelValueType="string" → 返回逗号拼接字符串
+ */
+const formatModelValue = (values: string[]): string | string[] => {
+	if (props.modelValueType === 'string') {
+		return values.join(MODEL_VALUE_SEPARATOR)
+	}
+	return values
+}
+
+/** 触发 emit，统一使用 formatModelValue */
+const emitValue = (values: string[]) => {
+	emit('update:modelValue', formatModelValue(values))
+}
 
 const uploadRef = ref()
 
@@ -167,7 +201,7 @@ const pendingFetches = new Set<string>()
 
 // previewList：computed 保证每次访问都从 previewMap 取最新值
 const previewList = computed<PreviewItem[]>(() => {
-	return (props.modelValue ?? [])
+	return parseModelValue(props.modelValue)
 		.map((id) => previewMap.get(id))
 		.filter((item): item is PreviewItem => !!item)
 })
@@ -175,7 +209,8 @@ const previewList = computed<PreviewItem[]>(() => {
 // 监听 modelValue 变化：同步到 previewMap（初始化时 immediate:true 保证立即执行）
 watch(
 	() => props.modelValue,
-	(nextIds = []) => {
+	(nextIdsRaw = []) => {
+		const nextIds = parseModelValue(nextIdsRaw)
 		const nextSet = new Set(nextIds)
 
 		// 移除：id 不再出现在 modelValue 中
@@ -237,8 +272,8 @@ async function fetchPreviewUrl(fileId: string) {
 }
 
 async function handleRemove(item: PreviewItem) {
-	const newIds = (props.modelValue ?? []).filter((id) => id !== item.fileId)
-	emit('update:modelValue', newIds)
+	const newIds = parseModelValue(props.modelValue).filter((id) => id !== item.fileId)
+	emitValue(newIds)
 }
 
 function handleDownload(item: PreviewItem) {
@@ -254,9 +289,9 @@ function handleSuccess(response: any, file: any, fileList: any[]) {
 	const fileId = props.responseMapper ? props.responseMapper(response, file) : response?.data?.id
 	if (!fileId) return
 
-	const currentIds = props.modelValue ?? []
+	const currentIds = parseModelValue(props.modelValue)
 	if (!currentIds.includes(fileId)) {
-		emit('update:modelValue', [...currentIds, fileId])
+		emitValue([...currentIds, fileId])
 	}
 
 	// 若接口直接返回 url，也同步更新到 previewMap

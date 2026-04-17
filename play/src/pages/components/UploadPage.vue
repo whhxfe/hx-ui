@@ -27,6 +27,51 @@
       </div>
       <div class="demo-code">v-model (fileIds): {{ fileIds }}</div>
     </section>
+
+    <section class="demo-section">
+      <h3 class="section-title">modelValueType - 值类型切换</h3>
+      <p class="section-desc">
+        通过 <code>modelValueType</code> 控制 v-model emit 的值类型：
+        <code>array</code> 发送数组（默认），<code>string</code> 发送逗号分隔字符串。
+      </p>
+
+      <div class="demo-block">
+        <h4 class="demo-sub-title">modelValueType="array"（默认）</h4>
+        <p class="demo-desc">v-model 绑定为数组，适合前端处理</p>
+        <HxUpload
+          v-model="fileIds"
+          action="/api/upload"
+          :accept="accept"
+          :limit="5"
+          :multiple="true"
+          :response-mapper="(res) => res.data.id"
+          :preview-fetch-url="'/api/upload/preview'"
+          :delete-fetch-url="'/api/upload'"
+          list-type="file-preview"
+          placeholder="上传附件"
+        />
+        <div class="demo-code">v-model (fileIds): {{ fileIds }}</div>
+      </div>
+
+      <div class="demo-block">
+        <h4 class="demo-sub-title">modelValueType="string"</h4>
+        <p class="demo-desc">v-model 绑定为逗号分隔字符串，适合后端接口直接接收字符串</p>
+        <HxUpload
+          v-model="fileIdsStr"
+          action="/api/upload"
+          :accept="accept"
+          :limit="5"
+          :multiple="true"
+          :response-mapper="(res) => res.data.id"
+          :preview-fetch-url="'/api/upload/preview'"
+          :delete-fetch-url="'/api/upload'"
+          model-value-type="string"
+          list-type="file-preview"
+          placeholder="上传附件"
+        />
+        <div class="demo-code">v-model (fileIdsStr): {{ fileIdsStr }}</div>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -37,6 +82,7 @@ import { HxUpload } from '@hx/ui'
 const STORAGE_KEY = 'hx-upload-demo-fileIds'
 
 const fileIds = ref<string[]>(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'))
+const fileIdsStr = ref<string>('')
 const accept = ".jpg,.png,.gif,.pdf,.doc,.docx,.mp4";
 watch(fileIds, (val) => {
 	localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
@@ -118,5 +164,18 @@ watch(fileIds, (val) => {
   color: #666;
   word-break: break-all;
   margin-bottom: 8px;
+}
+
+.demo-sub-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px;
+}
+
+.demo-desc {
+  font-size: 13px;
+  color: #666;
+  margin: 0 0 12px;
 }
 </style>

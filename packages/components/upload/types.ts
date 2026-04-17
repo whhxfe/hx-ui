@@ -1,8 +1,14 @@
 import type { VNode } from 'vue'
 
 export interface UploadProps {
-	/** v-model：上传文件后绑定到表单的值（通常为 fileId 数组） */
-	modelValue?: any[]
+	/** v-model：上传文件后绑定到表单的值 */
+	modelValue?: string | string[]
+	/**
+	 * v-model emit 的值类型：
+	 * - `"array"` 发送 fileId 数组（默认）
+	 * - `"string"` 发送逗号拼接字符串
+	 */
+	modelValueType?: 'string' | 'array'
 	/** 上传地址 */
 	action?: string
 	/** 接受的文件类型 */

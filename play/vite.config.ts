@@ -22,17 +22,17 @@ interface CustomLogger {
 const customLogger: CustomLogger = {
   info(msg: string, options) {
     if (!msg.includes('Plugin has already been applied')) {
-      console.log(msg)
+      // console.log(msg)
     }
   },
   warn(msg: string, options) {
     if (!msg.includes('Plugin has already been applied')) {
-      console.warn(msg)
+      // console.warn(msg)
     }
   },
   warnOnce(msg: string, options) {
     if (!msg.includes('Plugin has already been applied')) {
-      console.warn(msg)
+      // console.warn(msg)
     }
   },
   error(msg: string, options) {

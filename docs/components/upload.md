@@ -6,8 +6,16 @@
 
 上传接口只返回 `id`，通过 `previewFetchUrl` 按需获取预览 URL，删除时调用 `deleteFetchUrl` 删除服务端文件。
 
-:::demo 
+:::demo
 upload/lazy-preview
+:::
+
+## modelValueType - 值类型切换
+
+通过 `modelValueType` 控制 v-model emit 的值类型：`array` 发送数组（默认），`string` 发送逗号分隔字符串。
+
+:::demo
+upload/model-value-type
 :::
 
 ## API
@@ -16,7 +24,8 @@ upload/lazy-preview
 
 | 参数名 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| v-model | 上传文件后绑定到表单的值（通常为 fileId 数组） | `any[]` | - |
+| v-model | 上传文件后绑定到表单的值 | `string \| string[]` | - |
+| modelValueType | v-model emit 的值类型：`array` 发送数组，`string` 发送逗号分隔字符串 | `'string' \| 'array'` | `'array'` |
 | action | 上传地址 | `string` | - |
 | accept | 接受的文件类型 | `string` | - |
 | limit | 最大上传数量 | `number` | - |

@@ -1,13 +1,4 @@
 import { defineConfig, presetAttributify, presetIcons, presetUno } from 'unocss'
-// import ep from '@iconify/json/json/ep.json'
-// import mdi from '@iconify/json/json/mdi.json'
-// import logos from '@iconify/json/json/logos.json'
-
-
-import ep from '@iconify/json/json/ep.json'
-import mdi from '@iconify/json/json/mdi.json'
-import logos from '@iconify/json/json/logos.json'
-import streamlineLogos from '@iconify/json/json/streamline-logos.json'
 
 export default defineConfig({
   presets: [
@@ -15,14 +6,16 @@ export default defineConfig({
     presetAttributify(),
     presetIcons({
       collections: {
-        ep,
-        mdi,
-        logos,
+        ep: () => import('@iconify/json/json/ep.json').then((m) => m.default),
+        mdi: () => import('@iconify/json/json/mdi.json').then((m) => m.default),
+        logos: () => import('@iconify/json/json/logos.json').then((m) => m.default),
+        'streamline-logos': () =>
+          import('@iconify/json/json/streamline-logos.json').then((m) => m.default),
       },
       extraProperties: {
         display: 'inline-block',
         'vertical-align': 'middle',
-        'cursor': 'pointer',
+        cursor: 'pointer',
       },
     }),
   ],
