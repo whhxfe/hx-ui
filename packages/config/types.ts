@@ -52,12 +52,6 @@ export interface SvgIconConfig {
 // ========== Full App Config ==========
 
 export interface HxConfig {
-  svgIcon: SvgIconConfig
-  imageIcon: ImageIconConfig
-  iconifyIcon: IconifyIconConfig
-}
-
-export interface IconifyProps {
   /**
    * 图标源模式：
    * - 'offline'：使用离线图标集（默认），需配合 collections 配置
@@ -96,4 +90,19 @@ export interface IconConfig {
 export interface HxConfigProviderProps {
   /** Icon 组件全局配置 */
   icon?: IconConfig
+  /** Request 工具全局配置 */
+  request?: RequestProviderProps
+}
+
+/** Request Provider Props，与 utils/request.ts 中的 RequestOptions 对应 */
+export interface RequestProviderProps {
+  /** 全局默认请求头，会被请求级别的 headers 合并覆盖 */
+  headers?: Record<string, string>
+}
+
+export interface HxConfig {
+  svgIcon: SvgIconConfig
+  imageIcon: ImageIconConfig
+  iconifyIcon: IconifyIconConfig
+  request?: RequestProviderProps
 }

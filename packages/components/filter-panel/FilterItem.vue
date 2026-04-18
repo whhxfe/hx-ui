@@ -49,20 +49,20 @@
 
 <script setup lang="ts">
 import { ref, watch, type Ref, computed } from 'vue'
-import type { FilterOption, FilterItemInstance } from './types'
-import { useRemoteOptions } from '../../hooks/useRemoteOptions'
+import type { FilterOption, FilterItemInstance, FilterValueType, ValueType, FilterRemoteConfig } from './types'
+import { useFilterRemoteOptions } from '../../hooks/useFilterRemoteOptions'
 
 const props = withDefaults(defineProps<{
-	modelValue?: import('../form/types').FilterValueType
+	modelValue?: FilterValueType
 	label?: string
 	options?: FilterOption[]
 	labelKey?: string
 	valueKey?: string
 	multiple?: boolean
 	allowDeselectAll?: boolean
-	remote?: import('../form/types').RemoteConfig
+	remote?: FilterRemoteConfig
 	dependsOn?: string
-	dependsOnValue?: import('../form/types').FilterValueType
+	dependsOnValue?: FilterValueType
 }>(), {
 	modelValue: undefined,
 	label: '',
@@ -73,14 +73,13 @@ const props = withDefaults(defineProps<{
 })
 
 const emit = defineEmits<{
-	'update:modelValue': [value: import('../form/types').FilterValueType]
-	'change': [value: import('../form/types').FilterValueType]
+	'update:modelValue': [value: FilterValueType]
+	'change': [value: FilterValueType]
 	'options-updated': []
 }>()
 
 // --- 远程 options（传 getter 让 watch 追踪 props.dependsOnValue 变化） ---
-const { remoteOptions, loading } = useRemoteOptions(props.remote, props.options as any, {
-  fieldType: 'filter-item',
+const { remoteOptions, loading } = useFilterRemoteOptions(props.remote, {
   dependsOnValue: () => props.dependsOnValue ?? undefined,
 })
 

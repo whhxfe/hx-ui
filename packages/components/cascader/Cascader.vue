@@ -32,11 +32,7 @@ const emit = defineEmits<{
 	(e: "update:modelValue", value: any): void
 }>()
 
-const { remoteOptions } = useRemoteOptions(
-	props.remote,
-	undefined,
-	{ fieldType: "cascader" },
-)
+const { remoteOptions } = useRemoteOptions(props.remote)
 
 const effectiveOptions = computed(() =>
 	props.remote ? remoteOptions.value : (props.options || [])
@@ -44,7 +40,6 @@ const effectiveOptions = computed(() =>
 
 const panelProps = computed(() => ({
 	...(props.props ?? {}),
-	...(props.emitPath !== undefined ? { emitPath: props.emitPath } : {}),
 }))
 
 const innerValue = computed({

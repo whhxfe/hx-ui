@@ -1,45 +1,9 @@
 import type { VNode } from "vue"
 
-/** 下拉 / 单选 / 多选等选项 */
-export interface OptionItem {
-	label: string
-	value: string | number
-	disabled?: boolean
-	children?: OptionItem[]
-}
+import type { OptionItem, GroupOptionItem, RemoteConfig } from "../../types"
 
-/** select 分组选项 */
-export interface GroupOptionItem {
-	label: string
-	disabled?: boolean
-	options: OptionItem[]
-}
-
-/** 远程数据获取配置 */
-export interface RemoteConfig {
-	/** 远程请求 URL */
-	url: string
-	/** 请求方法 */
-	method?: "get" | "post"
-	/** URL query 参数（GET 请求自动拼接在 ? 后） */
-	params?: Record<string, any>
-	/** 请求体参数（POST/PUT 请求序列化为 JSON 放入 body） */
-	body?: Record<string, any>
-	/** 请求体格式（默认 "json"） */
-	bodyType?: "json" | "form-data"
-	/** 响应数据中 label 字段名（默认 "label"） */
-	labelKey?: string
-	/** 响应数据中 value 字段名（默认 "value"） */
-	valueKey?: string
-	/** 响应数据中 children 字段名（默认 "children"，用于级联和分组） */
-	childrenKey?: string
-	/** 联动：依赖的父级 prop 名称，父值变化时自动用父值重新请求 */
-	dependsOn?: string
-	/** 联动：父值作为哪个参数名传递，默认 "value" */
-	dependsOnParamKey?: string
-	/** 联动：父值注入在 query 参数还是 body 中，默认跟随 method（method=get 时为 query，method=post 时为 body） */
-	dependsOnIn?: 'query' | 'body'
-}
+// Re-export 公共类型，保持向后兼容（外部仍从 form/types 导入）
+export type { OptionItem, GroupOptionItem, RemoteConfig } from "../../types"
 
 interface UploadOptions {
 	url?: string
@@ -65,8 +29,10 @@ export type FieldType =
 	| "radio"
 	| "radio-btn"
 	| "checkbox"
+	| "checkbox-btn"
 	| "switch"
 	| "cascader"
+	| "transfer"
 	| "datetime"
 	| "datetimerange"
 	| "date"
@@ -95,7 +61,7 @@ export interface FormColumn {
 	/** 表单组件类型 */
 	type: FieldType
 	/** 默认值 */
-	defaultValue?: any
+	defaultValue?: unknown
 	/** 占据的栅格列数（基于 grid 布局，默认 1） */
 	colSpan?: number
 	/** placeholder */
@@ -122,6 +88,10 @@ export interface FormColumn {
 	multiple?: boolean
 	/** 可搜索（select / cascader） */
 	filterable?: boolean
+	/** 级联选择专属配置（type= cascader 时使用） */
+	cascaderProps?: import("../cascader/types").CascaderPanelProps
+	/** v-model emit 的值类型：`"string"` 发送逗号拼接字符串，`"array"` 发送数组（select / upload） */
+	modelValueType?: "string" | "array"
 
 	// ========== 数字输入 ==========
 	min?: number
@@ -226,23 +196,31 @@ export interface FormColumn {
 
 	// ========== 事件 ==========
 	/** change 事件回调 */
-	onChange?: (value: any, formData: Record<string, any>) => void
+	onChange?: (value: unknown, formData: Record<string, unknown>) => void
 
 	/** 自定义校验规则（会与 required 自动生成的规则合并） */
-	rules?: any[]
+	rules?: Record<string, unknown>[]
 	richEditorParams?: RichEditorParams
+
+	// ========== Transfer 穿梭框 ==========
+	/** 穿梭框配置文本（如"人员"、"角色"） */
+	transferConfigText?: string
+	/** 穿梭框左侧面板宽度 */
+	transferLeftWidth?: string
+	/** 穿梭框高度 */
+	transferHeight?: string
 }
 
 /** Form 暴露的方法 */
 export interface FormExpose {
 	/** 校验表单 */
-	validate: (callback?: (data: Record<string, any>) => void) => Promise<boolean>
+	validate: (callback?: (data: Record<string, unknown>) => void) => Promise<boolean>
 	/** 重置表单 */
 	reset: () => void
 	/** 获取表单数据 */
-	getFormData: () => Record<string, any>
+	getFormData: () => Record<string, unknown>
 	/** 外部设置表单数据（用于接口数据回填等场景） */
-	setFormData: (data: Record<string, any>) => void
+	setFormData: (data: Partial<Record<string, unknown>>) => void
 	/** 获取 el-form 实例 */
 	getElFormRef: () => any
 }
@@ -257,6 +235,8 @@ export interface FormProps {
 	cols?: number
 	/** 是否显示底部的查询/重置操作区 */
 	showAction?: boolean
+	/** 是否使用行内布局（配合 cols 实现 grid 栅格，默认 true） */
+	inline?: boolean
 }
 
 /** HxForm Emits */

@@ -44,22 +44,13 @@
 
 <script lang="ts" setup>
 import { computed, useAttrs } from "vue"
-import type { OptionItem } from "../form/types"
+import type { OptionItem, GroupOptionItem } from "../../types"
+import type { SelectProps } from "./types"
 import { useRemoteOptions } from "../../hooks/useRemoteOptions"
 
 defineOptions({ inheritAttrs: false })
 
-const props = withDefaults(defineProps<{
-	modelValue?: any
-	modelValueType?: "string" | "array"
-	options?: OptionItem[] | import("../form/types").GroupOptionItem[]
-	remote?: import("../form/types").RemoteConfig
-	multiple?: boolean
-	clearable?: boolean
-	disabled?: boolean
-	filterable?: boolean
-	placeholder?: string
-}>(), {
+const props = withDefaults(defineProps<SelectProps>(), {
 	modelValueType: "string",
 })
 
@@ -128,7 +119,7 @@ const innerValue = computed({
 	},
 })
 
-const { remoteOptions, loading } = useRemoteOptions(props.remote, props.options, { fieldType: "select" })
+const { remoteOptions, loading } = useRemoteOptions(props.remote)
 
 const effectiveOptions = computed(() =>
 	props.remote ? remoteOptions.value : (props.options || [])

@@ -16,6 +16,7 @@
 				:disabled="disabled"
 				:auto-upload="autoUpload"
 				:show-file-list="false"
+				:http-request="handleHttpRequest"
 				:on-success="handleSuccess"
 				:on-exceed="handleExceed"
 				v-bind="componentProps"
@@ -87,6 +88,7 @@
 		:disabled="disabled"
 		:list-type="effectiveListType"
 		:auto-upload="autoUpload"
+		:http-request="handleHttpRequest"
 		:on-change="handleChange"
 		:on-remove="handleRemove"
 		:on-success="handleSuccess"
@@ -124,9 +126,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import HxFilePreview from '../file-preview/FilePreview.vue'
 import type { UploadProps } from './types'
+import { request, getRequest } from '../../utils/request'
 
 function formatFileSize(size?: number): string {
 	if (!size) return ''
@@ -206,55 +209,62 @@ const previewList = computed<PreviewItem[]>(() => {
 		.filter((item): item is PreviewItem => !!item)
 })
 
-// 监听 modelValue 变化：同步到 previewMap（初始化时 immediate:true 保证立即执行）
+/** 同步 modelValue → previewMap（新增取 GET，移除触发 DELETE） */
+function syncPreviewMap(nextIdsRaw: string | string[] | undefined) {
+	const nextIds = parseModelValue(nextIdsRaw)
+	const nextSet = new Set(nextIds)
+
+	// 移除：id 不再出现在 modelValue 中
+	for (const [id] of previewMap) {
+		if (!nextSet.has(id)) {
+			if (props.deleteFetchUrl) {
+				console.log('delete file by id', `${props.deleteFetchUrl}/${id}`)
+				request.delete(`${props.deleteFetchUrl}/${id}`).catch((e: any) => {
+					console.error('[HxUpload] DELETE failed:', e)
+				})
+			}
+			previewMap.delete(id)
+			pendingFetches.delete(id)
+		}
+	}
+
+	// 新增：id 首次出现，构建预览项并触发 URL 拉取
+	for (const id of nextIds) {
+		if (!previewMap.has(id)) {
+			const item: PreviewItem = reactive({
+				fileId: id,
+				name: `文件 ${id}`,
+				size: undefined,
+				url: '',
+				loading: true,
+			})
+			previewMap.set(id, item)
+			fetchPreviewUrl(id)
+		}
+	}
+}
+
+// 初始化时同步一次
+onMounted(() => syncPreviewMap(props.modelValue))
+
+// 后续 modelValue 变化时同步
 watch(
 	() => props.modelValue,
-	(nextIdsRaw = []) => {
-		const nextIds = parseModelValue(nextIdsRaw)
-		const nextSet = new Set(nextIds)
-
-		// 移除：id 不再出现在 modelValue 中
-		for (const [id, item] of previewMap) {
-			if (!nextSet.has(id)) {
-				// 调用删除接口（无论来自外部清空还是 handleRemove，都统一在此处理）
-				if (props.deleteFetchUrl) {
-					fetch(`${props.deleteFetchUrl}/${id}`, { method: 'DELETE' }).catch((e) => {
-						console.error('[HxUpload] DELETE failed:', e)
-					})
-				}
-				previewMap.delete(id)
-				pendingFetches.delete(id)
-			}
-		}
-
-		// 新增：id 首次出现，构建预览项并触发 URL 拉取
-		for (const id of nextIds) {
-			if (!previewMap.has(id)) {
-				const item: PreviewItem = reactive({
-					fileId: id,
-					name: `文件 ${id}`,
-					size: undefined,
-					url: '',
-					loading: true,
-				})
-				previewMap.set(id, item)
-				fetchPreviewUrl(id)
-			}
-		}
-	},
-	{ immediate: true },
+	(next) => syncPreviewMap(next),
 )
 
 async function fetchPreviewUrl(fileId: string) {
 	if (pendingFetches.has(fileId)) return
 	pendingFetches.add(fileId)
+	// console.log('fetch file info by id', fileId)
 
 	try {
-		const res = await fetch(`${props.previewFetchUrl}/${fileId}`)
-		const json = await res.json()
-		const data = json?.data
+		const res = await request.get<{ code?: number; data?: { url?: string; name?: string; size?: number } }>(
+			`${props.previewFetchUrl}/${fileId}`,
+		)
 
-		if (data) {
+		if (res.data) {
+			const data = res.data;
 			const item = previewMap.get(fileId)
 			if (item) {
 				item.url = data.url ?? ''
@@ -286,8 +296,10 @@ function handleDownload(item: PreviewItem) {
 
 // 上传成功：提取 fileId，追加到 modelValue
 function handleSuccess(response: any, file: any, fileList: any[]) {
+	if(!response) return 
 	const fileId = props.responseMapper ? props.responseMapper(response, file) : response?.data?.id
 	if (!fileId) return
+	// console.log('handleSuccess', response, file, fileList)
 
 	const currentIds = parseModelValue(props.modelValue)
 	if (!currentIds.includes(fileId)) {
@@ -310,6 +322,28 @@ function handleSuccess(response: any, file: any, fileList: any[]) {
 function handleExceed() {
 	if (props.limit) {
 		console.warn(`[HxUpload] 最多上传 ${props.limit} 个文件`)
+	}
+}
+
+async function handleHttpRequest(options: any) {
+	const { file, onProgress, onSuccess, onError } = options
+
+	const formData = new FormData()
+	formData.append('file', file)
+
+	try {
+		const instance = getRequest()
+		const res = await instance.post(props.action!, formData, {
+			headers: { 'Content-Type': 'multipart/form-data' },
+			onUploadProgress: (progressEvent: any) => {
+				if (progressEvent.total) {
+					onProgress({ percent: Math.round((progressEvent.loaded / progressEvent.total) * 100) })
+				}
+			},
+		})
+		onSuccess(res, file, [])
+	} catch (err) {
+		onError(err)
 	}
 }
 

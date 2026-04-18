@@ -16,17 +16,6 @@ const iconConfig = {
     imageIconModules: [imageIconModules],
     cdnBaseUrl: '/icons',
   },
-  /**
-   * iconify 图标集配置
-   *
-   * Offline 模式（预加载）：
-   * - 传入图标集名称数组，内部自动从 @iconify/json/json/* 加载并注册
-   * - 图标集会在构建时打包，适合常用图标，响应快
-   *
-   * CDN 模式（按需加载）：
-   * - 设置 source: "cdn" 并配置 cdnUrl
-   * - 图标按需从 CDN 获取，适合图标数量多、不想增加包体积的场景
-   */
   iconify: {
     // ===== Offline 模式 =====
     source: "offline" as const,
@@ -37,10 +26,18 @@ const iconConfig = {
     // cdnUrl: "https://api.iconify.design",
   },
 };
+
+/** Request 全局配置，所有请求都会带上这些 headers */
+const requestConfig = {
+  headers: {
+    lang: 'zh-CN',
+    'xxx-xxx': 'xxxx',
+  },
+};
 </script>
 
 <template>
-  <HxConfigProvider :icon="iconConfig">
+  <HxConfigProvider :icon="iconConfig" :request="requestConfig">
     <DefaultTheme.Layout />
   </HxConfigProvider>
 </template>

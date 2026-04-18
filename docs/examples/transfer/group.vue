@@ -1,6 +1,5 @@
 <template>
   <div class="demo-grid">
-    <!-- 分组数据 + 可折叠 -->
     <div class="demo-item">
       <p class="demo-label">分组数据（可折叠分组）</p>
       <hx-transfer

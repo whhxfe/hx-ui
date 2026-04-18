@@ -8,45 +8,78 @@
 		:disabled="disabled"
 		v-bind="$attrs"
 	>
-		<el-checkbox
+		<component
+			:is="isButton ? 'el-checkbox-button' : 'el-checkbox'"
 			v-for="item in options"
 			:key="item.value"
 			:value="item.value"
 			:disabled="item.disabled"
 		>
 			{{ item.label }}
-		</el-checkbox>
+		</component>
 	</el-checkbox-group>
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue"
-import type { OptionItem } from "../form/types"
+import { computed, useAttrs } from "vue"
+import type { OptionItem } from "../../types"
+import type { CheckboxProps } from "./types"
 import { useRemoteOptions } from "../../hooks/useRemoteOptions"
 
 defineOptions({ inheritAttrs: false })
 
-const props = withDefaults(defineProps<{
-	modelValue?: any
-	options?: OptionItem[]
-	remote?: import("../form/types").RemoteConfig
-	disabled?: boolean
-}>(), {})
+const props = withDefaults(defineProps<CheckboxProps>(), {
+	variant: 'checkbox',
+	modelValueType: 'string',
+})
+
+const attrs = useAttrs()
 
 const emit = defineEmits<{
 	(e: "update:modelValue", value: any): void
 	(e: "change", value: any): void
 }>()
 
+const MODEL_VALUE_SEPARATOR = ","
+
+const modelValueTypeResolved = computed((): "string" | "array" => {
+	const p = props.modelValueType
+	if (p === "array" || p === "string") return p
+	const raw = attrs["model-value-type"] ?? attrs.modelValueType
+	if (typeof raw === "string") {
+		const s = raw.trim()
+		if (s === "array" || s === "string") return s
+	}
+	return "string"
+})
+
 const innerValue = computed({
-	get: () => props.modelValue,
+	get: () => {
+		if (modelValueTypeResolved.value === "array") {
+			const v = props.modelValue
+			if (Array.isArray(v)) return v
+			if (typeof v === "string" && v) return v.split(MODEL_VALUE_SEPARATOR).filter(Boolean)
+			return []
+		}
+		if (typeof props.modelValue === "string") {
+			return props.modelValue ? props.modelValue.split(MODEL_VALUE_SEPARATOR).filter(Boolean) : []
+		}
+		return props.modelValue ?? []
+	},
 	set: (val) => {
-		emit("update:modelValue", val)
-		emit("change", val)
+		if (modelValueTypeResolved.value === "array") {
+			emit("update:modelValue", val)
+			emit("change", val)
+			return
+		}
+		emit("update:modelValue", Array.isArray(val) ? val.join(MODEL_VALUE_SEPARATOR) : "")
+		emit("change", Array.isArray(val) ? val.join(MODEL_VALUE_SEPARATOR) : "")
 	},
 })
 
-const { remoteOptions, loading } = useRemoteOptions(props.remote, props.options, { fieldType: "checkbox" })
+const isButton = computed(() => props.variant === "checkbox-btn")
+
+const { remoteOptions, loading } = useRemoteOptions(props.remote)
 
 const options = computed<OptionItem[]>(() =>
 	(props.remote ? remoteOptions.value : props.options || []) as OptionItem[]

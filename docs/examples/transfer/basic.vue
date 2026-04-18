@@ -1,22 +1,19 @@
 <template>
   <div class="demo-grid">
-    <!-- 单选 + 静态 options -->
     <div class="demo-item">
-      <p class="demo-label">单选（静态 options）</p>
+      <p class="demo-label">单选</p>
       <hx-transfer
         v-model="value1"
         :options="staticOptions"
         config-text="人员"
         title="选择人员"
-        left-width="280px"
         height="320px"
       />
       <p class="demo-value">值: {{ value1 }}</p>
     </div>
 
-    <!-- 多选 + 静态 options -->
     <div class="demo-item">
-      <p class="demo-label">多选（静态 options）</p>
+      <p class="demo-label">多选</p>
       <hx-transfer
         v-model="value2"
         :options="staticOptions"
@@ -45,7 +42,5 @@ const staticOptions: TransferOption[] = [
   { label: "赵六", value: "4", disabled: true },
   { label: "钱七", value: "5" },
   { label: "孙八", value: "6" },
-  { label: "周九", value: "7" },
-  { label: "吴十", value: "8" },
 ]
 </script>

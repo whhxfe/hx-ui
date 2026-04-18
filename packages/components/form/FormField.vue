@@ -47,6 +47,7 @@
 			:file-render="column.uploadFileRender"
 			:file-preview-render="column.uploadFilePreviewRender"
 			:preview-fetch-url="column.previewUrl"
+			:model-value-type="column.modelValueType"
 			:component-props="column.componentProps"
 		>
 			<template
@@ -73,7 +74,6 @@
 			:maxlength="column.maxlength"
 			:show-word-limit="column.showWordLimit"
 			:rows="column.rows || 3"
-			:label="column.label"
 			v-bind="column.componentProps"
 		/>
 
@@ -127,12 +127,13 @@
 		<HxCascader
 			v-else-if="column.type === 'cascader'"
 			v-model="innerValue"
-			:options="column.options"
+			:options="column.options as any"
 			:remote="column.remote"
 			:placeholder="column.placeholder"
 			:clearable="column.clearable"
 			:disabled="column.disabled"
 			:filterable="column.filterable"
+			:props="column.cascaderProps"
 			v-bind="column.componentProps"
 		/>
 
@@ -140,13 +141,15 @@
 		<HxSelect
 			v-else-if="column.type === 'select'"
 			v-model="innerValue"
-			:options="effectiveOptions"
+			:options="(column.options ?? []) as any"
+			:remote="column.remote"
 			:multiple="column.multiple"
-			:clearable="column.clearable ?? true"
+			:clearable="column.clearable"
 			:disabled="column.disabled"
 			:filterable="column.filterable"
 			:placeholder="column.placeholder || getPlaceholder()"
-			:component-props="column.componentProps"
+			:model-value-type="column.modelValueType"
+			v-bind="column.componentProps"
 			@change="(val: any) => column.onChange?.(val, formData)"
 		/>
 
@@ -154,10 +157,11 @@
 		<HxRadio
 			v-else-if="column.type === 'radio'"
 			v-model="innerValue"
-			:options="effectiveOptions"
+			:options="(column.options ?? []) as any"
+			:remote="column.remote"
 			:disabled="column.disabled"
 			:variant="'radio'"
-			:component-props="column.componentProps"
+			v-bind="column.componentProps"
 			@change="(val: any) => column.onChange?.(val, formData)"
 		/>
 
@@ -165,10 +169,11 @@
 		<HxRadio
 			v-else-if="column.type === 'radio-btn'"
 			v-model="innerValue"
-			:options="effectiveOptions"
+			:options="(column.options ?? []) as any"
+			:remote="column.remote"
 			:disabled="column.disabled"
 			:variant="'radio-btn'"
-			:component-props="column.componentProps"
+			v-bind="column.componentProps"
 			@change="(val: any) => column.onChange?.(val, formData)"
 		/>
 
@@ -176,9 +181,24 @@
 		<HxCheckbox
 			v-else-if="column.type === 'checkbox'"
 			v-model="innerValue"
-			:options="effectiveOptions"
+			:options="(column.options ?? []) as any"
+			:remote="column.remote"
 			:disabled="column.disabled"
-			:component-props="column.componentProps"
+			:model-value-type="column.modelValueType"
+			v-bind="column.componentProps"
+			@change="(val: any) => column.onChange?.(val, formData)"
+		/>
+
+		<!-- 多选按钮组 -->
+		<HxCheckbox
+			v-else-if="column.type === 'checkbox-btn'"
+			v-model="innerValue"
+			:options="(column.options ?? []) as any"
+			:remote="column.remote"
+			:disabled="column.disabled"
+			:model-value-type="column.modelValueType"
+			variant="checkbox-btn"
+			v-bind="column.componentProps"
 			@change="(val: any) => column.onChange?.(val, formData)"
 		/>
 
@@ -187,6 +207,21 @@
 			v-model="innerValue"
 			:disabled="column.disabled"
 			v-bind="column.componentProps"
+		/>
+
+		<!-- 穿梭框 -->
+		<HxTransfer
+			v-else-if="column.type === 'transfer'"
+			v-model="innerValue"
+			:options="(column.options ?? []) as any"
+			:remote="column.remote"
+			:multiple="column.multiple ?? false"
+			:config-text="column.transferConfigText || '选项'"
+			:left-width="column.transferLeftWidth || '300px'"
+			:height="column.transferHeight || '400px'"
+			:placeholder="column.placeholder"
+			:model-value-type="column.modelValueType"
+			@change="(val: any) => column.onChange?.(val, formData)"
 		/>
 	</el-form-item>
 </template>
@@ -202,8 +237,8 @@ import HxCheckbox from "../checkbox/Checkbox.vue"
 import HxRichEditor from "../rich-editor/RichEditor.vue"
 import HxInput from "../input/Input.vue"
 import HxCascader from "../cascader/Cascader.vue"
+import HxTransfer from "../transfer/Transfer.vue"
 import HxUpload from "../upload/Upload.vue"
-import { useRemoteOptions } from "../../hooks/useRemoteOptions"
 
 const props = defineProps<FormFieldProps>()
 
@@ -211,39 +246,17 @@ const emit = defineEmits<FormFieldEmits>()
 
 const formSlots = inject<Slots>(FORM_SLOTS_KEY, {})
 
-// ==========================================================================
-// innerValue
-// ==========================================================================
+/**
+ * innerValue
+ */
 const innerValue = computed({
 	get: () => props.modelValue,
 	set: (val) => emit("update:modelValue", val),
 })
 
-// ==========================================================================
-// 联动：根据 remote.dependsOn 从 formData 中获取父级值
-// ==========================================================================
-const dependsOnValue = computed(() => {
-	if (!props.column.remote?.dependsOn) return undefined
-	return props.formData[props.column.remote.dependsOn]
-})
-
-const { remoteOptions } = useRemoteOptions(
-	props.column.remote,
-	props.column.options,
-	{
-		fieldType: props.column.type ?? "select",
-		dependsOnValue: () => dependsOnValue.value,
-	},
-)
-
-const effectiveOptions = computed(() => {
-	if (props.column.remote) return remoteOptions.value as any[]
-	return props.column.options ?? []
-})
-
-// ==========================================================================
-// 字段分组（用于合并同类组件的模板）
-// ==========================================================================
+/**
+ * 字段分组（用于合并同类组件的模板）
+ */
 const INPUT_TYPES = new Set(["input", "textarea"])
 const DATE_TYPES = new Set(["date", "daterange", "datetime", "datetimerange"])
 const TIME_TYPES = new Set(["time", "timerange"])
@@ -256,9 +269,9 @@ const fieldGroup = computed(() => {
 	return null
 })
 
-// ==========================================================================
-// 日期时间默认格式
-// ==========================================================================
+/**
+ * 日期时间默认格式
+ */
 const DATE_PICKER_PROPS: Record<string, string> = {
 	date: "YYYY-MM-DD",
 	daterange: "YYYY-MM-DD",
@@ -291,9 +304,9 @@ const datePickerProps = computed(() => {
 	return componentProps ?? {}
 })
 
-// ==========================================================================
-// 禁用日期
-// ==========================================================================
+/**
+ * 禁用日期
+ */
 function getDisabledDate(time: Date): boolean {
 	return !!(props.column.disableFutureTime && time.getTime() > Date.now())
 }

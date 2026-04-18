@@ -19,7 +19,7 @@
 -->
 <template>
 	<div class="hx-form" :style="{ '--cols': cols }">
-		<el-form ref="formRef" :model="formData" :rules="mergedRules" v-bind="formAttrs">
+		<el-form ref="formRef" :model="formData" :rules="mergedRules" :inline="inline" v-bind="formAttrs">
 			<template v-for="col in visibleColumns" :key="col.prop">
 				<FormField
 					:column="col"
@@ -47,6 +47,7 @@
 import { computed, nextTick, provide, ref, useAttrs, useSlots, watch } from "vue"
 import FormField from "./FormField.vue"
 import { FORM_SLOTS_KEY } from "../../constants"
+import { isEqual } from "../../utils"
 import type { FormColumn, FormExpose, FormProps } from "./types"
 
 defineOptions({
@@ -58,6 +59,7 @@ const props = withDefaults(defineProps<FormProps>(), {
 	modelValue: () => ({}),
 	cols: 3,
 	showAction: true,
+	inline: true,
 })
 
 const emit = defineEmits<{
@@ -71,52 +73,27 @@ const slots = useSlots()
 const formRef = ref()
 provide(FORM_SLOTS_KEY, slots)
 
-// ==========================================================================
-// 工具函数
-// ==========================================================================
-function cloneDeep<T>(value: T): T {
-	if (value === null || typeof value !== "object") return value
-	if (Array.isArray(value)) return value.map(cloneDeep) as unknown as T
-	const result: Record<string, unknown> = {}
-	for (const key in value) {
-		if (Object.prototype.hasOwnProperty.call(value, key)) {
-			result[key] = cloneDeep(value[key])
-		}
-	}
-	return result as T
-}
-
-function isEqual(a: unknown, b: unknown): boolean {
-	if (a === b) return true
-	if (a === null || b === null || typeof a !== "object" || typeof b !== "object") return false
-	if (Array.isArray(a) !== Array.isArray(b)) return false
-	const keysA = Object.keys(a as object)
-	const keysB = Object.keys(b as object)
-	if (keysA.length !== keysB.length) return false
-	return keysA.every(key => isEqual((a as Record<string, unknown>)[key], (b as Record<string, unknown>)[key]))
-}
-
-// ==========================================================================
-// 透传给 el-form 的属性（rules 需合并，不透传）
-// ==========================================================================
+/**
+ * 透传给 el-form 的属性（rules 需合并，不透传）
+ */
 const formAttrs = computed(() => {
 	const { rules, ...rest } = attrs
 	return rest
 })
 
-// ==========================================================================
-// 内部表单数据
-// ==========================================================================
+/**
+ * 内部表单数据
+ */
 const formData = ref<Record<string, unknown>>({})
 
-// ==========================================================================
-// 可见列
-// ==========================================================================
+/**
+ * 可见列
+ */
 const visibleColumns = computed(() => props.columns.filter(col => !col.hidden))
 
-// ==========================================================================
-// 校验规则合并
-// ==========================================================================
+/**
+ * 校验规则合并
+ */
 const SELECT_TYPES = new Set(["select", "radio", "radio-btn", "checkbox", "cascader", "date", "datetime", "switch"])
 
 const mergedRules = computed(() => {
@@ -149,9 +126,9 @@ const mergedRules = computed(() => {
 	return { ...autoRules, ...(attrs.rules ?? {}) }
 })
 
-// ==========================================================================
-// 数据同步
-// ==========================================================================
+/**
+ * 数据同步
+ */
 let lastEmittedRef: Record<string, unknown> | null = null
 
 function emitUpdate() {
@@ -178,25 +155,22 @@ function handleFieldUpdate(prop: string, val: unknown) {
 	scheduleEmit()
 }
 
-// ==========================================================================
-// 初始化
-// ==========================================================================
+/**
+ * 初始化
+ */
 let isInitialized = false
 
 const TYPE_DEFAULT_VALUE: Record<string, unknown> = {
 	switch: false,
-	checkbox: [],
 	number: undefined,
-	datetimerange: [],
-	daterange: [],
-	timerange: [],
-	upload: [],
 }
 
 function getDefaultValue(col: FormColumn): unknown {
-	if (col.defaultValue !== undefined) return cloneDeep(col.defaultValue)
+	if (col.defaultValue !== undefined) return structuredClone(col.defaultValue)
 	if (col.type === "select") return col.multiple ? [] : ""
-	return TYPE_DEFAULT_VALUE[col.type] ?? ""
+	if (col.type === "checkbox") return []
+	if (["datetimerange", "daterange", "timerange", "upload"].includes(col.type)) return []
+	return ""
 }
 
 function initFormData() {
@@ -218,9 +192,9 @@ function initFormData() {
 	isInitialized = true
 }
 
-// ==========================================================================
-// 操作方法
-// ==========================================================================
+/**
+ * 校验表单
+ */
 async function validateField(callback?: (data: Record<string, unknown>) => void): Promise<boolean> {
 	try {
 		const valid = await formRef.value?.validate()
@@ -231,6 +205,9 @@ async function validateField(callback?: (data: Record<string, unknown>) => void)
 	}
 }
 
+/**
+ * 重置表单
+ */
 function resetField() {
 	const resetData: Record<string, unknown> = {}
 	for (const col of props.columns) {
@@ -245,6 +222,9 @@ function getFormData(): Record<string, unknown> {
 	return { ...formData.value }
 }
 
+/**
+ * 外部设置表单数据（用于接口数据回填等场景）
+ */
 function setFormData(data: Record<string, unknown>) {
 	for (const key in data) {
 		if (key in formData.value) {
@@ -273,9 +253,6 @@ function handleReset() {
 	emit("reset")
 }
 
-// ==========================================================================
-// Watchers
-// ==========================================================================
 watch(
 	() => props.columns,
 	() => { if (props.columns?.length) initFormData() },
@@ -298,9 +275,6 @@ watch(
 	{ deep: false }
 )
 
-// ==========================================================================
-// 暴露方法
-// ==========================================================================
 defineExpose<FormExpose>({
 	validate: validateField,
 	reset: resetField,

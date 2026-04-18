@@ -9,9 +9,11 @@ import type { HxConfig, HxConfigProviderProps } from '../types'
 import { HxConfigKey } from '../composable'
 import { buildImageSourceMap } from '../composable'
 import { registerOfflineCollections } from '../offline-icons'
+import { setRequestOptions } from '../../utils/request'
 
 const props = withDefaults(defineProps<HxConfigProviderProps>(), {
   icon: () => ({}),
+  request: () => ({}),
 })
 
 const iconSvgConfig = props.icon?.svg
@@ -49,6 +51,11 @@ const config: HxConfig = {
     source: { source: iconifySource, cdnUrl: iconifyCdnUrl },
     offlineCollections: iconifyCollections,
   },
+  request: props.request,
+}
+
+if (props.request?.headers) {
+  setRequestOptions({ headers: props.request.headers })
 }
 
 provide(HxConfigKey, config)

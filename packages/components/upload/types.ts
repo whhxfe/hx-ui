@@ -9,7 +9,7 @@ export interface UploadProps {
 	 * - `"string"` 发送逗号拼接字符串
 	 */
 	modelValueType?: 'string' | 'array'
-	/** 上传地址 */
+	/** 上传地址（autoUpload=true 时必填，用于 http-request 自定义上传） */
 	action?: string
 	/** 接受的文件类型 */
 	accept?: string

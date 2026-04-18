@@ -22,7 +22,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue"
-import type { OptionItem } from "../form/types"
+import type { OptionItem } from "../../types"
 import { useRemoteOptions } from "../../hooks/useRemoteOptions"
 
 defineOptions({ inheritAttrs: false })
@@ -30,7 +30,7 @@ defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<{
 	modelValue?: any
 	options?: OptionItem[]
-	remote?: import("../form/types").RemoteConfig
+	remote?: import("../../types").RemoteConfig
 	disabled?: boolean
 	variant?: "radio" | "radio-btn"
 }>(), {
@@ -52,7 +52,7 @@ const innerValue = computed({
 
 const isButton = computed(() => props.variant === "radio-btn")
 
-const { remoteOptions, loading } = useRemoteOptions(props.remote, props.options, { fieldType: "radio" })
+const { remoteOptions, loading } = useRemoteOptions(props.remote)
 
 const options = computed<OptionItem[]>(() =>
 	(props.remote ? remoteOptions.value : props.options || []) as OptionItem[]

@@ -1,4 +1,4 @@
-import type { RemoteConfig } from "../form/types"
+import type { RemoteConfig, OptionItem, GroupOptionItem } from "../../types"
 
 export interface SelectProps {
 	/**
@@ -11,7 +11,7 @@ export interface SelectProps {
 	/** 多选时 emit 的值类型：`"string"` 发送逗号拼接字符串（默认），`"array"` 发送数组 */
 	modelValueType?: "string" | "array"
 	/** 静态选项数据 */
-	options?: import("../form/types").OptionItem[] | import("../form/types").GroupOptionItem[]
+	options?: OptionItem[] | GroupOptionItem[]
 	/** 远程数据获取配置 */
 	remote?: RemoteConfig
 	/** 是否多选 */
