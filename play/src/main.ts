@@ -3,8 +3,6 @@ import 'virtual:svg-icons-register'
 
 import './styles/app-shell.css'
 
-import './register-icons'
-
 import { createApp } from 'vue'
 import 'uno.css'
 import ElementPlus from 'element-plus'

@@ -7,8 +7,6 @@ export type { IconifyCollectionName } from './config'
 import { HxButton, HxTable, HxIcon, HxLabelText, HxFilePreview, HxForm, HxSelect, HxRadio, HxCheckbox, HxRichEditor, HxTransfer, HxQrCode } from './components'
 import { HxConfigProvider as _HxConfigProvider } from './config'
 import { withInstall } from './utils/install'
-import ElementPlus from 'element-plus'
-import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
 const HxConfigProvider = withInstall(_HxConfigProvider, 'HxConfigProvider')
 
@@ -29,7 +27,8 @@ const components = [
 
 const HxUI = {
   install(app: any) {
-    app.use(ElementPlus, { locale: zhCn })
+    // ElementPlus 应由消费方自行 app.use(ElementPlus, { locale: zhCn })
+    // 组件库不再强制全局注册 ElementPlus
     components.forEach((component) => {
       app.use(component)
     })

@@ -29,6 +29,8 @@ if (iconifySource === 'cdn' && iconifyCdnUrl) {
     resources: [iconifyCdnUrl],
   })
 } else {
+  // 异步加载图标集，不阻塞组件渲染
+  // 图标组件内部有 fallback 处理，图标集加载完成后会自动刷新
   registerOfflineCollections(iconifyCollections)
 }
 

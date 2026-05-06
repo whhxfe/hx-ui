@@ -3,11 +3,11 @@
   支持静态 options 和远程 remote，可单选/多选，支持分组折叠
 -->
 <template>
-	<div class="hx-transfer" :style="{ height }">
+	<div class="hx-transfer" :style="{ height: transferHeight }">
 		<!-- 左侧面板 -->
-		<div class="hx-transfer__panel hx-transfer__panel--left" :style="{ width: leftWidth }">
+		<div class="hx-transfer__panel hx-transfer__panel--left" :style="{ width: transferLeftWidth }">
 			<div class="hx-transfer__header">
-				<span class="hx-transfer__header-title">{{ title || `${configText}列表` }}</span>
+				<span class="hx-transfer__header-title">{{ title || `${transferConfigText}列表` }}</span>
 				<div class="hx-transfer__operations">
 					<span v-if="isGroupFormat" class="hx-transfer__operation-link" @click="collapsedKeys = isAllCollapsed ? new Set() : allGroupKeys">
 						{{ isAllCollapsed ? "展开分组" : "折叠分组" }}
@@ -17,7 +17,7 @@
 			</div>
 
 			<div class="hx-transfer__search">
-				<input v-model="searchKeyword" type="text" :placeholder="placeholder || `请选择${configText}`" class="hx-transfer__search-input" />
+				<input v-model="searchKeyword" type="text" :placeholder="placeholder || `请选择${transferConfigText}`" class="hx-transfer__search-input" />
 				<span v-if="searchKeyword" class="hx-transfer__search-clear" @click="searchKeyword = ''">×</span>
 			</div>
 
@@ -43,7 +43,7 @@
 		<!-- 右侧已选区域 -->
 		<div class="hx-transfer__panel hx-transfer__panel--right">
 			<div class="hx-transfer__header">
-				<span class="hx-transfer__header-title">已选中{{ configText }}</span>
+				<span class="hx-transfer__header-title">已选中{{ transferConfigText }}</span>
 				<div class="hx-transfer__operations">
 					<span v-if="selectedValues.length > 0" class="hx-transfer__operation-link" @click="clearAll">清空</span>
 				</div>
@@ -85,12 +85,12 @@ defineOptions({ inheritAttrs: false })
 
 const props = withDefaults(defineProps<TransferProps>(), {
 	modelValue: "",
-	leftWidth: "300px",
-	configText: "人员",
+	transferLeftWidth: "300px",
+	transferConfigText: "人员",
 	placeholder: "",
 	multiple: false,
 	modelValueType: "string",
-	height: "400px",
+	transferHeight: "400px",
 })
 
 const emit = defineEmits<{

@@ -1,9 +1,19 @@
 import type { VNode } from "vue"
 
 import type { OptionItem, GroupOptionItem, RemoteConfig } from "../../types"
+import type { UploadProps } from "../upload/types"
+import type { SelectProps } from "../select/types"
+import type { CascaderProps, CascaderPanelProps } from "../cascader/types"
+import type { RadioProps } from "../radio/types"
+import type { CheckboxProps } from "../checkbox/types"
+import type { TransferProps } from "../transfer/types"
 
 // Re-export 公共类型，保持向后兼容（外部仍从 form/types 导入）
 export type { OptionItem, GroupOptionItem, RemoteConfig } from "../../types"
+
+// ============================================================
+// RichEditor
+// ============================================================
 
 interface UploadOptions {
 	url?: string
@@ -19,6 +29,10 @@ export interface RichEditorParams {
 	uploadVideo?: UploadOptions
 	responseAdapter?: (res: any) => string
 }
+
+// ============================================================
+// FieldType
+// ============================================================
 
 /** 支持的表单字段类型 */
 export type FieldType =
@@ -44,16 +58,28 @@ export type FieldType =
 	| "slot"
 	| "render"
 
-/** 选项类组件通用 props */
-export interface SelectProps {
-	/** 静态选项数据 */
-	options?: OptionItem[] | GroupOptionItem[]
-	/** 远程数据获取配置 */
-	remote?: RemoteConfig
-}
+// ============================================================
+// FormColumn — 核心结构
+//
+// FormColumn = FormColumnBase（通用字段）
+//            & FormColumn_Options（选项类共用字段）
+//            & FormColumn_Upload（从 UploadProps Pick）
+//            & FormColumn_Select（从 SelectProps Pick）
+//            & FormColumn_Cascader（从 CascaderProps Pick）
+//            & FormColumn_Radio（从 RadioProps Pick）
+//            & FormColumn_Checkbox（从 CheckboxProps Pick）
+//            & FormColumn_Transfer（从 TransferProps Pick）
+//            & FormColumn_RichEditor
+//            & FormColumn_DateTime
+//            & FormColumn_TextInput
+//            & FormColumn_NumberInput
+//
+// 由于所有字段均为可选，交叉类型天然可叠加，无需 discriminated union。
+// 开发者配置时，IDE 自动补全会根据 type 推断可用字段（需配合组件文档理解）。
+// ============================================================
 
-/** 表单字段列配置（columns 中的每一项） */
-export interface FormColumn {
+/** 表单字段基础字段（所有 type 通用） */
+export interface FormColumnBase {
 	/** 字段 key，对应 formData 中的属性名 */
 	prop: string
 	/** 表单项标签 */
@@ -64,47 +90,115 @@ export interface FormColumn {
 	defaultValue?: unknown
 	/** 占据的栅格列数（基于 grid 布局，默认 1） */
 	colSpan?: number
-	/** placeholder */
-	placeholder?: string
-	/** 是否可清空 */
-	clearable?: boolean
-	/** 是否禁用 */
-	disabled?: boolean
 	/** 是否隐藏该字段 */
 	hidden?: boolean
 	/** 是否必填（自动生成校验规则） */
 	required?: boolean
 
-	// ========== 选项类 ==========
+	/** placeholder（各组件均有，支持统一设置） */
+	placeholder?: string
+	/** 是否可清空（select / cascader / date / time） */
+	clearable?: boolean
+	/** 是否禁用（所有输入类组件） */
+	disabled?: boolean
+
+	/** 是否多选（select / checkbox / upload / transfer） */
+	multiple?: boolean
+
+	/** v-model emit 的值类型：`"string"` 发送逗号拼接字符串，`"array"` 发送数组（select / checkbox / upload / transfer） */
+	modelValueType?: "string" | "array"
+
+	// ——— 透传 & 自定义 ———
+	/** 直接透传给底层 el-xxx 组件的 props */
+	componentProps?: Record<string, any>
+	/** 透传给 el-form-item 的 props */
+	formItemProps?: Record<string, any>
+	/** 自定义渲染函数（type='render' 时使用） */
+	render?: (formData: Record<string, any>, column: any) => VNode
+	/** change 事件回调 */
+	onChange?: (value: unknown, formData: Record<string, unknown>) => void
+	/** 自定义校验规则（会与 required 自动生成的规则合并） */
+	rules?: Record<string, unknown>[]
+}
+
+/** 选项类组件共用字段（select / radio / checkbox / cascader / transfer） */
+export interface FormColumn_Options {
 	/**
-	 * 静态选项数据（select / radio / checkbox / cascader）
+	 * 静态选项数据
 	 * - select：支持 OptionItem[] 或 GroupOptionItem[]（自动识别是否分组）
-	 * - 其他类型：使用 OptionItem[]
+	 * - radio / checkbox / cascader / transfer：使用 OptionItem[]
 	 */
 	options?: OptionItem[] | GroupOptionItem[]
 	/** 远程数据获取配置 */
 	remote?: RemoteConfig
-	/** 多选（select / checkbox） */
-	multiple?: boolean
-	/** 可搜索（select / cascader） */
-	filterable?: boolean
-	/** 级联选择专属配置（type= cascader 时使用） */
-	cascaderProps?: import("../cascader/types").CascaderPanelProps
-	/** v-model emit 的值类型：`"string"` 发送逗号拼接字符串，`"array"` 发送数组（select / upload） */
-	modelValueType?: "string" | "array"
+}
 
-	// ========== 数字输入 ==========
-	min?: number
-	max?: number
-	step?: number
-	precision?: number
+// ——— Upload：从 UploadProps Pick（排除 modelValue，由 form 框架管理）—————————
 
-	// ========== 文本输入 ==========
-	maxlength?: number
-	showWordLimit?: boolean
-	rows?: number
+export type FormColumn_Upload = Pick<
+	UploadProps,
+	| "action"
+	| "accept"
+	| "limit"
+	| "headers"
+	| "data"
+	| "name"
+	| "withCredentials"
+	| "listType"
+	| "autoUpload"
+	| "placeholder"
+	| "responseMapper"
+	| "valueMapper"
+	| "previewUrl"
+	| "deleteUrl"
+	| "showDownload"
+	| "fileRender"
+	| "filePreviewRender"
+	| "componentProps"
+>
 
-	// ========== 日期时间 ==========
+// ——— Select：从 SelectProps Pick（排除 modelValue）————————————————————————
+
+export type FormColumn_Select = Pick<
+	SelectProps,
+	"options" | "remote" | "multiple" | "clearable" | "disabled" | "filterable" | "placeholder" | "modelValueType" | "onChange"
+>
+
+// ——— Cascader：从 CascaderProps Pick（排除 modelValue）———————————————————
+
+export type FormColumn_Cascader = Pick<
+	CascaderProps,
+	"options" | "remote" | "placeholder" | "clearable" | "disabled" | "filterable" | "cascaderProps"
+>
+
+// ——— Radio：从 RadioProps Pick（排除 modelValue）————————————————————————
+
+export type FormColumn_Radio = Pick<RadioProps, "options" | "remote" | "disabled" | "onChange">
+
+// ——— Checkbox：从 CheckboxProps Pick（排除 modelValue）——————————————————
+
+export type FormColumn_Checkbox = Pick<
+	CheckboxProps,
+	"options" | "remote" | "disabled" | "variant" | "modelValueType" | "onChange"
+>
+
+// ——— Transfer：从 TransferProps Pick（排除 modelValue）————————————————————
+
+export type FormColumn_Transfer = Pick<
+	TransferProps,
+	"options" | "remote" | "labelKey" | "valueKey" | "title" | "transferLeftWidth" | "transferConfigText" | "placeholder" | "multiple" | "transferHeight" | "modelValueType"
+>
+
+// ——— RichEditor ————————————————————————————————————————————————————————————
+
+export interface FormColumn_RichEditor {
+	/** 富文本编辑器配置（透传给 HxRichEditor） */
+	richEditorParams?: RichEditorParams
+}
+
+// ——— DateTime ————————————————————————————————————————————————————————————
+
+export interface FormColumn_DateTime {
 	/** 值格式化 */
 	valueFormat?: string
 	/** 显示格式化 */
@@ -113,103 +207,54 @@ export interface FormColumn {
 	disableFutureTime?: boolean
 	/** 日期范围限制（天数） */
 	dateRangeLimit?: number
-
-	// ========== 上传 ==========
-	/** 上传地址（type: 'upload' 时必填，或用 componentProps.httpRequest 自定义） */
-	action?: string
-	/** 接受的文件类型，如 '.jpg,.png' 或 'image/*' */
-	accept?: string
-	/** 最大上传数量 */
-	limit?: number
-	/** 列表展示类型：text / picture / picture-card / file-preview（文件预览模式，点击弹窗预览） */
-	listType?: "text" | "picture" | "picture-card" | "file-preview"
-	/**
-	 * 上传文件值映射：从 el-upload 的 file 对象中提取需要保存到表单的值
-	 *
-	 * 不设置时，formData[prop] = el-upload 原始 fileList
-	 * 设置后，formData[prop] = fileList.filter(已上传成功).map(uploadValueMapper)
-	 *
-	 * @param file el-upload 的文件对象（含 response、name、url 等属性）
-	 * @returns 需要保存的值（如 URL 字符串、ID、或自定义对象）
-	 *
-	 * @example 只存 URL
-	 * uploadValueMapper: file => file.response?.data?.url
-	 *
-	 * @example 存 id + name 对象
-	 * uploadValueMapper: file => ({ id: file.response?.data?.id, name: file.name })
-	 */
-	uploadValueMapper?: (file: any) => any
-	/**
-	 * 上传响应值映射：从服务端响应中提取需要存储的值（如 fileId）
-	 *
-	 * 优先级高于 uploadValueMapper
-	 * 上传成功后，formData[prop] = uploadResponseMapper(response, file)
-	 *
-	 * @param response 服务端返回的完整响应对象
-	 * @param file el-upload 的文件对象
-	 * @returns 需要保存的值（如 fileId）
-	 *
-	 * @example 返回文件 ID
-	 * uploadResponseMapper: (res) => res.data.id
-	 */
-	uploadResponseMapper?: (response: any, file: any) => any
-	/**
-	 * 自定义上传文件列表项渲染函数
-	 *
-	 * @param file el-upload 的文件对象
-	 * @param actions 操作方法：{ remove: 删除该文件 }
-	 * @returns VNode
-	 */
-	uploadFileRender?: (file: any, actions: { remove: () => void }) => VNode
-	/**
-	 * 自定义上传文件预览渲染（与 uploadFileRender 互斥，优先级低于 uploadFileRender）
-	 *
-	 * @param file el-upload 的文件对象
-	 * @param actions 操作方法：{ remove: 删除该文件 }
-	 * @returns VNode
-	 */
-	uploadFilePreviewRender?: (file: any, actions: { remove: () => void }) => VNode
-	/**
-	 * 文件预览接口地址（listType=file-preview 时使用）
-	 *
-	 * 点击文件后，组件会调用 GET `${previewUrl}/${fileId}` 获取文件信息，
-	 * 再将返回的 url 传给 HxFilePreview 进行弹窗预览。
-	 *
-	 * @example previewUrl: '/api/upload' → GET /api/upload/{fileId}
-	 */
-	previewUrl?: string
-
-	// ========== 透传给 Element Plus 组件的原生属性 ==========
-	/** 直接透传给底层 el-xxx 组件的 props */
-	componentProps?: Record<string, any>
-	/** 透传给 el-form-item 的 props */
-	formItemProps?: Record<string, any>
-
-	// ========== 自定义渲染 ==========
-	/**
-	 * 自定义渲染函数
-	 * @param formData 当前表单数据
-	 * @param column 当前列配置
-	 * @returns VNode
-	 */
-	render?: (formData: Record<string, any>, column: FormColumn) => VNode
-
-	// ========== 事件 ==========
-	/** change 事件回调 */
-	onChange?: (value: unknown, formData: Record<string, unknown>) => void
-
-	/** 自定义校验规则（会与 required 自动生成的规则合并） */
-	rules?: Record<string, unknown>[]
-	richEditorParams?: RichEditorParams
-
-	// ========== Transfer 穿梭框 ==========
-	/** 穿梭框配置文本（如"人员"、"角色"） */
-	transferConfigText?: string
-	/** 穿梭框左侧面板宽度 */
-	transferLeftWidth?: string
-	/** 穿梭框高度 */
-	transferHeight?: string
 }
+
+// ——— TextInput ————————————————————————————————————————————————————————————
+
+export interface FormColumn_TextInput {
+	/** 最大输入长度 */
+	maxlength?: number
+	/** 是否显示字数统计 */
+	showWordLimit?: boolean
+	/** 文本域行数（textarea） */
+	rows?: number
+}
+
+// ——— NumberInput ——————————————————————————————————————————————————————————
+
+export interface FormColumn_NumberInput {
+	/** 最小值 */
+	min?: number
+	/** 最大值 */
+	max?: number
+	/** 步进 */
+	step?: number
+	/** 精度（小数位数） */
+	precision?: number
+}
+
+/**
+ * 表单字段列配置（columns 中的每一项）
+ *
+ * 通过交叉类型组合各组件 interface，保持字段命名与独立组件完全一致。
+ * 字段按功能分为：Base（通用）| Options（选项类共用）| Upload | Select | Cascader | Radio | Checkbox | Transfer | RichEditor | DateTime | TextInput | NumberInput
+ */
+export type FormColumn = FormColumnBase &
+	FormColumn_Options &
+	FormColumn_Upload &
+	FormColumn_Select &
+	FormColumn_Cascader &
+	FormColumn_Radio &
+	FormColumn_Checkbox &
+	FormColumn_Transfer &
+	FormColumn_RichEditor &
+	FormColumn_DateTime &
+	FormColumn_TextInput &
+	FormColumn_NumberInput
+
+// ============================================================
+// FormExpose / FormProps / FormFieldProps
+// ============================================================
 
 /** Form 暴露的方法 */
 export interface FormExpose {
@@ -241,9 +286,9 @@ export interface FormProps {
 
 /** HxForm Emits */
 export interface FormEmits {
-	(e: 'update:modelValue', value: Record<string, unknown>): void
-	(e: 'search', value: Record<string, unknown>): void
-	(e: 'reset'): void
+	(e: "update:modelValue", value: Record<string, unknown>): void
+	(e: "search", value: Record<string, unknown>): void
+	(e: "reset"): void
 }
 
 /** HxFormField Props */
@@ -255,5 +300,5 @@ export interface FormFieldProps {
 
 /** HxFormField Emits */
 export interface FormFieldEmits {
-	(e: 'update:modelValue', value: any): void
+	(e: "update:modelValue", value: any): void
 }

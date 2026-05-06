@@ -42,16 +42,21 @@
 			:disabled="column.disabled"
 			:list-type="column.listType ?? 'text'"
 			:placeholder="column.placeholder"
-			:value-mapper="column.uploadValueMapper"
-			:response-mapper="column.uploadResponseMapper"
-			:file-render="column.uploadFileRender"
-			:file-preview-render="column.uploadFilePreviewRender"
-			:preview-fetch-url="column.previewUrl"
+			:value-mapper="column.valueMapper"
+			:response-mapper="column.responseMapper"
+			:file-render="column.fileRender"
+			:file-preview-render="column.filePreviewRender"
+			:preview-url="column.previewUrl"
+			:delete-url="column.deleteUrl"
 			:model-value-type="column.modelValueType"
-			:component-props="column.componentProps"
+			:headers="column.headers"
+			:data="column.data"
+			:name="column.name"
+			:with-credentials="column.withCredentials"
+			v-bind="column.componentProps"
 		>
 			<template
-				v-if="formSlots[column.prop + '-file'] || column.uploadFileRender"
+				v-if="formSlots[column.prop + '-file'] || column.fileRender"
 				#file="{ file, remove }"
 			>
 				<component
@@ -133,7 +138,7 @@
 			:clearable="column.clearable"
 			:disabled="column.disabled"
 			:filterable="column.filterable"
-			:props="column.cascaderProps"
+			:cascader-props="column.cascaderProps"
 			v-bind="column.componentProps"
 		/>
 
@@ -216,11 +221,12 @@
 			:options="(column.options ?? []) as any"
 			:remote="column.remote"
 			:multiple="column.multiple ?? false"
-			:config-text="column.transferConfigText || '选项'"
-			:left-width="column.transferLeftWidth || '300px'"
-			:height="column.transferHeight || '400px'"
+			:transfer-config-text="column.transferConfigText || '选项'"
+			:transfer-left-width="column.transferLeftWidth || '300px'"
+			:transfer-height="column.transferHeight || '400px'"
 			:placeholder="column.placeholder"
 			:model-value-type="column.modelValueType"
+			v-bind="column.componentProps"
 			@change="(val: any) => column.onChange?.(val, formData)"
 		/>
 	</el-form-item>

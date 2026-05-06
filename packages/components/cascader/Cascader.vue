@@ -39,7 +39,7 @@ const effectiveOptions = computed(() =>
 )
 
 const panelProps = computed(() => ({
-	...(props.props ?? {}),
+	...(props.cascaderProps ?? {}),
 }))
 
 const innerValue = computed({

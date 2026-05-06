@@ -50,5 +50,5 @@ export interface CascaderProps {
 	/** 是否可搜索 */
 	filterable?: boolean
 	/** 级联面板配置 */
-	props?: CascaderPanelProps
+	cascaderProps?: CascaderPanelProps
 }

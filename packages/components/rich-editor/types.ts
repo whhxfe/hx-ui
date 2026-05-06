@@ -1,5 +1,3 @@
-import type { VNode } from "vue"
-
 export interface RichEditorUploadOptions {
 	url?: string
 	headers?: Record<string, string>
@@ -14,6 +12,7 @@ export interface RichEditorUploadOptions {
 }
 
 export interface RichEditorParams {
+	modelValue?: string
 	readOnly?: boolean
 	uploadUrl?: string
 	uploadImage?: RichEditorUploadOptions

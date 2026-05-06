@@ -66,6 +66,7 @@ export default defineConfig({
       { text: '指南', link: '/guide/quickstart' },
       { text: '组件', link: '/components/file-preview' },
       { text: '表单', link: '/components/form' },
+      { text: '地图', link: '/components/map' },
       { text: '二次封装流程', link: '/guide/wrapper-flow' },
     ],
     sidebar: {
@@ -86,6 +87,12 @@ export default defineConfig({
             { text: 'Icon 图标', link: '/components/icon' },
             { text: 'Link 链接', link: '/components/link' },
             { text: 'Text 文本', link: '/components/text' },
+          ],
+        },
+        {
+          text: 'Map 地图组件',
+          items: [
+            { text: 'Map 地图', link: '/components/map' },
           ],
         },
         {

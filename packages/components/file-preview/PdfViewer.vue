@@ -94,11 +94,7 @@
 
 <script setup lang="ts">
 import { ref, watch, markRaw, nextTick, onMounted, onUnmounted } from 'vue'
-import * as pdfjs from 'pdfjs-dist'
-import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import type { PdfViewerProps } from './types'
-
-;(pdfjs as any).GlobalWorkerOptions.workerSrc = pdfWorker
 
 const props = withDefaults(defineProps<PdfViewerProps>(), {
   width: '120px',
@@ -108,6 +104,7 @@ const props = withDefaults(defineProps<PdfViewerProps>(), {
 const thumbCanvas = ref<HTMLCanvasElement | null>(null)
 const viewerCanvas = ref<HTMLCanvasElement | null>(null)
 
+let pdfjs: any = null
 let pdfDoc: any = null
 let pdfBlob: Blob | null = null
 let loadPdfPromise: Promise<void> | null = null
@@ -119,6 +116,22 @@ const scale = ref(1.0)
 const visible = ref(false)
 const loadError = ref(false)
 const isLoading = ref(false)
+
+// 动态加载 pdfjs，避免顶层导入导致消费者项目打包报错
+async function ensurePdfjs() {
+  if (pdfjs) return true
+  try {
+    const module = await import('pdfjs-dist')
+    pdfjs = module
+    const workerUrl = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).href
+    pdfjs.GlobalWorkerOptions.workerSrc = workerUrl
+    return true
+  } catch (e) {
+    console.error('[PdfViewer] 加载 pdfjs-dist 失败:', e)
+    loadError.value = true
+    return false
+  }
+}
 
 async function loadPdf() {
   if (!props.url) {
@@ -138,6 +151,17 @@ async function loadPdf() {
     isLoading.value = true
     loadError.value = false
     try {
+      // 确保 pdfjs 已加载
+      if (!(await ensurePdfjs())) return
+    } catch (e) {
+      loadError.value = true
+      console.warn('[PdfViewer] 加载 PDF 失败:', e)
+      return
+    } finally {
+      isLoading.value = false
+    }
+
+    try {
       if (typeof props.url === 'string') {
         const res = await fetch(props.url)
         if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`)
@@ -149,15 +173,13 @@ async function loadPdf() {
       loadError.value = true
       console.warn('[PdfViewer] 加载 PDF 失败:', e)
       return
-    } finally {
-      isLoading.value = false
     }
 
     if (gen !== loadGeneration) return
     if (!pdfBlob) return
     const buffer = await pdfBlob.arrayBuffer()
     if (gen !== loadGeneration) return
-    const loadingTask = (pdfjs as any).getDocument({ data: buffer })
+    const loadingTask = pdfjs.getDocument({ data: buffer })
     pdfDoc = markRaw(await loadingTask.promise)
     if (gen !== loadGeneration) return
     total.value = pdfDoc.numPages

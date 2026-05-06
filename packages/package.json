@@ -1,15 +1,72 @@
 {
   "name": "@hx/ui",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "基于 Vue 3 + TypeScript + Element Plus 的业务组件库",
-  "main": "dist/index.es.js",
-  "module": "dist/index.es.js",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.es.js",
-      "default": "./dist/index.es.js"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./components/button": {
+      "types": "./dist/components/button/index.d.ts",
+      "import": "./dist/components/button/index.js"
+    },
+    "./components/table": {
+      "types": "./dist/components/table/index.d.ts",
+      "import": "./dist/components/table/index.js"
+    },
+    "./components/icon": {
+      "types": "./dist/components/icon/index.d.ts",
+      "import": "./dist/components/icon/index.js"
+    },
+    "./components/file-preview": {
+      "types": "./dist/components/file-preview/index.d.ts",
+      "import": "./dist/components/file-preview/index.js"
+    },
+    "./components/rich-editor": {
+      "types": "./dist/components/rich-editor/index.d.ts",
+      "import": "./dist/components/rich-editor/index.js"
+    },
+    "./components/form": {
+      "types": "./dist/components/form/index.d.ts",
+      "import": "./dist/components/form/index.js"
+    },
+    "./components/select": {
+      "types": "./dist/components/select/index.d.ts",
+      "import": "./dist/components/select/index.js"
+    },
+    "./components/checkbox": {
+      "types": "./dist/components/checkbox/index.d.ts",
+      "import": "./dist/components/checkbox/index.js"
+    },
+    "./components/radio": {
+      "types": "./dist/components/radio/index.d.ts",
+      "import": "./dist/components/radio/index.js"
+    },
+    "./components/transfer": {
+      "types": "./dist/components/transfer/index.d.ts",
+      "import": "./dist/components/transfer/index.js"
+    },
+    "./components/qrcode": {
+      "types": "./dist/components/qrcode/index.d.ts",
+      "import": "./dist/components/qrcode/index.js"
+    },
+    "./components/content-text": {
+      "types": "./dist/components/content-text/index.d.ts",
+      "import": "./dist/components/content-text/index.js"
+    },
+    "./components/*": {
+      "types": "./dist/components/*/index.d.ts",
+      "import": "./dist/components/*/index.js"
+    },
+    "./components/map": {
+      "types": "./dist/components/map/index.d.ts",
+      "import": "./dist/components/map/index.js"
     },
     "./index.css": "./dist/index.css",
     "./dist/index.css": "./dist/index.css"
@@ -34,6 +91,7 @@
     "element-plus": "^2.13.5",
     "flv.js": "^1.6.2",
     "hls.js": "^1.5.19",
+    "ol": "^10.4.0",
     "pdfjs-dist": "^4.10.38",
     "qrcode": "^1.5.4",
     "vue": "^3.5.30"

@@ -36,28 +36,9 @@ import "@wangeditor/editor/dist/css/style.css"
 import { ref, shallowRef, watch, computed, onBeforeUnmount } from "vue"
 import type { IDomEditor, IEditorConfig, IToolbarConfig } from "@wangeditor/editor"
 import { ElMessage } from "element-plus"
+import type { RichEditorParams, RichEditorUploadOptions } from "./types"
 
-interface UploadOptions {
-	url?: string
-	headers?: Record<string, string>
-	fieldName?: string
-	extraData?: Record<string, string | Blob>
-	minio?: {
-		endpoint: string
-		bucket: string
-		accessKey: string
-		secretKey: string
-	}
-}
-
-const props = withDefaults(defineProps<{
-	modelValue?: string
-	readOnly?: boolean
-	uploadUrl?: string
-	uploadImage?: UploadOptions
-	uploadVideo?: UploadOptions
-	responseAdapter?: (res: any) => string
-}>(), {
+const props = withDefaults(defineProps<RichEditorParams>(), {
 	modelValue: "",
 	readOnly: false,
 	uploadUrl: "",
@@ -192,7 +173,7 @@ const compressImage = (file: File): Promise<File> => {
 }
 
 // ========== 上传处理 ==========
-const resolveUploadOption = (type: "image" | "video", option: UploadOptions): UploadOptions => {
+const resolveUploadOption = (type: "image" | "video", option: RichEditorUploadOptions): RichEditorUploadOptions => {
 	const resolvedUrl = option.url || props.uploadUrl
 	if (resolvedUrl) {
 		return { ...option, url: resolvedUrl }
@@ -203,7 +184,7 @@ const resolveUploadOption = (type: "image" | "video", option: UploadOptions): Up
 	throw new Error(type === "image" ? "未配置图片上传地址" : "未配置视频上传地址")
 }
 
-const uploadByRequest = async (file: File, option: UploadOptions) => {
+const uploadByRequest = async (file: File, option: RichEditorUploadOptions) => {
 	if (!option.url) throw new Error("未配置上传地址")
 
 	const formData = new FormData()
@@ -227,7 +208,7 @@ const uploadByRequest = async (file: File, option: UploadOptions) => {
 	return url
 }
 
-const uploadMinio = async (file: File, option: UploadOptions) => {
+const uploadMinio = async (file: File, option: RichEditorUploadOptions) => {
 	const { endpoint, bucket } = option.minio!
 	const objectName = Date.now() + "-" + file.name
 	const url = `${endpoint}/${bucket}/${objectName}`
@@ -247,7 +228,7 @@ const uploadMinio = async (file: File, option: UploadOptions) => {
 	return url
 }
 
-const upload = async (file: File, option: UploadOptions) => {
+const upload = async (file: File, option: RichEditorUploadOptions) => {
 	if (option.minio) {
 		return await uploadMinio(file, option)
 	}

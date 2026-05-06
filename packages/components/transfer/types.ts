@@ -49,15 +49,15 @@ export interface TransferProps {
 	/** 左侧面板标题 */
 	title?: string
 	/** 左侧面板宽度 */
-	leftWidth?: string
+	transferLeftWidth?: string
 	/** 自定义文案（默认"人员"，用于"xxx列表"和"已选中xxx"） */
-	configText?: string
+	transferConfigText?: string
 	/** 搜索框占位文本 */
 	placeholder?: string
 	/** 是否多选，默认单选 */
 	multiple?: boolean
 	/** 整体高度（同时控制左右两侧） */
-	height?: string
+	transferHeight?: string
 }
 
 /** 暴露给父组件的方法 */

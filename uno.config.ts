@@ -22,7 +22,8 @@ export default defineConfig({
   content: {
     pipeline: {
       include: [
-        'packages/**/*.{vue,ts,tsx}',
+        // 仅扫描 play 实际使用的组件目录，避免扫描全部 packages 下的文件
+        'packages/components/{file-preview,icon,button,table,label-text,form,transfer,qrcode,upload}/**/*.{vue,ts,tsx}',
         'play/src/**/*.{vue,ts,tsx}',
         'docs/**/*.{md,vue,ts,tsx}',
       ],

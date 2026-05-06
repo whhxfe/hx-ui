@@ -46,21 +46,21 @@ export interface UploadProps {
 	/**
 	 * 根据 fileId 获取文件预览信息的接口（listType=file-preview 时使用）
 	 *
-	 * 组件调用 `GET ${previewFetchUrl}/${fileId}` 获取文件详情，
+	 * 组件调用 `GET ${previewUrl}/${fileId}` 获取文件详情，
 	 * 从返回的 `{ data: { url, name?, size? } }` 中提取预览所需字段。
 	 *
-	 * @example previewFetchUrl: '/api/upload' → GET /api/upload/{fileId}
+	 * @example previewUrl: '/api/upload' → GET /api/upload/{fileId}
 	 */
-	previewFetchUrl?: string
+	previewUrl?: string
 	/**
 	 * 根据 fileId 删除文件的接口
 	 *
-	 * 组件调用 `DELETE ${deleteFetchUrl}/${fileId}` 删除文件。
+	 * 组件调用 `DELETE ${deleteUrl}/${fileId}` 删除文件。
 	 * 不传则不在前端发起删除请求。
 	 *
-	 * @example deleteFetchUrl: '/api/upload' → DELETE /api/upload/{fileId}
+	 * @example deleteUrl: '/api/upload' → DELETE /api/upload/{fileId}
 	 */
-	deleteFetchUrl?: string
+	deleteUrl?: string
 	/** 是否显示下载按钮（file-preview 模式） */
 	showDownload?: boolean
 	/** 自定义文件列表项渲染 */
@@ -81,4 +81,12 @@ export interface UploadProps {
 	filePreviewRender?: (file: any, actions: { remove: () => void }) => VNode
 	/** 额外的 el-upload props */
 	componentProps?: Record<string, any>
+	/** 请求头 */
+	headers?: Record<string, string>
+	/** 附带的表单数据 */
+	data?: Record<string, string | Blob>
+	/** 上传的文件字段名（默认 'file'） */
+	name?: string
+	/** 携带 cookie */
+	withCredentials?: boolean
 }

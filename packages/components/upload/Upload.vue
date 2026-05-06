@@ -147,6 +147,7 @@ const props = withDefaults(defineProps<UploadProps>(), {
 	autoUpload: true,
 	showDownload: true,
 	modelValueType: 'array',
+	name: 'file',
 })
 
 const emit = defineEmits<{
@@ -217,9 +218,9 @@ function syncPreviewMap(nextIdsRaw: string | string[] | undefined) {
 	// 移除：id 不再出现在 modelValue 中
 	for (const [id] of previewMap) {
 		if (!nextSet.has(id)) {
-			if (props.deleteFetchUrl) {
-				console.log('delete file by id', `${props.deleteFetchUrl}/${id}`)
-				request.delete(`${props.deleteFetchUrl}/${id}`).catch((e: any) => {
+			if (props.deleteUrl) {
+				console.log('delete file by id', `${props.deleteUrl}/${id}`)
+				request.delete(`${props.deleteUrl}/${id}`).catch((e: any) => {
 					console.error('[HxUpload] DELETE failed:', e)
 				})
 			}
@@ -260,7 +261,7 @@ async function fetchPreviewUrl(fileId: string) {
 
 	try {
 		const res = await request.get<{ code?: number; data?: { url?: string; name?: string; size?: number } }>(
-			`${props.previewFetchUrl}/${fileId}`,
+			`${props.previewUrl}/${fileId}`,
 		)
 
 		if (res.data) {
@@ -329,12 +330,22 @@ async function handleHttpRequest(options: any) {
 	const { file, onProgress, onSuccess, onError } = options
 
 	const formData = new FormData()
-	formData.append('file', file)
+	formData.append(props.name || 'file', file)
+
+	if (props.data) {
+		for (const key in props.data) {
+			formData.append(key, props.data[key])
+		}
+	}
 
 	try {
 		const instance = getRequest()
 		const res = await instance.post(props.action!, formData, {
-			headers: { 'Content-Type': 'multipart/form-data' },
+			headers: {
+				...(props.headers ?? {}),
+				'Content-Type': 'multipart/form-data',
+			},
+			withCredentials: props.withCredentials,
 			onUploadProgress: (progressEvent: any) => {
 				if (progressEvent.total) {
 					onProgress({ percent: Math.round((progressEvent.loaded / progressEvent.total) * 100) })

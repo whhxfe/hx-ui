@@ -9,7 +9,7 @@
 
 /** 有右侧「本页目录」时，正文默认仅 688px，组件示例偏挤，适当加宽 */
 .VPDoc.has-aside .content-container {
-  max-width: 1000px;
+  max-width: 1000px !important;
 }
 
 .VPFeature {

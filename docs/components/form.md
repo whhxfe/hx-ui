@@ -10,6 +10,14 @@
 form/basic
 :::
 
+## columns 完整示例
+
+展示 `columns` 配置驱动表单的能力，覆盖所有常用字段类型：`input`、`textarea`、`number`、`select`、`radio`、`checkbox`、`checkbox-btn`、`switch`、`cascader`、`date`、`daterange`、`datetime`、`datetimerange`、`time`、`timerange`、`transfer`、`upload`，并演示 `colSpan` 栅格跨度控制。
+
+:::demo columns 完整示例 — 涵盖所有字段类型
+form/columns
+:::
+
 ## 提交与重置
 
 通过 `ref` 获取表单实例，调用 `validate` 校验和 `reset` 重置方法。默认操作区可通过 `actions` 插槽自定义。
@@ -66,6 +74,14 @@ form/remote-options
 form/validation
 :::
 
+## 上传组件
+
+`type: 'upload'` 支持 `headers`、`data`、`name`、`withCredentials` 等 el-upload 原生参数透传，通过 `responseMapper` 提取上传后的文件 ID，通过 `previewUrl` 配置文件预览接口。
+
+:::demo 表单中使用 upload 组件
+form/upload
+:::
+
 ## API
 
 ### Props
@@ -99,10 +115,27 @@ form/validation
 | showWordLimit | 是否显示字数统计 | `boolean` |
 | rows | 文本域行数 | `number` |
 | valueFormat | 值格式化字符串 | `string` |
+| action | 上传地址（upload） | `string` |
+| accept | 接受的文件类型（upload） | `string` |
+| limit | 最大上传数量（upload） | `number` |
+| headers | 请求头（upload） | `Record<string, string>` |
+| data | 附带的表单数据（upload） | `Record<string, string \| Blob>` |
+| name | 上传的文件字段名（upload） | `string` |
+| withCredentials | 携带 cookie（upload） | `boolean` |
+| listType | 列表展示类型（upload） | `'text' \| 'picture' \| 'picture-card' \| 'file-preview'` |
+| valueMapper | 上传文件值映射函数 | `(file: any) => any` |
+| responseMapper | 上传响应值映射函数 | `(response: any, file: any) => any` |
+| fileRender | 自定义上传文件列表项渲染 | `(file: any, actions: { remove }) => VNode` |
+| filePreviewRender | 自定义上传文件预览渲染 | `(file: any, actions: { remove }) => VNode` |
+| previewUrl | 文件预览接口地址（upload） | `string` |
+| deleteFetchUrl | 文件删除接口地址（upload） | `string` |
+| cascaderProps | 级联选择面板配置（cascader） | `CascaderPanelProps` |
+| variant | 按钮形态（radio / checkbox） | `'radio' \| 'radio-btn'` / `'checkbox' \| 'checkbox-btn'` |
 | rules | 自定义校验规则 | `any[]` |
 | componentProps | 透传给底层组件的属性 | `Record<string, any>` |
 | formItemProps | 透传给 el-form-item 的属性 | `Record<string, any>` |
 | onChange | 值变更回调 | `(value: any, formData: Record<string, any>) => void` |
+| richEditorParams | 富文本编辑器配置（richeditor） | `RichEditorParams` |
 
 ### FieldType 可选值
 

@@ -2,7 +2,6 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import UnoCSS from 'unocss/vite'
 import dts from 'vite-plugin-dts'
 import fs from 'fs'
 
@@ -10,7 +9,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [
-    UnoCSS(),
     vue(),
     dts({
       outDir: resolve(__dirname, 'packages/dist'),
@@ -26,24 +24,41 @@ export default defineConfig({
     outDir: 'packages/dist',
     lib: {
       entry: resolve(__dirname, 'packages/index.ts'),
-      name: 'HxUI',
-        fileName: (format) => format === 'es' ? 'index.es.js' : `index.${format}.js`,
-      formats: ['es', 'umd'],
+      formats: ['es'],
+      fileName: 'index',
     },
     rollupOptions: {
       external: [
+        // Vue 生态
         /^vue/,
         /^element-plus/,
         /^@element-plus/,
+        // Iconify
         /^@iconify\/vue/,
+        /^@iconify\/json/,
+        /^@iconify\/types/,
+        // 富文本编辑器
+        /^@wangeditor\/editor/,
+        /^@wangeditor\/editor-for-vue/,
+        // 文件预览相关
+        /^pdfjs-dist/,
+        /^flv\.js$/,
+        /^hls\.js$/,
+        // 二维码
+        /^qrcode$/,
+        // 通用工具
+        /^axios$/,
+        /^dayjs$/,
+        /^vue-json-pretty$/,
+        /^lodash$/,
       ],
       output: {
+        // preserveModules 保持源文件结构，实现组件级按需加载
+        // 每个组件/模块输出为独立文件，消费者的打包工具可 tree-shake 未使用的组件
+        preserveModules: true,
+        preserveModulesRoot: resolve(__dirname, 'packages'),
+        entryFileNames: '[name].js',
         assetFileNames: 'index.css',
-        globals: {
-          vue: 'Vue',
-          'element-plus': 'ElementPlus',
-          '@iconify/vue': 'IconifyVue',
-        },
       },
     },
   },
