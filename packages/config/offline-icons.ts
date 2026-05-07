@@ -1,12 +1,18 @@
 import { addCollection } from '@iconify/vue/offline'
-import type { IconifyJSON } from '@iconify/types'
 
-// 使用 import.meta.glob 扫描 @iconify-json 图标集目录下的所有 JSON 文件
-// 键名格式为完整相对路径，如 "../node_modules/@iconify/json/json/bi.json"
-const iconJsonModules = import.meta.glob('@iconify-json/*.json', {
-  eager: false,
-  import: 'default',
-})
+// 硬编码导入需要使用的图标集
+// 使用时按需添加，减少打包体积
+const collectionLoaders: Record<string, () => Promise<any>> = {
+  ep: () => import('@iconify/json/json/ep.json'),
+  mdi: () => import('@iconify/json/json/mdi.json'),
+  logos: () => import('@iconify/json/json/logos.json'),
+  twemoji: () => import('@iconify/json/json/twemoji.json'),
+  bi: () => import('@iconify/json/json/bi.json'),
+  lucide: () => import('@iconify/json/json/lucide.json'),
+  carbon: () => import('@iconify/json/json/carbon.json'),
+  tabler: () => import('@iconify/json/json/tabler.json'),
+  'streamline-logos': () => import('@iconify/json/json/streamline-logos.json'),
+}
 
 // 已加载过的图标集缓存，避免重复加载
 const loadedCollections = new Set<string>()
@@ -22,20 +28,15 @@ export function extractCollectionName(icon: string): string {
 
 /**
  * 根据名称懒加载并注册离线图标集（异步）
- * 使用 import.meta.glob 实现动态加载，Vite 会自动处理代码分割
  */
 export async function registerOfflineCollection(name: string): Promise<void> {
   if (loadedCollections.has(name)) return
 
-  // 从 glob 结果中找到匹配的 loader
-  // 键名格式为完整相对路径，需要查找包含 "/{name}.json" 的键
-  const key = Object.keys(iconJsonModules).find(k => k.endsWith(`/${name}.json`))
-  const loader = key ? iconJsonModules[key] : undefined
-
+  const loader = collectionLoaders[name]
   if (!loader) return
 
   try {
-    const iconData = (await loader()) as IconifyJSON
+    const iconData = await loader()
     loadedCollections.add(name)
     addCollection(iconData)
   } catch {

@@ -10,8 +10,8 @@ const imageIconModules = import.meta.glob<{ default: string }>(
   { eager: true },
 )
 
-// const iconifyCollections = ['ep', 'mdi', 'logos', 'twemoji']
-const iconifyCollections:string[] = []
+const iconifyCollections = ['ep', 'mdi', 'logos', 'twemoji']
+// const iconifyCollections:string[] = []
 
 const iconConfig = {
   svg: {},
@@ -20,15 +20,15 @@ const iconConfig = {
     imageIconModules: [imageIconModules],
     cdnBaseUrl: '/icons',
   },
-  // iconify: {
-  //   // ===== Offline 模式 =====
-  //   source: "offline" as const,
-  //   collections: iconifyCollections  as IconifyCollectionName[],
+  iconify: {
+    // ===== Offline 模式 =====
+    source: "offline" as const,
+    collections: iconifyCollections  as IconifyCollectionName[],
 
-  //   // ===== CDN 模式 =====
-  //   // source: "cdn" as const,
-  //   // cdnUrl: "https://api.iconify.design",
-  // },
+    // ===== CDN 模式 =====
+    // source: "cdn" as const,
+    // cdnUrl: "https://api.iconify.design",
+  },
 };
 
 /** Request 全局配置，所有请求都会带上这些 headers */
