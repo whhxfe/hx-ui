@@ -197,6 +197,7 @@ export default defineConfig({
         { find: '@', replacement: resolve(__dirname, '../../play/src') },
         { find: '@hx/ui/index.css', replacement: resolve(__dirname, '../../packages/dist/index.css') },
         { find: '@hx/ui', replacement: resolve(__dirname, '../../packages/index.ts') },
+        { find: '@iconify-json', replacement: resolve(__dirname, '../../node_modules/@iconify/json/json'),}
       ],
     },
   },

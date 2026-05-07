@@ -8,6 +8,11 @@ import fs from 'fs'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@iconify-json': resolve(__dirname, 'node_modules/@iconify/json/json'),
+    },
+  },
   plugins: [
     vue(),
     dts({
