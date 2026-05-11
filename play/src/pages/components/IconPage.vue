@@ -7,8 +7,8 @@
 
     <!-- SVG Icon: mono（单色） -->
     <section class="demo-section">
-      <h3>SVG 图标 (type="svg") — 单色 mono</h3>
-      <p class="description">使用 group="mono"（默认），color 属性生效，图标使用 currentColor 填充</p>
+      <h3>SVG 图标 (type="svg") — 单色 mono（默认）</h3>
+      <p class="description">默认 mono 模式，color 属性生效，图标使用 currentColor 填充</p>
       <div class="icon-grid">
         <div class="icon-item">
           <hx-icon name="home" size="24px" color="#ff0000" />
@@ -28,14 +28,14 @@
     <!-- SVG Icon: multi（多色） -->
     <section class="demo-section">
       <h3>SVG 图标 (type="svg") — 多色 multi</h3>
-      <p class="description">使用 group="multi"，保留 SVG 原始填充色，color 属性失效</p>
+      <p class="description">使用 mode="multi"，保留 SVG 原始填充色，color 属性失效</p>
       <div class="icon-grid">
         <div class="icon-item">
-          <hx-icon type="svg" group="multi" name="beef" size="32px" />
+          <hx-icon type="svg" mode="multi" name="beef" size="32px" />
           <span>beef (multi)</span>
         </div>
         <div class="icon-item">
-          <hx-icon type="svg" group="multi" name="coffee" size="32px" />
+          <hx-icon type="svg" mode="multi" name="coffee" size="32px" />
           <span>coffee (multi)</span>
         </div>
       </div>

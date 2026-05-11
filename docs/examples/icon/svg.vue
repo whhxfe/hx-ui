@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h4>单色 mono图标</h4>
-    <p class="desc">设置 group="mono"时，color 属性会被应用，图标使用 currentColor 着色。</p>
+    <h4>单色 mono（默认）</h4>
+    <p class="desc">默认 mono 模式，color 属性生效，图标使用 currentColor 着色。</p>
     <div class="icon-list">
       <hx-icon name="home" size="24px" color="#ff0000" />
       <hx-icon name="user" size="24px" color="#00ff00" />
@@ -9,10 +9,10 @@
     </div>
 
     <h4>多色 multi</h4>
-    <p class="desc">设置 group="multi"时，SVG 图自带颜色，不受 color 属性影响。</p>
+    <p class="desc">设置 mode="multi"，保留 SVG 原始填充色，color 属性失效。</p>
     <div class="icon-list">
-      <hx-icon type="svg" group="multi" name="beef" size="32px" />
-      <hx-icon type="svg" group="multi" name="coffee" size="32px" />
+      <hx-icon type="svg" mode="multi" name="beef" size="32px" />
+      <hx-icon type="svg" mode="multi" name="coffee" size="32px" />
     </div>
   </div>
 </template>

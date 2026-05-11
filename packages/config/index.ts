@@ -6,10 +6,7 @@ export {
   registerImageIcon,
 } from './composable'
 export { useComponentConfig } from './useComponentConfig'
-export {
-  registerOfflineCollections,
-  type IconifyCollectionName,
-} from './offline-icons'
+export { registerOfflineCollections } from './offline-icons'
 export type { RequestProviderProps } from './types'
 export {
   request,

@@ -22,6 +22,7 @@ const props = withDefaults(defineProps<IconProps>(), {
   name: 'default',
   size: '1em',
   color: 'currentColor',
+  mode: undefined,
   group: undefined,
   inline: false,
   rotate: 0,
@@ -43,22 +44,33 @@ const currentComponent = computed(() => {
   }
 })
 
-/** SVG：未传 group 时默认 mono（与文档一致） */
-const svgMode = computed<SvgIconMode>(() => {
+/**
+ * 解析 SVG 模式，优先级：
+ * 1. 显式传入的 `mode` prop
+ * 2. 旧版兼容：`group === 'multi'` 或 `imageType === 'multi'`
+ * 3. 默认 'mono'
+ */
+const resolvedSvgMode = computed<SvgIconMode>(() => {
   if (props.type !== 'svg') return 'mono'
-  const g = (props.group ?? props.imageType) as string | undefined
-  if (g === 'multi') return 'multi'
+  if (props.mode === 'multi' || props.mode === 'mono') return props.mode
+  const legacyGroup = (props.group ?? props.imageType) as string | undefined
+  if (legacyGroup === 'multi') return 'multi'
   return 'mono'
 })
 
 const currentProps = computed(() => {
-  const { type, name, size, color, group, imageType, inline, rotate, flip, className, alt, src, cdnBaseUrl, baseUrl, ext, source, ...extraAttrs } = props
+  const {
+    type, name, size, color, mode, group, imageType,
+    inline, rotate, flip,
+    className, alt, src, cdnBaseUrl, baseUrl, ext, source,
+    ...extraAttrs
+  } = props
 
   switch (type) {
     case 'svg': {
       return {
         icon: name || 'default',
-        mode: svgMode.value,
+        mode: resolvedSvgMode.value,
         size,
         color,
         rotate,
@@ -105,12 +117,3 @@ const currentProps = computed(() => {
   }
 })
 </script>
-
-<style scoped>
-.icon-wrapper {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-}
-</style>

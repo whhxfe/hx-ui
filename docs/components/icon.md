@@ -31,7 +31,7 @@ SVG 图标支持两种模式：
 - **单色 mono（默认）**：使用 `color` 属性设置颜色，图标使用 `currentColor` 填充
 - **多色 multi**：保留 SVG 原始填充色，`color` 属性失效
 
-:::demo 使用 group 属性切换 SVG 图标模式。
+:::demo 使用 mode 属性切换 SVG 图标模式（mono / multi），type="svg" 时生效。
 icon/svg
 :::
 
@@ -198,7 +198,8 @@ icon/button
 | color | 图标颜色 | `string` | `'currentColor'` |
 | rotate | 旋转角度（度） | `number` | `0` |
 | flip | 翻转方向 | `'horizontal' \| 'vertical' \| 'both'` | `undefined` |
-| group | 图标分组（SVG 模式下指 mono/multi；Image 模式下指资源目录） | `string` | `'mono'` |
+| mode | SVG 图标模式：`'mono'` 单色（使用 currentColor），`'multi'` 多色（保留原始填充色） | `'mono' \| 'multi'` | `'mono'` |
+| group | 图标分组（仅 Image 模式生效），对应 `@/assets/icons/{group}/` 下的子目录名 | `string` | `'mono'` |
 | cdnBaseUrl | CDN 资源地址（Image 图标，优先级高于全局配置） | `string` | `''` |
 | baseUrl | `cdnBaseUrl` 的别名 | `string` | `''` |
 | ext | 图片扩展名（Image 图标） | `string` | `'png'` |

@@ -1,8 +1,8 @@
 import { addCollection } from '@iconify/vue/offline'
 
-// 硬编码导入需要使用的图标集
+// 内置硬编码的图标集加载器
 // 使用时按需添加，减少打包体积
-const collectionLoaders: Record<string, () => Promise<any>> = {
+const _builtinLoaders: Record<string, () => Promise<any>> = {
   ep: () => import('@iconify/json/json/ep.json'),
   mdi: () => import('@iconify/json/json/mdi.json'),
   logos: () => import('@iconify/json/json/logos.json'),
@@ -12,6 +12,30 @@ const collectionLoaders: Record<string, () => Promise<any>> = {
   carbon: () => import('@iconify/json/json/carbon.json'),
   tabler: () => import('@iconify/json/json/tabler.json'),
   'streamline-logos': () => import('@iconify/json/json/streamline-logos.json'),
+}
+
+// 合并用户自定义图标集（运行时注册，优先级高于内置）
+const customLoaders: Record<string, () => Promise<any>> = {}
+
+/** 合并后的查询表：内置 + 自定义 */
+function getLoader(name: string): (() => Promise<any>) | undefined {
+  return customLoaders[name] ?? _builtinLoaders[name]
+}
+
+/**
+ * 允许消费者在运行时注册自定义图标集加载器，
+ * 无需修改库源码即可扩展离线图标支持。
+ *
+ * @example
+ * ```ts
+ * registerCollectionLoader('fa6-solid', () => import('@iconify/json/json/fa6-solid.json'))
+ * ```
+ */
+export function registerCollectionLoader(
+  name: string,
+  loader: () => Promise<any>,
+): void {
+  customLoaders[name] = loader
 }
 
 // 已加载过的图标集缓存，避免重复加载
@@ -32,15 +56,16 @@ export function extractCollectionName(icon: string): string {
 export async function registerOfflineCollection(name: string): Promise<void> {
   if (loadedCollections.has(name)) return
 
-  const loader = collectionLoaders[name]
+  const loader = getLoader(name)
   if (!loader) return
 
   try {
     const iconData = await loader()
     loadedCollections.add(name)
     addCollection(iconData)
-  } catch {
-    // 图标集不存在时静默失败，避免阻塞应用
+  } catch (e) {
+    // 图标集加载失败时给出控制台提示，便于开发者排查
+    console.warn(`[hx-ui] Failed to load offline icon collection "${name}":`, (e as Error)?.message ?? e)
   }
 }
 

@@ -63,27 +63,6 @@ export interface ComponentDefaults {
   [componentName: string]: unknown
 }
 
-// ========== Full App Config ==========
-
-export interface HxConfig {
-  /**
-   * 图标源模式：
-   * - 'offline'：使用离线图标集（默认），需配合 collections 配置
-   * - 'cdn'：使用 CDN 服务，按需加载图标
-   */
-  source?: 'offline' | 'cdn'
-  /** CDN 服务地址（当 source 为 'cdn' 时使用） */
-  cdnUrl?: string
-  /**
-   * 离线图标集配置（当 source 为 'offline' 时使用）
-   * 传入图标集名称数组，如 ['ep', 'mdi']，会自动加载对应的 JSON 数据
-   */
-  collections?: string[]
-
-  /** 组件通用默认值 */
-  componentDefaults?: ComponentDefaults
-}
-
 export interface ImageProps {
   /** 图片图标资源 glob 模块列表 */
   imageIconModules?: Record<string, { default: string }>[]

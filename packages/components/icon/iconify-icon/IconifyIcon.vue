@@ -27,6 +27,11 @@ const widthHeight = computed(() =>
   typeof props.size === 'number' ? props.size : props.size,
 )
 
+/** CSS 尺寸值，用于加载占位符的宽高 */
+const sizeStyle = computed(() =>
+  typeof props.size === 'number' ? `${props.size}px` : props.size,
+)
+
 const iconStyle = computed(() => ({
   color: props.color,
   verticalAlign: 'middle' as const,
@@ -53,7 +58,7 @@ watch(() => props.icon, () => {
 
 <template>
   <span class="hx-iconify-icon" v-bind="$attrs">
-    <!-- 图标集加载完成后才渲染，避免显示空白 -->
+    <!-- 图标集加载完成后才渲染 -->
     <template v-if="iconReady">
       <OfflineIcon
         v-if="isOffline"
@@ -69,6 +74,14 @@ watch(() => props.icon, () => {
         :width="widthHeight"
         :height="widthHeight"
         :style="iconStyle"
+        aria-hidden="true"
+      />
+    </template>
+    <!-- 加载中占位，避免空白闪烁 -->
+    <template v-else>
+      <span
+        class="hx-iconify-icon__placeholder"
+        :style="{ width: sizeStyle, height: sizeStyle }"
         aria-hidden="true"
       />
     </template>

@@ -2,11 +2,14 @@
 import { computed } from 'vue'
 import type { CSSProperties } from 'vue'
 import type { SvgIconProps } from '../types'
+import { useConfig } from '../../../config/composable'
 
 defineOptions({
   name: 'HxSvgIcon',
   inheritAttrs: false,
 })
+
+const config = useConfig()
 
 const props = withDefaults(defineProps<SvgIconProps>(), {
   icon: 'default',
@@ -17,11 +20,16 @@ const props = withDefaults(defineProps<SvgIconProps>(), {
   mode: 'mono',
 })
 
-/** 与 vite-plugin-svg-icons 的 icon-[dir]-[name] 一致：mono → #icon-mono-xxx，multi → #icon-multi-xxx */
+/**
+ * 构建 SVG symbol ID，格式：{prefix}-{dir}-{name}
+ * prefix 来自 ConfigProvider 的 svgIcon.symbolPrefix（默认 'icon'），
+ * 与 vite-plugin-svg-icons 的 icon-[dir]-[name] 保持一致。
+ */
 const iconName = computed(() => {
   const icon = props.icon || 'default'
   const dir = props.mode === 'multi' ? 'multi' : 'mono'
-  return `#icon-${dir}-${icon}`
+  const prefix = config.svgIcon.symbolPrefix
+  return `#${prefix}-${dir}-${icon}`
 })
 
 const iconStyle = computed<CSSProperties>(() => {
