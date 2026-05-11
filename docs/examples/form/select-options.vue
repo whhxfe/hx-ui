@@ -1,7 +1,7 @@
 <template>
   <hx-form
     v-model="formData"
-    :columns="columns"
+    :fields="fields"
     :cols="2"
   />
   <hx-content-text :data="formData" :json-default-expanded="true" />
@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { HxForm as Form, HxContentText } from "@hx/ui"
-import type { FormColumn } from "@hx/ui"
+import type { FormField } from "@hx/ui"
 
 const formData = ref({
   singleSelect: "",
@@ -20,7 +20,7 @@ const formData = ref({
   switch: false,
 })
 
-const columns: FormColumn[] = [
+const fields: FormField[] = [
   { prop: "singleSelect", label: "单选下拉", type: "select", placeholder: "请选择", options: [
     { label: "选项一", value: "1" },
     { label: "选项二", value: "2" },

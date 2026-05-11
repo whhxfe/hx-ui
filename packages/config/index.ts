@@ -5,6 +5,7 @@ export {
   buildImageSourceMap,
   registerImageIcon,
 } from './composable'
+export { useComponentConfig } from './useComponentConfig'
 export {
   registerOfflineCollections,
   type IconifyCollectionName,

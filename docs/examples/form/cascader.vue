@@ -1,7 +1,7 @@
 <template>
   <hx-form
     v-model="formData"
-    :columns="columns"
+    :fields="fields"
     :cols="2"
   />
   <hx-content-text :data="formData" :json-default-expanded="true" />
@@ -10,13 +10,13 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { HxForm as Form, HxContentText } from "@hx/ui"
-import type { FormColumn } from "@hx/ui"
+import type { FormField } from "@hx/ui"
 
 const formData = ref({
   cascader: "",
 })
 
-const columns: FormColumn[] = [
+const fields: FormField[] = [
   { prop: "cascader", label: "城市选择", type: "cascader", placeholder: "请选择", filterable: true, options: [
     {
       label: "北京",

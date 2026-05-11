@@ -54,6 +54,7 @@ const config: HxConfig = {
     offlineCollections: iconifyCollections,
   },
   request: props.request,
+  componentDefaults: props.componentDefaults,
 }
 
 if (props.request?.headers) {

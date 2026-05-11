@@ -1,20 +1,20 @@
 # Form 动态表单
 
-基于 Element Plus `el-form` 的列配置驱动表单，通过 `columns` 数组声明式定义表单字段，支持自动生成校验规则、栅格布局、远程数据等功能。
+基于 Element Plus `el-form` 的列配置驱动表单，通过 `fields` 数组声明式定义表单字段，支持自动生成校验规则、栅格布局、远程数据等功能。
 
 ## 基础用法
 
-使用 `columns` 配置声明表单字段，`v-model` 双向绑定表单数据。
+使用 `fields` 配置声明表单字段，`v-model` 双向绑定表单数据。
 
 :::demo 基础的 3 列栅格布局
 form/basic
 :::
 
-## columns 完整示例
+## fields 完整示例
 
-展示 `columns` 配置驱动表单的能力，覆盖所有常用字段类型：`input`、`textarea`、`number`、`select`、`radio`、`checkbox`、`checkbox-btn`、`switch`、`cascader`、`date`、`daterange`、`datetime`、`datetimerange`、`time`、`timerange`、`transfer`、`upload`，并演示 `colSpan` 栅格跨度控制。
+展示 `fields` 配置驱动表单的能力，覆盖所有常用字段类型：`input`、`textarea`、`number`、`select`、`radio`、`checkbox`、`checkbox-btn`、`switch`、`cascader`、`date`、`daterange`、`datetime`、`datetimerange`、`time`、`timerange`、`transfer`、`upload`，并演示 `colSpan` 栅格跨度控制。
 
-:::demo columns 完整示例 — 涵盖所有字段类型
+:::demo fields 完整示例 — 涵盖所有字段类型
 form/columns
 :::
 
@@ -89,11 +89,11 @@ form/upload
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | v-model | 表单数据对象 | `Record<string, any>` | `{}` |
-| columns | 表单字段配置数组 | `FormColumn[]` | - |
+| fields | 表单字段配置数组 | `FormField[]` | - |
 | cols | 栅格列数 | `number` | `3` |
 | showAction | 是否显示操作按钮区域 | `boolean` | `true` |
 
-### FormColumn 类型
+### FormField 类型
 
 | 属性 | 说明 | 类型 |
 | --- | --- | --- |

@@ -2,7 +2,7 @@
   <hx-form
     ref="formRef"
     v-model="formData"
-    :columns="columns"
+    :fields="fields"
     :cols="2"
   >
     <template #actions="{ validate, reset }">
@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { HxForm as Form, HxContentText } from "@hx/ui"
-import type { FormColumn, FormExpose } from "@hx/ui"
+import type { FormField, FormExpose } from "@hx/ui"
 import { ElMessage } from "element-plus"
 
 const formRef = ref<FormExpose>()
@@ -29,7 +29,7 @@ const formData = ref({
   email: "",
 })
 
-const columns: FormColumn[] = [
+const fields: FormField[] = [
   {
     prop: "name",
     label: "姓名",

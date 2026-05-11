@@ -2,21 +2,21 @@
   <div class="page-container">
     <h1 class="page-title">Form 动态表单</h1>
     <p class="page-desc">
-      基于 el-form 的列配置驱动表单，通过 columns 数组声明式定义表单字段。
+      基于 el-form 的列配置驱动表单，通过 fields 数组声明式定义表单字段。
     </p>
 
     <!-- 基础用法 -->
     <section class="demo-section">
       <h3 class="section-title">基础用法</h3>
       <p class="section-desc">
-        使用 <code>columns</code> 配置声明表单字段，<code>v-model</code>
+        使用 <code>fields</code> 配置声明表单字段，<code>v-model</code>
         双向绑定表单数据。
       </p>
       <div class="demo-block">
         <Form
           v-model="basicFormData"
           inline
-          :columns="basicColumns"
+          :fields="basicFields"
           :cols="3"
         />
       </div>
@@ -28,7 +28,7 @@
       <h3 class="section-title">输入类型</h3>
       <p class="section-desc">支持 input、textarea、number 等文本输入类型。</p>
       <div class="demo-block">
-        <Form v-model="inputFormData" :columns="inputColumns" :cols="2" />
+        <Form v-model="inputFormData" :fields="inputFields" :cols="2" />
       </div>
       <div class="demo-code">formData: {{ inputFormData }}</div>
     </section>
@@ -40,7 +40,7 @@
         支持 select、radio、checkbox、switch 等选择类组件。
       </p>
       <div class="demo-block">
-        <Form v-model="selectFormData" :columns="selectColumns" :cols="2" />
+        <Form v-model="selectFormData" :fields="selectFields" :cols="2" />
       </div>
       <div class="demo-code">formData: {{ selectFormData }}</div>
     </section>
@@ -52,7 +52,7 @@
         支持 date、daterange、datetime、time 等日期时间类型。
       </p>
       <div class="demo-block">
-        <Form v-model="dateFormData" :columns="dateColumns" :cols="2" />
+        <Form v-model="dateFormData" :fields="dateFields" :cols="2" />
       </div>
       <div class="demo-code">formData: {{ dateFormData }}</div>
     </section>
@@ -64,7 +64,7 @@
         cascader 类型支持多级联动，可通过 filterable 开启搜索功能。
       </p>
       <div class="demo-block">
-        <Form v-model="cascaderFormData" :columns="cascaderColumns" :cols="2" />
+        <Form v-model="cascaderFormData" :fields="cascaderFields" :cols="2" />
       </div>
       <div class="demo-code">formData: {{ cascaderFormData }}</div>
     </section>
@@ -77,7 +77,7 @@
         请求及响应字段映射。
       </p>
       <div class="demo-block">
-        <Form v-model="remoteFormData" :columns="remoteColumns" :cols="2" />
+        <Form v-model="remoteFormData" :fields="remoteFields" :cols="2" />
       </div>
       <div class="demo-code">formData: {{ remoteFormData }}</div>
     </section>
@@ -92,7 +92,7 @@
       <div class="demo-block">
         <Form
           v-model="remoteDemoFormData"
-          :columns="remoteDemoColumns"
+          :fields="remoteDemoFields"
           :cols="2"
         />
       </div>
@@ -112,7 +112,7 @@
         <Form
           ref="validateFormRef"
           v-model="validationFormData"
-          :columns="validationColumns"
+          :fields="validationFields"
           :cols="2"
         >
           <template #actions="{ formData, validate }">
@@ -134,7 +134,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { HxForm as Form } from "@hx/ui";
-import type { FormColumn, FormExpose } from "@hx/ui";
+import type { FormField, FormExpose } from "@hx/ui";
 import { ElMessage } from "element-plus";
 
 // ========== 基础用法 ==========
@@ -146,7 +146,7 @@ const basicFormData = ref({
   region: "han",
 });
 
-const basicColumns: FormColumn[] = [
+const basicFields: FormField[] = [
   { prop: "name", label: "姓名", type: "input", placeholder: "请输入姓名" },
   {
     prop: "phone",
@@ -180,7 +180,7 @@ const inputFormData = ref({
   number: undefined,
 });
 
-const inputColumns: FormColumn[] = [
+const inputFields: FormField[] = [
   {
     prop: "input",
     label: "文本输入",
@@ -218,7 +218,7 @@ const selectFormData = ref({
   switch: false,
 });
 
-const selectColumns: FormColumn[] = [
+const selectFields: FormField[] = [
   {
     prop: "singleSelect",
     label: "单选下拉",
@@ -274,7 +274,7 @@ const dateFormData = ref({
   timeRange: [],
 });
 
-const dateColumns: FormColumn[] = [
+const dateFields: FormField[] = [
   { prop: "date", label: "日期", type: "date", placeholder: "请选择日期" },
   {
     prop: "dateRange",
@@ -308,7 +308,7 @@ const cascaderFormData = ref({
   cascader: "",
 });
 
-const cascaderColumns: FormColumn[] = [
+const cascaderFields: FormField[] = [
   {
     prop: "cascader",
     label: "级联选择",
@@ -342,7 +342,7 @@ const remoteFormData = ref({
   flatOptions: "",
 });
 
-const remoteColumns: FormColumn[] = [
+const remoteFields: FormField[] = [
   {
     prop: "groupOptions",
     label: "分组下拉",
@@ -378,7 +378,7 @@ const validationFormData = ref({
   email: "",
 });
 
-const validationColumns: FormColumn[] = [
+const validationFields: FormField[] = [
   {
     prop: "name",
     label: "姓名",
@@ -424,7 +424,7 @@ const remoteDemoFormData = ref({
   address: "",
 });
 
-const remoteDemoColumns: FormColumn[] = [
+const remoteDemoFields: FormField[] = [
   {
     prop: "gender",
     label: "性别",

@@ -1,7 +1,7 @@
 <template>
   <hx-form
     v-model="formData"
-    :columns="columns"
+    :fields="fields"
     :cols="2"
   />
   <hx-content-text :data="formData" :json-default-expanded="true" />
@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { HxForm as Form, HxContentText } from "@hx/ui"
-import type { FormColumn } from "@hx/ui"
+import type { FormField } from "@hx/ui"
 
 const formData = ref({
   gender: "",
@@ -18,7 +18,7 @@ const formData = ref({
   address: "",
 })
 
-const columns: FormColumn[] = [
+const fields: FormField[] = [
   {
     prop: "gender",
     label: "性别",

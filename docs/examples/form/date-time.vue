@@ -1,7 +1,7 @@
 <template>
   <hx-form
     v-model="formData"
-    :columns="columns"
+    :fields="fields"
     :cols="2"
   />
   <hx-content-text :data="formData" :json-default-expanded="true" />
@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { HxForm as Form, HxContentText } from "@hx/ui"
-import type { FormColumn } from "@hx/ui"
+import type { FormField } from "@hx/ui"
 
 const formData = ref({
   date: "",
@@ -21,7 +21,7 @@ const formData = ref({
   timeRange: [],
 })
 
-const columns: FormColumn[] = [
+const fields: FormField[] = [
   { prop: "date", label: "日期", type: "date", placeholder: "请选择日期" },
   { prop: "dateRange", label: "日期范围", type: "daterange", placeholder: "请选择日期范围" },
   { prop: "datetime", label: "日期时间", type: "datetime", placeholder: "请选择日期时间" },

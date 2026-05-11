@@ -1,7 +1,7 @@
 <template>
   <hx-form
     v-model="formData"
-    :columns="columns"
+    :fields="fields"
     :cols="3"
   >
     <template #actions="{ formData, validate }">
@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { HxForm as Form, HxContentText } from "@hx/ui"
-import type { FormColumn } from "@hx/ui"
+import type { FormField } from "@hx/ui"
 import { ElMessage } from "element-plus"
 
 const formData = ref({
@@ -26,7 +26,7 @@ const formData = ref({
   status: "",
 })
 
-const columns: FormColumn[] = [
+const fields: FormField[] = [
   { prop: "title", label: "标题", type: "input", placeholder: "请输入标题", required: true },
   { prop: "type", label: "类型", type: "select", placeholder: "请选择类型", required: true, options: [
     { label: "文章", value: "article" },

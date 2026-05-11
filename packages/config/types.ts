@@ -49,6 +49,20 @@ export interface SvgIconConfig {
   symbolPrefix: string
 }
 
+// ========== Component Defaults ==========
+
+/**
+ * 组件通用属性默认值。
+ * 各组件可在此定义默认的 size、type 等属性，
+ * 当组件自身未传对应 prop 时，回退到这里的值。
+ */
+export interface ComponentDefaults {
+  /** 全局默认尺寸，作用于 Button、Input、Select 等支持 size 的组件 */
+  size?: 'small' | 'default' | 'large'
+  /** 各组件专属默认值 */
+  [componentName: string]: unknown
+}
+
 // ========== Full App Config ==========
 
 export interface HxConfig {
@@ -65,6 +79,9 @@ export interface HxConfig {
    * 传入图标集名称数组，如 ['ep', 'mdi']，会自动加载对应的 JSON 数据
    */
   collections?: string[]
+
+  /** 组件通用默认值 */
+  componentDefaults?: ComponentDefaults
 }
 
 export interface ImageProps {
@@ -81,6 +98,15 @@ export interface SvgProps {
   symbolPrefix?: string
 }
 
+export interface IconifyProps {
+  /** 图标源模式：'offline'（默认） | 'cdn' */
+  source?: 'offline' | 'cdn'
+  /** CDN 服务地址（当 source 为 'cdn' 时使用） */
+  cdnUrl?: string
+  /** 离线图标集名称列表（当 source 为 'offline' 时使用） */
+  collections?: string[]
+}
+
 export interface IconConfig {
   svg?: SvgProps
   image?: ImageProps
@@ -92,6 +118,8 @@ export interface HxConfigProviderProps {
   icon?: IconConfig
   /** Request 工具全局配置 */
   request?: RequestProviderProps
+  /** 组件通用默认值 */
+  componentDefaults?: ComponentDefaults
 }
 
 /** Request Provider Props，与 utils/request.ts 中的 RequestOptions 对应 */
@@ -105,4 +133,6 @@ export interface HxConfig {
   imageIcon: ImageIconConfig
   iconifyIcon: IconifyIconConfig
   request?: RequestProviderProps
+  /** 组件通用默认值 */
+  componentDefaults?: ComponentDefaults
 }

@@ -1,7 +1,7 @@
 <template>
   <Form
     v-model="formData"
-    :columns="columns"
+    :fields="fields"
     :cols="2"
   />
 </template>
@@ -9,14 +9,14 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { HxForm as Form } from "@hx/ui"
-import type { FormColumn } from "@hx/ui"
+import type { FormField } from "@hx/ui"
 
 const formData = ref({
   groupOptions: "",
   flatOptions: "",
 })
 
-const columns: FormColumn[] = [
+const fields: FormField[] = [
   {
     prop: "groupOptions",
     label: "分组选择",
