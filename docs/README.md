@@ -2,6 +2,8 @@
 
 Hx UI 是基于 Element Plus 的业务组件二次封装库，目标是在保持原生体验的前提下，沉淀统一交互和业务能力。
 
+> 详细开发规范请参阅根目录下的 [CONTRIBUTING.md](../CONTRIBUTING.md)。
+
 ## 指南
 
 - [快速开始](./guide/quickstart.md)
@@ -17,5 +19,5 @@ Hx UI 是基于 Element Plus 的业务组件二次封装库，目标是在保持
 
 1. **能力继承**：优先继承 Element Plus 原始能力，不破坏原使用习惯。
 2. **业务增强**：通过扩展 props / events 注入业务语义。
-3. **接入一致**：统一 `withInstall` 与入口导出策略，保证全量和按需两种接入方式。
+3. **接入一致**：统一 `withInstall` 与入口导出策略，支持全量和按需两种接入方式。
 4. **类型友好**：在可维护前提下保证 TypeScript 体验。
