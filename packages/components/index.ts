@@ -17,7 +17,7 @@ export type { LabelTextProps, SizeType, LabelAlignType, AlignType } from './labe
 export { HxFilePreview } from './file-preview'
 export { HxUploadFilePreviewList } from './upload-file-preview-list'
 export { HxForm } from './form'
-export type { FormExpose, FormColumn, FieldType, OptionItem, GroupOptionItem, RemoteConfig } from './form'
+export type { FormExpose, FormField, FieldType, OptionItem, GroupOptionItem, RemoteConfig } from './form'
 
 // 兼容别名
 export { HxForm as DynamicForm, HxForm as HxDynamicForm } from './form'
@@ -68,5 +68,4 @@ export type { UploadProps } from './upload'
 
 
 
-export { useRemoteOptions } from '../hooks'
-export type { UseRemoteOptionsOptions } from '../hooks'
+export { useRemoteOptions, useFilterRemoteOptions, useClickOutside, useZIndex, useTeleport } from '../hooks'

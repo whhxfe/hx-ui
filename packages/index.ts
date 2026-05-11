@@ -4,7 +4,13 @@ export { HxConfigProvider } from './config'
 export type { IconifyCollectionName } from './config'
 
 // 兼容全局注册（HxUI.install 会按需注册 hx-* 标签名）
-import { HxButton, HxTable, HxIcon, HxLabelText, HxFilePreview, HxForm, HxSelect, HxRadio, HxCheckbox, HxRichEditor, HxTransfer, HxQrCode } from './components'
+import {
+  HxButton, HxTable, HxIcon, HxLabelText, HxFilePreview,
+  HxForm, HxSelect, HxRadio, HxCheckbox, HxRichEditor,
+  HxTransfer, HxQrCode, HxInput, HxCascader, HxUpload,
+  HxFilterPanel, HxContentText, HxMenu, HxLink, HxText,
+  HxQuickDateButton, HxUploadFilePreviewList,
+} from './components'
 import { HxConfigProvider as _HxConfigProvider } from './config'
 import { withInstall } from './utils/install'
 
@@ -23,6 +29,16 @@ const components = [
   HxRichEditor,
   HxTransfer,
   HxQrCode,
+  HxInput,
+  HxCascader,
+  HxUpload,
+  HxFilterPanel,
+  HxContentText,
+  HxMenu,
+  HxLink,
+  HxText,
+  HxQuickDateButton,
+  HxUploadFilePreviewList,
 ]
 
 const HxUI = {
