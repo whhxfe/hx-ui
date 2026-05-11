@@ -20,12 +20,12 @@
 <template>
 	<div class="hx-form" :style="{ '--cols': cols }">
 		<el-form ref="formRef" :model="formData" :rules="mergedRules" :inline="inline" v-bind="formAttrs">
-			<template v-for="col in visibleColumns" :key="col.prop">
+			<template v-for="field in visibleFields" :key="field.prop">
 				<FormField
-					:column="col"
+					:field="field"
 					:form-data="formData"
-					:model-value="formData[col.prop]"
-					@update:model-value="(val) => handleFieldUpdate(col.prop, val)"
+					:model-value="formData[field.prop]"
+					@update:model-value="(val) => handleFieldUpdate(field.prop, val)"
 				/>
 			</template>
 
@@ -48,7 +48,7 @@ import { computed, nextTick, provide, ref, useAttrs, useSlots, watch } from "vue
 import FormField from "./FormField.vue"
 import { FORM_SLOTS_KEY } from "../../constants"
 import { isEqual } from "../../utils"
-import type { FormColumn, FormExpose, FormProps } from "./types"
+import type { FormField as FormFieldType, FormExpose, FormProps } from "./types"
 
 defineOptions({
 	name: "HxForm",
@@ -87,9 +87,9 @@ const formAttrs = computed(() => {
 const formData = ref<Record<string, unknown>>({})
 
 /**
- * 可见列
+ * 可见字段
  */
-const visibleColumns = computed(() => props.columns.filter(col => !col.hidden))
+const visibleFields = computed(() => props.fields.filter(field => !field.hidden))
 
 /**
  * 校验规则合并
@@ -99,27 +99,27 @@ const SELECT_TYPES = new Set(["select", "radio", "radio-btn", "checkbox", "casca
 const mergedRules = computed(() => {
 	const autoRules: Record<string, unknown[]> = {}
 
-	for (const col of props.columns) {
-		const colRules: unknown[] = []
+	for (const field of props.fields) {
+		const fieldRules: unknown[] = []
 
-		if (col.required) {
-			const isSelect = SELECT_TYPES.has(col.type)
-			colRules.push({
+		if (field.required) {
+			const isSelect = SELECT_TYPES.has(field.type)
+			fieldRules.push({
 				required: true,
-				message: col.type === "upload"
-					? `请上传${col.label}`
-					: `${isSelect ? "请选择" : "请输入"}${col.label}`,
+				message: field.type === "upload"
+					? `请上传${field.label}`
+					: `${isSelect ? "请选择" : "请输入"}${field.label}`,
 				trigger: "change",
-				...(col.type === "upload" ? { type: "array", min: 1 } : {}),
+				...(field.type === "upload" ? { type: "array", min: 1 } : {}),
 			})
 		}
 
-		if (col.rules?.length) {
-			colRules.push(...col.rules)
+		if (field.rules?.length) {
+			fieldRules.push(...field.rules)
 		}
 
-		if (colRules.length) {
-			autoRules[col.prop] = colRules
+		if (fieldRules.length) {
+			autoRules[field.prop] = fieldRules
 		}
 	}
 
@@ -150,8 +150,8 @@ function scheduleEmit() {
 
 function handleFieldUpdate(prop: string, val: unknown) {
 	formData.value[prop] = val
-	const col = props.columns.find(c => c.prop === prop)
-	col?.onChange?.(val, formData.value as Record<string, unknown>)
+	const field = props.fields.find(f => f.prop === prop)
+	field?.onChange?.(val, formData.value as Record<string, unknown>)
 	scheduleEmit()
 }
 
@@ -160,16 +160,11 @@ function handleFieldUpdate(prop: string, val: unknown) {
  */
 let isInitialized = false
 
-const TYPE_DEFAULT_VALUE: Record<string, unknown> = {
-	switch: false,
-	number: undefined,
-}
-
-function getDefaultValue(col: FormColumn): unknown {
-	if (col.defaultValue !== undefined) return structuredClone(col.defaultValue)
-	if (col.type === "select") return col.multiple ? [] : ""
-	if (col.type === "checkbox") return []
-	if (["datetimerange", "daterange", "timerange", "upload"].includes(col.type)) return []
+function getDefaultValue(field: FormFieldType): unknown {
+	if (field.defaultValue !== undefined) return structuredClone(field.defaultValue)
+	if (field.type === "select") return field.multiple ? [] : ""
+	if (field.type === "checkbox") return []
+	if (["datetimerange", "daterange", "timerange", "upload"].includes(field.type)) return []
 	return ""
 }
 
@@ -177,13 +172,13 @@ function initFormData() {
 	const data: Record<string, unknown> = {}
 	const initial = props.modelValue ?? {}
 
-	for (const col of props.columns) {
-		if (col.prop in initial) {
-			data[col.prop] = initial[col.prop]
-		} else if (col.prop in formData.value) {
-			data[col.prop] = formData.value[col.prop]
+	for (const field of props.fields) {
+		if (field.prop in initial) {
+			data[field.prop] = initial[field.prop]
+		} else if (field.prop in formData.value) {
+			data[field.prop] = formData.value[field.prop]
 		} else {
-			data[col.prop] = getDefaultValue(col)
+			data[field.prop] = getDefaultValue(field)
 		}
 	}
 
@@ -210,8 +205,8 @@ async function validateField(callback?: (data: Record<string, unknown>) => void)
  */
 function resetField() {
 	const resetData: Record<string, unknown> = {}
-	for (const col of props.columns) {
-		resetData[col.prop] = getDefaultValue(col)
+	for (const field of props.fields) {
+		resetData[field.prop] = getDefaultValue(field)
 	}
 	formData.value = resetData
 	formRef.value?.clearValidate()
@@ -254,8 +249,8 @@ function handleReset() {
 }
 
 watch(
-	() => props.columns,
-	() => { if (props.columns?.length) initFormData() },
+	() => props.fields,
+	() => { if (props.fields?.length) initFormData() },
 	{ immediate: true }
 )
 

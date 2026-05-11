@@ -59,27 +59,27 @@ export type FieldType =
 	| "render"
 
 // ============================================================
-// FormColumn — 核心结构
+// FormField — 核心结构
 //
-// FormColumn = FormColumnBase（通用字段）
-//            & FormColumn_Options（选项类共用字段）
-//            & FormColumn_Upload（从 UploadProps Pick）
-//            & FormColumn_Select（从 SelectProps Pick）
-//            & FormColumn_Cascader（从 CascaderProps Pick）
-//            & FormColumn_Radio（从 RadioProps Pick）
-//            & FormColumn_Checkbox（从 CheckboxProps Pick）
-//            & FormColumn_Transfer（从 TransferProps Pick）
-//            & FormColumn_RichEditor
-//            & FormColumn_DateTime
-//            & FormColumn_TextInput
-//            & FormColumn_NumberInput
+// FormField = FormFieldBase（通用字段）
+//            & FormField_Options（选项类共用字段）
+//            & FormField_Upload（从 UploadProps Pick）
+//            & FormField_Select（从 SelectProps Pick）
+//            & FormField_Cascader（从 CascaderProps Pick）
+//            & FormField_Radio（从 RadioProps Pick）
+//            & FormField_Checkbox（从 CheckboxProps Pick）
+//            & FormField_Transfer（从 TransferProps Pick）
+//            & FormField_RichEditor
+//            & FormField_DateTime
+//            & FormField_TextInput
+//            & FormField_NumberInput
 //
 // 由于所有字段均为可选，交叉类型天然可叠加，无需 discriminated union。
 // 开发者配置时，IDE 自动补全会根据 type 推断可用字段（需配合组件文档理解）。
 // ============================================================
 
 /** 表单字段基础字段（所有 type 通用） */
-export interface FormColumnBase {
+export interface FormFieldBase {
 	/** 字段 key，对应 formData 中的属性名 */
 	prop: string
 	/** 表单项标签 */
@@ -114,7 +114,7 @@ export interface FormColumnBase {
 	/** 透传给 el-form-item 的 props */
 	formItemProps?: Record<string, any>
 	/** 自定义渲染函数（type='render' 时使用） */
-	render?: (formData: Record<string, any>, column: any) => VNode
+	render?: (formData: Record<string, any>, field: any) => VNode
 	/** change 事件回调 */
 	onChange?: (value: unknown, formData: Record<string, unknown>) => void
 	/** 自定义校验规则（会与 required 自动生成的规则合并） */
@@ -122,7 +122,7 @@ export interface FormColumnBase {
 }
 
 /** 选项类组件共用字段（select / radio / checkbox / cascader / transfer） */
-export interface FormColumn_Options {
+export interface FormField_Options {
 	/**
 	 * 静态选项数据
 	 * - select：支持 OptionItem[] 或 GroupOptionItem[]（自动识别是否分组）
@@ -135,7 +135,7 @@ export interface FormColumn_Options {
 
 // ——— Upload：从 UploadProps Pick（排除 modelValue，由 form 框架管理）—————————
 
-export type FormColumn_Upload = Pick<
+export type FormField_Upload = Pick<
 	UploadProps,
 	| "action"
 	| "accept"
@@ -159,46 +159,46 @@ export type FormColumn_Upload = Pick<
 
 // ——— Select：从 SelectProps Pick（排除 modelValue）————————————————————————
 
-export type FormColumn_Select = Pick<
+export type FormField_Select = Pick<
 	SelectProps,
 	"options" | "remote" | "multiple" | "clearable" | "disabled" | "filterable" | "placeholder" | "modelValueType" | "onChange"
 >
 
 // ——— Cascader：从 CascaderProps Pick（排除 modelValue）———————————————————
 
-export type FormColumn_Cascader = Pick<
+export type FormField_Cascader = Pick<
 	CascaderProps,
 	"options" | "remote" | "placeholder" | "clearable" | "disabled" | "filterable" | "cascaderProps"
 >
 
 // ——— Radio：从 RadioProps Pick（排除 modelValue）————————————————————————
 
-export type FormColumn_Radio = Pick<RadioProps, "options" | "remote" | "disabled" | "onChange">
+export type FormField_Radio = Pick<RadioProps, "options" | "remote" | "disabled" | "onChange">
 
 // ——— Checkbox：从 CheckboxProps Pick（排除 modelValue）——————————————————
 
-export type FormColumn_Checkbox = Pick<
+export type FormField_Checkbox = Pick<
 	CheckboxProps,
 	"options" | "remote" | "disabled" | "variant" | "modelValueType" | "onChange"
 >
 
 // ——— Transfer：从 TransferProps Pick（排除 modelValue）————————————————————
 
-export type FormColumn_Transfer = Pick<
+export type FormField_Transfer = Pick<
 	TransferProps,
 	"options" | "remote" | "labelKey" | "valueKey" | "title" | "transferLeftWidth" | "transferConfigText" | "placeholder" | "multiple" | "transferHeight" | "modelValueType"
 >
 
 // ——— RichEditor ————————————————————————————————————————————————————————————
 
-export interface FormColumn_RichEditor {
+export interface FormField_RichEditor {
 	/** 富文本编辑器配置（透传给 HxRichEditor） */
 	richEditorParams?: RichEditorParams
 }
 
 // ——— DateTime ————————————————————————————————————————————————————————————
 
-export interface FormColumn_DateTime {
+export interface FormField_DateTime {
 	/** 值格式化 */
 	valueFormat?: string
 	/** 显示格式化 */
@@ -211,7 +211,7 @@ export interface FormColumn_DateTime {
 
 // ——— TextInput ————————————————————————————————————————————————————————————
 
-export interface FormColumn_TextInput {
+export interface FormField_TextInput {
 	/** 最大输入长度 */
 	maxlength?: number
 	/** 是否显示字数统计 */
@@ -222,7 +222,7 @@ export interface FormColumn_TextInput {
 
 // ——— NumberInput ——————————————————————————————————————————————————————————
 
-export interface FormColumn_NumberInput {
+export interface FormField_NumberInput {
 	/** 最小值 */
 	min?: number
 	/** 最大值 */
@@ -234,23 +234,23 @@ export interface FormColumn_NumberInput {
 }
 
 /**
- * 表单字段列配置（columns 中的每一项）
+ * 表单字段配置（fields 中的每一项）
  *
  * 通过交叉类型组合各组件 interface，保持字段命名与独立组件完全一致。
  * 字段按功能分为：Base（通用）| Options（选项类共用）| Upload | Select | Cascader | Radio | Checkbox | Transfer | RichEditor | DateTime | TextInput | NumberInput
  */
-export type FormColumn = FormColumnBase &
-	FormColumn_Options &
-	FormColumn_Upload &
-	FormColumn_Select &
-	FormColumn_Cascader &
-	FormColumn_Radio &
-	FormColumn_Checkbox &
-	FormColumn_Transfer &
-	FormColumn_RichEditor &
-	FormColumn_DateTime &
-	FormColumn_TextInput &
-	FormColumn_NumberInput
+export type FormField = FormFieldBase &
+	FormField_Options &
+	FormField_Upload &
+	FormField_Select &
+	FormField_Cascader &
+	FormField_Radio &
+	FormField_Checkbox &
+	FormField_Transfer &
+	FormField_RichEditor &
+	FormField_DateTime &
+	FormField_TextInput &
+	FormField_NumberInput
 
 // ============================================================
 // FormExpose / FormProps / FormFieldProps
@@ -274,8 +274,8 @@ export interface FormExpose {
 export interface FormProps {
 	/** 表单数据对象（v-model） */
 	modelValue?: Record<string, unknown>
-	/** 字段列配置 */
-	columns: FormColumn[]
+	/** 字段配置 */
+	fields: FormField[]
 	/** 栅格列数 */
 	cols?: number
 	/** 是否显示底部的查询/重置操作区 */
@@ -294,7 +294,7 @@ export interface FormEmits {
 /** HxFormField Props */
 export interface FormFieldProps {
 	modelValue: any
-	column: FormColumn
+	field: FormField
 	formData: Record<string, any>
 }
 

@@ -13,7 +13,7 @@ export type { CheckboxProps } from "../checkbox"
 
 export type {
 	FormExpose,
-	FormColumn,
+	FormField,
 	FieldType,
 	OptionItem,
 	GroupOptionItem,
@@ -22,3 +22,7 @@ export type {
 	FormFieldProps,
 	FormFieldEmits,
 } from "./types"
+
+// ← 向后兼容别名（将在下一个大版本中移除）
+/** @deprecated 请使用 FormField 代替 */
+export type { FormField as FormColumn } from "./types"

@@ -1,330 +1,323 @@
-<!--
-  HxFormField - 单个表单字段渲染组件
-  通过 provide/inject 从 Form 获取用户定义的插槽
--->
 <template>
 	<el-form-item
-		v-if="!column.hidden"
-		:label="column.label"
-		:prop="column.prop"
-		:style="{ '--col-span': column.colSpan ?? 1 }"
-		v-bind="column.formItemProps"
+		:label="field.label"
+		:prop="field.prop"
+		:required="field.required"
+		v-bind="field.formItemProps"
+		v-show="!field.hidden"
 	>
-		<!-- slot -->
-		<component
-			v-if="column.type === 'slot' && formSlots[column.prop]"
-			:is="formSlots[column.prop]"
-			:form-data="formData"
-			:column="column"
-		/>
+		<!-- input -->
+		<template v-if="field.type === 'input'">
+			<el-input
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:placeholder="field.placeholder || `请输入${field.label}`"
+				:clearable="field.clearable ?? true"
+				:disabled="field.disabled"
+				:maxlength="field.maxlength"
+				:showWordLimit="field.showWordLimit"
+				v-bind="field?.componentProps"
+			/>
+		</template>
 
-		<!-- render 函数 -->
-		<component
-			v-else-if="column.type === 'render' && column.render"
-			:is="() => column.render!(formData, column)"
-		/>
+		<!-- textarea -->
+		<template v-else-if="field.type === 'textarea'">
+			<el-input
+				type="textarea"
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:placeholder="field.placeholder || `请输入${field.label}`"
+				:disabled="field.disabled"
+				:maxlength="field.maxlength"
+				:showWordLimit="field.showWordLimit"
+				:rows="field.rows || 3"
+				v-bind="field?.componentProps"
+			/>
+		</template>
 
-		<!-- 富文本编辑器 -->
-		<HxRichEditor
-			v-else-if="column.type === 'richeditor'"
-			v-model="innerValue"
-			v-bind="column.richEditorParams"
-		/>
+		<!-- number -->
+		<template v-else-if="field.type === 'number'">
+			<el-input-number
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:min="field.min"
+				:max="field.max"
+				:step="field.step ?? 1"
+				:precision="field.precision"
+				:placeholder="field.placeholder || `请输入${field.label}`"
+				:disabled="field.disabled"
+				v-bind="field?.componentProps"
+			/>
+		</template>
 
-		<!-- 上传 -->
-		<HxUpload
-			v-else-if="column.type === 'upload'"
-			v-model="innerValue"
-			:action="column.action"
-			:accept="column.accept"
-			:limit="column.limit"
-			:multiple="column.multiple"
-			:disabled="column.disabled"
-			:list-type="column.listType ?? 'text'"
-			:placeholder="column.placeholder"
-			:value-mapper="column.valueMapper"
-			:response-mapper="column.responseMapper"
-			:file-render="column.fileRender"
-			:file-preview-render="column.filePreviewRender"
-			:preview-url="column.previewUrl"
-			:delete-url="column.deleteUrl"
-			:model-value-type="column.modelValueType"
-			:headers="column.headers"
-			:data="column.data"
-			:name="column.name"
-			:with-credentials="column.withCredentials"
-			v-bind="column.componentProps"
-		>
-			<template
-				v-if="formSlots[column.prop + '-file'] || column.fileRender"
-				#file="{ file, remove }"
-			>
-				<component
-					v-if="formSlots[column.prop + '-file']"
-					:is="formSlots[column.prop + '-file']"
-					:file="file"
-					:remove="remove"
+		<!-- select -->
+		<template v-else-if="field.type === 'select'">
+			<HxSelect
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:options="field.options"
+				:remote="field.remote"
+				:multiple="field.multiple"
+				:clearable="field.clearable ?? true"
+				:disabled="field.disabled"
+				:filterable="field.filterable ?? true"
+				:placeholder="field.placeholder || `请选择${field.label}`"
+				:modelValueType="field.modelValueType"
+				@change="field.onChange?.($event, formData)"
+				v-bind="field?.componentProps"
+			/>
+		</template>
+
+		<!-- radio -->
+		<template v-else-if="field.type === 'radio'">
+			<HxRadio
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:options="field.options as any"
+				:remote="field.remote"
+				:disabled="field.disabled"
+				@change="field.onChange?.($event, formData)"
+				v-bind="field?.componentProps"
+			/>
+		</template>
+
+		<!-- radio-btn -->
+		<template v-else-if="field.type === 'radio-btn'">
+			<HxRadio
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:options="field.options as any"
+				:remote="field.remote"
+				:disabled="field.disabled"
+				variant="button"
+				@change="field.onChange?.($event, formData)"
+				v-bind="field?.componentProps"
+			/>
+		</template>
+
+		<!-- checkbox -->
+		<template v-else-if="field.type === 'checkbox'">
+			<HxCheckbox
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:options="field.options as any"
+				:remote="field.remote"
+				:disabled="field.disabled"
+				:modelValueType="field.modelValueType"
+				@change="field.onChange?.($event, formData)"
+				v-bind="field?.componentProps"
+			/>
+		</template>
+
+		<!-- checkbox-btn -->
+		<template v-else-if="field.type === 'checkbox-btn'">
+			<HxCheckbox
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:options="field.options as any"
+				:remote="field.remote"
+				:disabled="field.disabled"
+				variant="button"
+				:modelValueType="field.modelValueType"
+				@change="field.onChange?.($event, formData)"
+				v-bind="field?.componentProps"
+			/>
+		</template>
+
+		<!-- switch -->
+		<template v-else-if="field.type === 'switch'">
+			<HxSwitch
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:disabled="field.disabled"
+				v-bind="field?.componentProps"
+			/>
+		</template>
+
+		<!-- cascader -->
+		<template v-else-if="field.type === 'cascader'">
+			<HxCascader
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:options="field.options as any"
+				:remote="field.remote"
+				:placeholder="field.placeholder || `请选择${field.label}`"
+				:clearable="field.clearable ?? true"
+				:disabled="field.disabled"
+				:filterable="field.filterable ?? true"
+				v-bind="mergedCascaderProps"
+			/>
+		</template>
+
+		<!-- transfer -->
+		<template v-else-if="field.type === 'transfer'">
+			<el-form-item style="width: 100%;">
+				<HxTransfer
+					:modelValue="modelValue"
+					@update:modelValue="$emit('update:modelValue', $event)"
+					:options="field.options as any"
+					:remote="field.remote"
+					:labelKey="field.labelKey"
+					:valueKey="field.valueKey"
+					:title="field.title"
+					:transferLeftWidth="field.transferLeftWidth"
+					:transferConfigText="field.transferConfigText"
+					:placeholder="field.placeholder"
+					:multiple="field.multiple"
+					:transferHeight="field.transferHeight"
+					:modelValueType="field.modelValueType"
+					v-bind="field?.componentProps"
 				/>
-			</template>
-		</HxUpload>
+			</el-form-item>
+		</template>
 
-		<!-- 文本输入类：input / textarea -->
-		<HxInput
-			v-else-if="fieldGroup === 'input'"
-			v-model="innerValue"
-			:type="column.type as any"
-			:placeholder="column.placeholder"
-			:clearable="column.clearable"
-			:disabled="column.disabled"
-			:maxlength="column.maxlength"
-			:show-word-limit="column.showWordLimit"
-			:rows="column.rows || 3"
-			v-bind="column.componentProps"
-		/>
+		<!-- datetime -->
+		<template v-else-if="field.type === 'datetime'">
+			<el-date-picker
+				type="datetime"
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:placeholder="field.placeholder || `请选择${field.label}`"
+				:valueFormat="field.valueFormat ?? 'YYYY-MM-DD HH:mm:ss'"
+				:format="field.format ?? 'YYYY-MM-DD HH:mm:ss'"
+				:disabled="field.disabled"
+				:clearable="field.clearable ?? true"
+				:disabledDate="field.disableFutureTime ? (time: Date) => time.getTime() > Date.now() : undefined"
+				v-bind="field?.componentProps"
+			/>
+		</template>
 
-		<!-- 数字输入 -->
-		<el-input-number
-			v-else-if="column.type === 'number'"
-			v-model="innerValue"
-			:placeholder="column.placeholder"
-			:disabled="column.disabled"
-			:min="column.min"
-			:max="column.max"
-			:step="column.step"
-			:precision="column.precision"
-			controls-position="right"
-			v-bind="column.componentProps"
-		/>
+		<!-- datetimerange -->
+		<template v-else-if="field.type === 'datetimerange'">
+			<el-date-picker
+				type="datetimerange"
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:placeholder="field.placeholder || `请选择${field.label}`"
+				:valueFormat="field.valueFormat ?? 'YYYY-MM-DD HH:mm:ss'"
+				:format="field.format ?? 'YYYY-MM-DD HH:mm:ss'"
+				:disabled="field.disabled"
+				:clearable="field.clearable ?? true"
+				v-bind="field?.componentProps"
+			/>
+		</template>
 
-		<!-- 日期时间类 -->
-		<el-date-picker
-			v-else-if="fieldGroup === 'date'"
-			v-model="innerValue"
-			:type="column.type as any"
-			:placeholder="column.placeholder || getPlaceholder()"
-			:disabled="column.disabled"
-			:clearable="column.clearable ?? true"
-			:value-format="column.valueFormat || getDefaultFormat()"
-			:format="column.format || getDefaultFormat()"
-			:disabled-date="getDisabledDate"
-			unlink-panels
-			range-separator="~"
-			start-placeholder="开始日期"
-			end-placeholder="结束日期"
-			v-bind="datePickerProps"
-		/>
+		<!-- date -->
+		<template v-else-if="field.type === 'date'">
+			<el-date-picker
+				type="date"
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:placeholder="field.placeholder || `请选择${field.label}`"
+				:valueFormat="field.valueFormat ?? 'YYYY-MM-DD'"
+				:format="field.format ?? 'YYYY-MM-DD'"
+				:disabled="field.disabled"
+				:clearable="field.clearable ?? true"
+				v-bind="field?.componentProps"
+			/>
+		</template>
 
-		<!-- 时间选择 -->
-		<el-time-picker
-			v-else-if="fieldGroup === 'time'"
-			v-model="innerValue"
-			:placeholder="column.placeholder || getPlaceholder()"
-			:disabled="column.disabled"
-			:clearable="column.clearable ?? true"
-			is-range
-			range-separator="~"
-			start-placeholder="开始时间"
-			end-placeholder="结束时间"
-			v-bind="column.componentProps"
-		/>
+		<!-- daterange -->
+		<template v-else-if="field.type === 'daterange'">
+			<el-date-picker
+				type="daterange"
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:placeholder="field.placeholder || `请选择${field.label}`"
+				:valueFormat="field.valueFormat ?? 'YYYY-MM-DD'"
+				:format="field.format ?? 'YYYY-MM-DD'"
+				:disabled="field.disabled"
+				:clearable="field.clearable ?? true"
+				v-bind="field?.componentProps"
+			/>
+		</template>
 
-		<!-- 级联选择 -->
-		<HxCascader
-			v-else-if="column.type === 'cascader'"
-			v-model="innerValue"
-			:options="column.options as any"
-			:remote="column.remote"
-			:placeholder="column.placeholder"
-			:clearable="column.clearable"
-			:disabled="column.disabled"
-			:filterable="column.filterable"
-			:cascader-props="column.cascaderProps"
-			v-bind="column.componentProps"
-		/>
+		<!-- time -->
+		<template v-else-if="field.type === 'time'">
+			<el-time-picker
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:placeholder="field.placeholder || `请选择${field.label}`"
+				:valueFormat="field.valueFormat ?? 'HH:mm:ss'"
+				:format="field.format ?? 'HH:mm:ss'"
+				:disabled="field.disabled"
+				:clearable="field.clearable ?? true"
+				v-bind="field?.componentProps"
+			/>
+		</template>
 
-		<!-- 下拉选择 -->
-		<HxSelect
-			v-else-if="column.type === 'select'"
-			v-model="innerValue"
-			:options="(column.options ?? []) as any"
-			:remote="column.remote"
-			:multiple="column.multiple"
-			:clearable="column.clearable"
-			:disabled="column.disabled"
-			:filterable="column.filterable"
-			:placeholder="column.placeholder || getPlaceholder()"
-			:model-value-type="column.modelValueType"
-			v-bind="column.componentProps"
-			@change="(val: any) => column.onChange?.(val, formData)"
-		/>
+		<!-- timerange -->
+		<template v-else-if="field.type === 'timerange'">
+			<el-time-picker
+				type="timerange"
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:placeholder="field.placeholder || `请选择${field.label}`"
+				:valueFormat="field.valueFormat ?? 'HH:mm:ss'"
+				:format="field.format ?? 'HH:mm:ss'"
+				:disabled="field.disabled"
+				:clearable="field.clearable ?? true"
+				v-bind="field?.componentProps"
+			/>
+		</template>
 
-		<!-- 单选组 -->
-		<HxRadio
-			v-else-if="column.type === 'radio'"
-			v-model="innerValue"
-			:options="(column.options ?? []) as any"
-			:remote="column.remote"
-			:disabled="column.disabled"
-			:variant="'radio'"
-			v-bind="column.componentProps"
-			@change="(val: any) => column.onChange?.(val, formData)"
-		/>
+		<!-- upload -->
+		<template v-else-if="field.type === 'upload'">
+			<HxUpload
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				:action="field.action"
+				:accept="field.accept"
+				:limit="field.limit"
+				:headers="field.headers"
+				:data="field.data"
+				:name="field.name"
+				:withCredentials="field.withCredentials"
+				:listType="field.listType"
+				:autoUpload="field.autoUpload"
+				:placeholder="field.placeholder"
+				:responseMapper="field.responseMapper"
+				:valueMapper="field.valueMapper"
+				:previewUrl="field.previewUrl"
+				:deleteUrl="field.deleteUrl"
+				:showDownload="field.showDownload"
+				:fileRender="field.fileRender"
+				:filePreviewRender="field.filePreviewRender"
+				v-bind="field?.componentProps"
+			/>
+		</template>
 
-		<!-- 单选按钮组 -->
-		<HxRadio
-			v-else-if="column.type === 'radio-btn'"
-			v-model="innerValue"
-			:options="(column.options ?? []) as any"
-			:remote="column.remote"
-			:disabled="column.disabled"
-			:variant="'radio-btn'"
-			v-bind="column.componentProps"
-			@change="(val: any) => column.onChange?.(val, formData)"
-		/>
+		<!-- richeditor -->
+		<template v-else-if="field.type === 'richeditor'">
+			<HxRichEditor
+				:modelValue="modelValue"
+				@update:modelValue="$emit('update:modelValue', $event)"
+				v-bind="mergedRichEditorProps"
+			/>
+		</template>
 
-		<!-- 多选组 -->
-		<HxCheckbox
-			v-else-if="column.type === 'checkbox'"
-			v-model="innerValue"
-			:options="(column.options ?? []) as any"
-			:remote="column.remote"
-			:disabled="column.disabled"
-			:model-value-type="column.modelValueType"
-			v-bind="column.componentProps"
-			@change="(val: any) => column.onChange?.(val, formData)"
-		/>
+		<!-- slot -->
+		<template v-else-if="field.type === 'slot'">
+			<slot :name="field.prop" :formData="formData" :field="field" />
+		</template>
 
-		<!-- 多选按钮组 -->
-		<HxCheckbox
-			v-else-if="column.type === 'checkbox-btn'"
-			v-model="innerValue"
-			:options="(column.options ?? []) as any"
-			:remote="column.remote"
-			:disabled="column.disabled"
-			:model-value-type="column.modelValueType"
-			variant="checkbox-btn"
-			v-bind="column.componentProps"
-			@change="(val: any) => column.onChange?.(val, formData)"
-		/>
-
-		<el-switch
-			v-else-if="column.type === 'switch'"
-			v-model="innerValue"
-			:disabled="column.disabled"
-			v-bind="column.componentProps"
-		/>
-
-		<!-- 穿梭框 -->
-		<HxTransfer
-			v-else-if="column.type === 'transfer'"
-			v-model="innerValue"
-			:options="(column.options ?? []) as any"
-			:remote="column.remote"
-			:multiple="column.multiple ?? false"
-			:transfer-config-text="column.transferConfigText || '选项'"
-			:transfer-left-width="column.transferLeftWidth || '300px'"
-			:transfer-height="column.transferHeight || '400px'"
-			:placeholder="column.placeholder"
-			:model-value-type="column.modelValueType"
-			v-bind="column.componentProps"
-			@change="(val: any) => column.onChange?.(val, formData)"
-		/>
+		<!-- render -->
+		<template v-else-if="field.type === 'render' && field.render">
+			<component :is="field.render(formData, field)" />
+		</template>
 	</el-form-item>
 </template>
 
-<script lang="ts" setup>
-import { computed, inject } from "vue"
-import type { Slots } from "vue"
-import { FORM_SLOTS_KEY } from "../../constants"
-import type { FormColumn, FormFieldProps, FormFieldEmits } from "./types"
-import HxSelect from "../select/Select.vue"
-import HxRadio from "../radio/Radio.vue"
-import HxCheckbox from "../checkbox/Checkbox.vue"
-import HxRichEditor from "../rich-editor/RichEditor.vue"
-import HxInput from "../input/Input.vue"
-import HxCascader from "../cascader/Cascader.vue"
-import HxTransfer from "../transfer/Transfer.vue"
-import HxUpload from "../upload/Upload.vue"
+<script setup lang="ts">
+import { computed } from "vue"
+import type { FormField, FormFieldProps, FormFieldEmits } from "./types"
 
 const props = defineProps<FormFieldProps>()
-
 const emit = defineEmits<FormFieldEmits>()
 
-const formSlots = inject<Slots>(FORM_SLOTS_KEY, {})
+const field = computed(() => props.field)
+const mergedCascaderProps = computed(() => ({ ...field.value?.cascaderProps, ...field.value?.componentProps }))
+const mergedRichEditorProps = computed(() => ({ ...field.value?.richEditorParams, ...field.value?.componentProps }))
 
-/**
- * innerValue
- */
-const innerValue = computed({
-	get: () => props.modelValue,
-	set: (val) => emit("update:modelValue", val),
-})
-
-/**
- * 字段分组（用于合并同类组件的模板）
- */
-const INPUT_TYPES = new Set(["input", "textarea"])
-const DATE_TYPES = new Set(["date", "daterange", "datetime", "datetimerange"])
-const TIME_TYPES = new Set(["time", "timerange"])
-
-const fieldGroup = computed(() => {
-	const { type } = props.column
-	if (INPUT_TYPES.has(type)) return "input"
-	if (DATE_TYPES.has(type)) return "date"
-	if (TIME_TYPES.has(type)) return "time"
-	return null
-})
-
-/**
- * 日期时间默认格式
- */
-const DATE_PICKER_PROPS: Record<string, string> = {
-	date: "YYYY-MM-DD",
-	daterange: "YYYY-MM-DD",
-	datetime: "YYYY-MM-DD HH:mm:ss",
-	datetimerange: "YYYY-MM-DD HH:mm:ss",
-}
-
-function getDefaultFormat(): string {
-	return DATE_PICKER_PROPS[props.column.type] ?? "YYYY-MM-DD"
-}
-
-function getPlaceholder(): string {
-	const map: Record<string, string> = {
-		input: `请输入${props.column.label}`,
-		textarea: `请输入${props.column.label}`,
-		date: "选择日期",
-		daterange: "选择日期",
-		datetime: "选择日期时间",
-		datetimerange: "选择日期时间",
-		time: "选择时间",
-		timerange: "选择时间",
-		select: `请选择${props.column.label}`,
-		cascader: `请选择${props.column.label}`,
-	}
-	return map[props.column.type] ?? `请输入${props.column.label}`
-}
-
-const datePickerProps = computed(() => {
-	const { componentProps } = props.column
-	return componentProps ?? {}
-})
-
-/**
- * 禁用日期
- */
-function getDisabledDate(time: Date): boolean {
-	return !!(props.column.disableFutureTime && time.getTime() > Date.now())
-}
+defineOptions({ name: "HxFormField" })
 </script>
-
-<style scoped lang="scss">
-.el-form-item {
-	margin-right: 0;
-	:deep(.el-select),
-	:deep(.el-cascader),
-	:deep(.el-date-editor) {
-		width: 100%;
-	}
-}
-</style>
