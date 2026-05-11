@@ -1,4 +1,7 @@
 export { useRemoteOptions } from "./useRemoteOptions"
-export type { UseRemoteOptionsOptions } from "./useRemoteOptions"
+// export type { UseRemoteOptionsOptions } from "./useRemoteOptions"
 export { useFilterRemoteOptions } from "./useFilterRemoteOptions"
 export type { UseFilterRemoteOptionsOptions } from "./useFilterRemoteOptions"
+export { useClickOutside } from "./useClickOutside"
+export { useZIndex } from "./useZIndex"
+export { useTeleport } from "./useTeleport"
