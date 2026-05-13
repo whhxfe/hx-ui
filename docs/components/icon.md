@@ -2,6 +2,14 @@
 
 一个功能强大、灵活的图标组件，支持 SVG、Image、Iconify 等多种图标类型。
 
+### 基本用法
+
+通过统一组件 `HxIcon`，使用 `type` 和 `name` 属性即可展示图标。
+
+:::demo 展示图标的基本用法
+icon/basic
+:::
+
 ## SVG 图标
 
 SVG 图标使用本地 SVG sprite，通过 `vite-plugin-svg-icons` 插件注册。SVG 文件存放在 `src/assets/svg/` 目录下。
@@ -20,6 +28,14 @@ icon/svg-local
 | --- | --- |
 | `mono`（默认） | 单色模式，使用 `currentColor` 填充，`color` 属性生效 |
 | `multi` | 多色模式，保留 SVG 原始填充色，`color` 属性失效 |
+
+### SVG 翻转与旋转
+
+SVG 图标支持 `flip` 和 `rotate` 属性。`flip` 支持水平、垂直或双向翻转；`rotate` 支持 0~360 度旋转。
+
+:::demo SVG 图标的翻转与旋转
+icon/svg
+:::
 
 ### 工作原理
 
@@ -81,6 +97,29 @@ icon/image-cdn
 | `auto`（默认） | 优先使用 CDN 地址（cdnBaseUrl 有配置就用），无配置则 fallback 到本地 glob 资源 |
 | `local` | 始终使用本地 glob 资源，忽略 CDN 配置 |
 | `cdn` | 始终使用 CDN 地址（cdnBaseUrl 必须有配置，否则返回空） |
+
+### alt 属性
+
+Image 图标支持 `alt` 属性设置图片描述文字，用于无障碍访问。当图片加载失败时，组件会自动显示一个 SVG 错误图标作为 fallback 回退。
+
+```vue
+<!-- 设置图片描述 -->
+<hx-icon type="image" group="app" name="qq" alt="QQ 图标" />
+
+<!-- 图片加载失败时显示 fallback 错误图标 -->
+<hx-icon type="image" group="app" name="non-existent" size="32px" />
+```
+
+> 加载失败时，组件内部会将 `alt` 用于 `<img>` 的 `alt` 属性，同时隐藏占位符 `aria-hidden="true"`，避免屏幕阅读器重复朗读。
+
+### className 属性
+
+Image 和 Iconify 图标支持 `className` 属性添加自定义 CSS 类名：
+
+```vue
+<hx-icon type="image" group="app" name="qq" class-name="custom-icon" />
+<hx-icon type="iconify" name="ep:star" class-name="highlight-icon" />
+```
 
 ### 配置图片资源
 
@@ -148,6 +187,31 @@ pnpm add -D @iconify/json
 | Twemoji | `twemoji` | `twemoji:smile`、`twemoji:heart` |
 | Streamline Logos | `streamline-logos` | `streamline-logos:amazon-aws` |
 
+### 扩展离线图标集
+
+如果你需要使用不在内置列表中的图标集（如 `fa-solid`、`ic` 等），可以手动调用 `addCollection` 注册：
+
+```ts
+import { addCollection } from '@iconify/vue'
+import 'virtual:svg-icons-register'
+
+// 以 Font Awesome Solid 为例，需要先安装 @iconify/json
+// pnpm add -D @iconify/json
+
+// 然后导入并注册
+import(/* @vite-ignore */ '@iconify/json/json/fa-solid.json').then((module) => {
+  addCollection(module.default || module)
+})
+```
+
+注册完成后，即可直接在组件中使用：
+
+```vue
+<hx-icon type="iconify" name="fa-solid:user" size="24px" />
+```
+
+> 建议在应用入口文件（如 `main.ts`）中统一完成离线图标集的注册，避免在组件中重复注册。
+
 ### CDN 配置
 
 在 `HxConfigProvider` 中配置 Iconify CDN：
@@ -170,15 +234,25 @@ pnpm add -D @iconify/json
 
 ## 通用属性
 
-以下属性在所有图标类型中通用：
+以下属性在不同图标类型中通用：
 
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| size | 图标尺寸 | `number \| string` | `16`（Iconify）/ `1em`（SVG/Image） |
-| color | 图标颜色 | `string` | `'currentColor'` |
-| rotate | 旋转角度（度） | `number` | `0` |
-| flip | 翻转方向 | `'horizontal' \| 'vertical' \| 'both'` | `undefined` |
-| inline | 行内渲染模式 | `boolean` | `false` |
+| 属性 | 说明 | 类型 | 默认值 | 生效范围 |
+| --- | --- | --- | --- | --- |
+| size | 图标尺寸 | `number \| string` | `16`（Iconify）/ `1em`（SVG/Image） | 全部类型 |
+| color | 图标颜色 | `string` | `'currentColor'` | SVG mono、Iconify |
+| rotate | 旋转角度（度） | `number` | `0` | SVG 专属 |
+| flip | 翻转方向 | `'horizontal' \| 'vertical' \| 'both'` | `undefined` | SVG 专属 |
+| inline | 行内渲染模式 | `boolean` | `false` | Iconify 专属 |
+| className | 自定义样式类名 | `string` | `''` | Image、Iconify |
+| alt | 图标描述（无障碍） | `string` | `''` | Image 专属 |
+
+> **提示**：`rotate`、`flip`、`inline` 等属性虽为特定类型专属，但通过组件透传机制在其他类型上也可使用，只是效果可能不同。
+
+### 颜色
+
+:::demo 使用 color 属性设置图标颜色
+icon/color
+:::
 
 ### 旋转
 
@@ -192,7 +266,12 @@ icon/rotate
 icon/flip
 :::
 
----
+### 行内渲染
+
+:::demo 使用 inline 属性控制图标在文本中的对齐方式
+icon/inline
+:::
+
 
 ## 统一图标组件
 

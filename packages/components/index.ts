@@ -5,7 +5,6 @@ export { HxIcon, SvgIcon, ImageIcon, IconifyIcon } from './icon'
 export type {
   IconType,
   SvgIconMode,
-  IconGroup,
   FlipDirection,
   IconProps,
   SvgIconProps,

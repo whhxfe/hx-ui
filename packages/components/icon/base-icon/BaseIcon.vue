@@ -31,7 +31,6 @@ const props = withDefaults(defineProps<IconProps>(), {
   alt: '',
   src: '',
   cdnBaseUrl: '',
-  baseUrl: '',
   ext: 'png',
 })
 
@@ -62,7 +61,7 @@ const currentProps = computed(() => {
   const {
     type, name, size, color, mode, group, imageType,
     inline, rotate, flip,
-    className, alt, src, cdnBaseUrl, baseUrl, ext, source,
+    className, alt, src, cdnBaseUrl, ext, source,
     ...extraAttrs
   } = props
 
@@ -89,7 +88,6 @@ const currentProps = computed(() => {
         alt,
         src,
         cdnBaseUrl,
-        baseUrl,
         ext,
         source,
         ...extraAttrs,

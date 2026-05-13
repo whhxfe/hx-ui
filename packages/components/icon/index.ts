@@ -10,7 +10,6 @@ export { default as IconifyIcon } from './iconify-icon/IconifyIcon.vue'
 export type {
   IconType,
   SvgIconMode,
-  IconGroup,
   FlipDirection,
   IconProps,
   SvgIconProps,

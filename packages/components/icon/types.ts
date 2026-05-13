@@ -6,9 +6,6 @@ export type IconType = 'svg' | 'image' | 'iconify'
 /** SVG 图标模式，决定 symbol 前缀和渲染样式 */
 export type SvgIconMode = 'mono' | 'multi'
 
-/** image / iconify 的分类组名（统一 group 概念） */
-export type IconGroup = string
-
 /** SVG 翻转方向 */
 export type FlipDirection = 'horizontal' | 'vertical' | 'both'
 
@@ -37,20 +34,21 @@ export interface ImageIconProps {
   /** 图标尺寸 */
   size?: number | string
   /** 图标分类组，对应 @/assets/icons/{group}/ 下的子目录名 */
-  group?: IconGroup
+  group?: string
   /** 自定义样式类名 */
   className?: string
   /** 图标描述（无障碍） */
   alt?: string
-  /** 直接指定图标地址（优先级最高） */
+  /**
+   * 直接指定图标完整地址（优先级最高）。
+   * 设置此属性后，source/cdnBaseUrl/group/ext 等均被忽略。
+   */
   src?: string
-  /** CDN 基础地址 */
+  /** CDN 基础地址（当 source 为 'cdn' 或 'auto' 时用于拼接 URL） */
   cdnBaseUrl?: string
-  /** 本地基础地址 */
-  baseUrl?: string
   /** 文件后缀 */
   ext?: 'png' | 'webp' | 'svg' | 'jpg' | 'jpeg' | 'gif' | 'avif' | 'apng' | 'ico'
-  /** 资源来源：'auto' | 'local' | 'cdn' */
+  /** 资源来源：'auto' | 'local' | 'cdn'。优先级低于 src */
   source?: 'auto' | 'local' | 'cdn'
 }
 
@@ -81,7 +79,7 @@ export interface IconifyIconProps {
  *
  * ⚠️ 类型提示：
  * - `type="svg"`    时生效的 Props：`name`, `size`, `color`, `mode`, `rotate`, `flip`
- * - `type="image"`  时生效的 Props：`name`, `size`, `group`, `className`, `alt`, `src`, `cdnBaseUrl`, `baseUrl`, `ext`, `source`
+ * - `type="image"`  时生效的 Props：`name`, `size`, `group`, `className`, `alt`, `src`, `cdnBaseUrl`, `ext`, `source`
  * - `type="iconify"`时生效的 Props：`name`, `size`, `color`, `inline`, `className`
  * - 跨类型传递无效 Props 不会报 TS 错误（运行时被忽略）。
  */
@@ -96,7 +94,7 @@ export interface IconProps {
    */
   name: string
   /** 图标尺寸（支持数字 px 或 CSS 单位字符串，如 '2em'） */
-  size?: string | number
+  size?: number | string
   /** 图标颜色（svg mono 模式 / iconify 下生效） */
   color?: string
   /**
@@ -107,29 +105,30 @@ export interface IconProps {
    */
   mode?: SvgIconMode
   /** 图标分类组（仅 type='image' 时有效），对应 @/assets/icons/{group}/ 下的子目录名 */
-  group?: IconGroup
+  group?: string
   /** 是否行内渲染（仅 type='iconify' 时有效） */
   inline?: boolean
   /** 旋转角度（仅 type='svg' 时有效） */
   rotate?: number
   /** 翻转方向（仅 type='svg' 时有效） */
   flip?: FlipDirection
-  /** 自定义样式类名（image / iconify 专属） */
+  /** 自定义样式类名（image / iconify 专属，svg 不起作用） */
   className?: string
   /** 图标描述（image 专属，无障碍） */
   alt?: string
-  /** 直接指定图标地址（image 专属，优先级最高） */
+  /**
+   * 直接指定图标地址（image 专属，优先级最高）。
+   * 设置此值后，source/cdnBaseUrl/group/ext 等均被忽略。
+   */
   src?: string
-  /** CDN 基础地址（image 专属） */
+  /** CDN 基础地址（image 专属，当 source 为 'cdn' 或 'auto' 时用于拼接 URL） */
   cdnBaseUrl?: string
-  /** 本地基础地址（image 专属） */
-  baseUrl?: string
   /** 文件后缀（image 专属） */
   ext?: 'png' | 'webp' | 'svg' | 'jpg' | 'jpeg' | 'gif' | 'avif' | 'apng' | 'ico'
-  /** 资源来源（image 专属）：'auto' | 'local' | 'cdn' */
+  /** 资源来源（image 专属）：'auto' | 'local' | 'cdn'。优先级低于 src */
   source?: 'auto' | 'local' | 'cdn'
 
   // ===== 兼容旧命名 =====
   /** @deprecated 请使用 group */
-  imageType?: IconGroup
+  imageType?: string
 }

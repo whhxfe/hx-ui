@@ -5,11 +5,11 @@
 <script setup lang="ts">
 import { provide } from 'vue'
 import { addAPIProvider } from '@iconify/vue'
-import type { HxConfig, HxConfigProviderProps } from '@/types/config'
+import type { HxConfig, HxConfigProviderProps } from '../../types/config'
 import { HxConfigKey } from './injection'
-import { buildImageSourceMap } from '@/utils/image-icon'
-import { registerOfflineCollections } from '@/utils/offline-icons'
-import { setRequestOptions } from '@/utils/request'
+import { buildImageSourceMap } from '../../utils/image-icon'
+import { registerOfflineCollections } from '../../utils/offline-icons'
+import { setRequestOptions } from '../../utils/request'
 
 const props = withDefaults(defineProps<HxConfigProviderProps>(), {
   icon: () => ({}),
