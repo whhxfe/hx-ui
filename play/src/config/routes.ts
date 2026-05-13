@@ -1,0 +1,15 @@
+export interface RouteMeta {
+  title: string
+  icon: string
+}
+
+export const componentRoutes: Record<string, RouteMeta> = {
+  button: {
+    title: '按钮 Button',
+    icon: 'ep-document',
+  },
+  icon: {
+    title: '图标 Icon',
+    icon: 'ep-picture-outline-round',
+  },
+}

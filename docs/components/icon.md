@@ -2,191 +2,212 @@
 
 一个功能强大、灵活的图标组件，支持 SVG、Image、Iconify 等多种图标类型。
 
-## 安装
-
-### Iconify 图标依赖
-
-Iconify 图标使用 `@iconify/vue/offline` 从本地 `@iconify/json` 包获取图标数据，无需 CDN。
-
-```bash
-# 安装 Iconify Vue 组件库
-pnpm add @iconify/vue
-
-# 安装 Iconify 图标集（按需安装）
-pnpm add -D @iconify/json
-```
-
-## 基础用法
-
-使用 `name` 属性指定图标名称，图标类型默认为 SVG。
-
-:::demo 通过 name 属性指定图标名称。
-icon/basic
-:::
-
 ## SVG 图标
 
-SVG 图标支持两种模式：
+SVG 图标使用本地 SVG sprite，通过 `vite-plugin-svg-icons` 插件注册。SVG 文件存放在 `src/assets/svg/` 目录下。
 
-- **单色 mono（默认）**：使用 `color` 属性设置颜色，图标使用 `currentColor` 填充
-- **多色 multi**：保留 SVG 原始填充色，`color` 属性失效
+### 单色模式（mono）
 
-:::demo 使用 mode 属性切换 SVG 图标模式（mono / multi），type="svg" 时生效。
-icon/svg
+使用 `currentColor` 填充，可通过 `color` 属性设置颜色。
+
+:::demo SVG 图标单色模式
+icon/svg-local
 :::
 
-## Iconify 图标
+### mode 属性
 
-使用 `type="iconify"` 切换到 Iconify 图标模式，格式为 `collection:name`（如 `ep:add-circle`）。
+| 属性值 | 说明 |
+| --- | --- |
+| `mono`（默认） | 单色模式，使用 `currentColor` 填充，`color` 属性生效 |
+| `multi` | 多色模式，保留 SVG 原始填充色，`color` 属性失效 |
 
-Iconify 图标数据完全来自本地 `@iconify/json` 包，无需任何额外配置。
+### 工作原理
 
-:::demo 使用 type="iconify" 渲染 Iconify 图标。
-icon/iconify
-:::
+SVG 文件放在 `src/assets/svg/mono/` 或 `src/assets/svg/multi/` 目录下，通过 `vite-plugin-svg-icons` 注册为 SVG sprite。组件使用 `<use>` 引用，symbol ID 格式为 `icon-{dir}-{name}`。
+
+### 引入 SVG sprite
+
+在项目入口文件中引入 SVG sprite 注册：
+
+```ts
+import 'virtual:svg-icons-register'
+```
+
+### Vite 配置
+
+确保 `vite.config.ts` 中的 `symbolId` 与组件配置一致：
+
+```ts
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+
+export default defineConfig({
+  plugins: [
+    createSvgIconsPlugin({
+      iconDirs: [resolve(__dirname, 'src/assets/svg')],
+      symbolId: 'icon-[dir]-[name]',  // 与组件默认格式一致
+    }),
+  ],
+})
+```
+
+---
 
 ## Image 图标
 
-使用 `type="image"` 加载图片图标。
+Image 图标用于加载图片资源，支持本地 glob 和 CDN 两种模式。
 
-Image 图标支持两种资源挂载方式：**本地 glob 模式（默认）** 和 **CDN 模式**。通过 `source` 属性切换：
+### 本地图片
 
-:::demo 使用 type="image" 加载图片图标。
-icon/image
+通过 `import.meta.glob` 加载本地图片资源，存放在 `@/assets/icons/{group}/` 目录下。
+
+:::demo Image 图标本地模式
+icon/image-local
 :::
 
-## Image 图标 — CDN 模式
+### CDN 模式
 
-使用 `cdnBaseUrl` 加载 CDN 图片，组件按 `{cdnBaseUrl}/{group}/{name}.{ext}` 规则拼接 URL：
+通过 `cdnBaseUrl` 配置 CDN 地址，组件按 `{cdnBaseUrl}/{group}/{name}.{ext}` 规则拼接 URL。
 
-:::demo CDN 模式：全局配置、props 覆盖、强制本地三种场景示例。
-icon/cdn
+:::demo Image 图标 CDN 模式
+icon/image-cdn
 :::
 
-### 概念说明
-
-CDN 模式通过 `cdnBaseUrl` 指定图片服务器地址，组件按以下规则动态拼接 URL：
-
-```
-{cdnBaseUrl}/{group}/{name}.{ext}
-```
-
-### source 资源来源
+### source 属性
 
 通过 `source` 属性控制资源加载策略，优先级为：**组件 props > 全局配置 > 默认值**。
 
 | source 值 | 行为描述 |
 | --- | --- |
-| `'auto'`（默认） | 优先使用 CDN 地址（cdnBaseUrl 有配置就用），无配置则 fallback 到本地 glob 资源 |
-| `'local'` | 始终使用本地 glob 资源，忽略 CDN 配置 |
-| `'cdn'` | 始终使用 CDN 地址（cdnBaseUrl 必须有配置，否则返回空） |
+| `auto`（默认） | 优先使用 CDN 地址（cdnBaseUrl 有配置就用），无配置则 fallback 到本地 glob 资源 |
+| `local` | 始终使用本地 glob 资源，忽略 CDN 配置 |
+| `cdn` | 始终使用 CDN 地址（cdnBaseUrl 必须有配置，否则返回空） |
 
-### 全局配置
+### 配置图片资源
 
-在 `HxConfigProvider` 中统一配置 CDN 相关参数：
+在应用入口中配置本地图片 glob：
+
+```ts
+import { buildImageSourceMap, registerImageIcon } from '@hx/ui'
+
+// 方式一：使用 glob 自动构建
+const imageIconModules = import.meta.glob('@/assets/icons/**/*', { eager: true })
+const sourceMap = buildImageSourceMap([imageIconModules])
+
+// 方式二：手动注册单个图片
+registerImageIcon(sourceMap, 'app', 'qq', {
+  url: '/icons/app/qq.png',
+  ext: 'png',
+})
+```
+
+---
+
+## Iconify 图标
+
+Iconify 图标提供海量图标库支持，格式为 `{prefix}:{name}`（如 `ep:edit`、`mdi:home`）。
+
+### 离线模式
+
+使用本地 `@iconify/json` 包中的图标集，无需网络请求。
+
+:::demo Iconify 图标离线模式
+icon/iconify-local
+:::
+
+### CDN 模式
+
+通过 CDN API 获取图标数据，支持更多图标集。
+
+:::demo Iconify 图标 CDN 模式
+icon/iconify-cdn
+:::
+
+### 安装依赖
+
+```bash
+# 安装 Iconify Vue 组件库
+pnpm add @iconify/vue
+
+# 安装 Iconify 图标集（按需安装，减小包体积）
+pnpm add -D @iconify/json
+```
+
+### 内置图标集
+
+组件内置支持以下图标集的离线模式：
+
+| 图标集 | 前缀 | 示例 |
+| --- | --- | --- |
+| Element Plus | `ep` | `ep:edit`、`ep:delete` |
+| MDI | `mdi` | `mdi:home`、`mdi:account` |
+| Tabler | `tabler` | `tabler:user`、`tabler:settings` |
+| Lucide | `lucide` | `lucide:home`、`lucide:heart` |
+| Carbon | `carbon` | `carbon:settings`、`carbon:document` |
+| Bootstrap Icons | `bi` | `bi:alarm`、`bi:book` |
+| Logos | `logos` | `logos:vue`、`logos:react` |
+| Twemoji | `twemoji` | `twemoji:smile`、`twemoji:heart` |
+| Streamline Logos | `streamline-logos` | `streamline-logos:amazon-aws` |
+
+### CDN 配置
+
+在 `HxConfigProvider` 中配置 Iconify CDN：
 
 ```vue
 <template>
   <HxConfigProvider
     :icon="{
-      imageIconModules: [imageIconModules],
-      cdnBaseUrl: 'https://cdn.example.com/icons',
-      source: 'auto'
+      iconifyIcon: {
+        source: { source: 'cdn', cdnUrl: 'http://localhost:3333' }
+      }
     }"
   >
     <App />
   </HxConfigProvider>
 </template>
-
-<script setup lang="ts">
-/** 本地 glob 资源（构建时打包） */
-const imageIconModules = import.meta.glob('@/assets/icons/**/*', { eager: true })
-</script>
 ```
 
-### 组件级别覆盖
+---
 
-props 传入的配置优先级高于全局配置，可按需覆盖：
+## 通用属性
 
-```vue
-<!-- 使用 CDN（走全局 cdnBaseUrl） -->
-<hx-icon type="image" group="app" name="alipay" source="cdn" />
-
-<!-- 使用本地 glob（忽略全局 CDN 配置） -->
-<hx-icon type="image" group="app" name="alipay" source="local" />
-
-<!-- 使用 CDN 并指定单独的 CDN 地址（优先级最高） -->
-<hx-icon
-  type="image"
-  group="gif"
-  name="1"
-  source="cdn"
-  cdn-base-url="https://cdn2.example.com/icons"
-  ext="gif"
-/>
-```
-
-::: tip 资源来源选择建议
-
-- **静态资源平台（图片已打包上传 CDN）**：使用 `source="cdn"`，配合全局 `cdnBaseUrl`
-- **开发环境 / 本地测试**：使用 `source="local"`，使用本地 glob 资源
-- **线上优先、本地兜底**：使用 `source="auto"`（默认行为）
-
-:::
-
-## 尺寸
-
-使用 `size` 属性设置图标尺寸，支持像素值和 CSS 单位。
-
-:::demo 使用 size 属性设置不同尺寸的图标。
-icon/size
-:::
-
-## 颜色
-
-使用 `color` 属性设置图标颜色（SVG 和 Iconify 图标）。
-
-:::demo 使用 color 属性设置图标颜色。
-icon/color
-:::
-
-## 旋转
-
-使用 `rotate` 属性设置图标的旋转角度。
-
-:::demo 使用 rotate 属性旋转图标。
-icon/rotate
-:::
-
-## 翻转
-
-使用 `flip` 属性设置图标的翻转方向。
-
-:::demo 使用 flip 属性翻转图标。
-icon/flip
-:::
-
-## 按钮结合图标
-
-图标可以与按钮等组件结合使用。
-
-:::demo 将图标与按钮组件结合使用。
-icon/button
-:::
-
-## SVG 图标注册（业务项目）
-
-使用 **vite-plugin-svg-icons** 时，在入口引入 `import 'virtual:svg-icons-register'`，并在 Vite 中配置与组件一致的 `symbolId`（本库默认为 `icon-[dir]-[name]`，对应子目录 `mono` / `multi` 与文件名）。
-
-## API
-
-### HxConfigProvider — Icon 配置
+以下属性在所有图标类型中通用：
 
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| `icon.imageIconModules` | 本地图片 glob 模块列表（`import.meta.glob` 结果） | `Record<string, { default: string }>[]` | `[]` |
-| `icon.cdnBaseUrl` | CDN 基础地址 | `string` | `''` |
-| `icon.source` | 资源来源模式：`'auto' \| 'local' \| 'cdn'` | `'auto' \| 'local' \| 'cdn'` | `'auto'` |
+| size | 图标尺寸 | `number \| string` | `16`（Iconify）/ `1em`（SVG/Image） |
+| color | 图标颜色 | `string` | `'currentColor'` |
+| rotate | 旋转角度（度） | `number` | `0` |
+| flip | 翻转方向 | `'horizontal' \| 'vertical' \| 'both'` | `undefined` |
+| inline | 行内渲染模式 | `boolean` | `false` |
+
+### 旋转
+
+:::demo 使用 rotate 属性旋转图标
+icon/rotate
+:::
+
+### 翻转
+
+:::demo 使用 flip 属性翻转图标
+icon/flip
+:::
+
+---
+
+## 统一图标组件
+
+除了使用 `SvgIcon`、`ImageIcon`、`IconifyIcon` 单独组件外，还可以通过统一的 `HxIcon` 组件配合 `type` 属性切换：
+
+```vue
+<!-- SVG 图标 -->
+<hx-icon type="svg" name="home" color="#1890ff" />
+
+<!-- Image 图标 -->
+<hx-icon type="image" name="qq" group="app" :size="32" />
+
+<!-- Iconify 图标 -->
+<hx-icon type="iconify" name="ep:edit" :size="20" />
+```
 
 ### HxIcon Props
 
@@ -194,33 +215,24 @@ icon/button
 | --- | --- | --- | --- |
 | type | 图标类型 | `'svg' \| 'iconify' \| 'image'` | `'svg'` |
 | name | 图标名称 | `string` | `'default'` |
-| size | 图标尺寸 | `number \| string` | `'1em'` |
-| color | 图标颜色 | `string` | `'currentColor'` |
-| rotate | 旋转角度（度） | `number` | `0` |
-| flip | 翻转方向 | `'horizontal' \| 'vertical' \| 'both'` | `undefined` |
-| mode | SVG 图标模式：`'mono'` 单色（使用 currentColor），`'multi'` 多色（保留原始填充色） | `'mono' \| 'multi'` | `'mono'` |
-| group | 图标分组（仅 Image 模式生效），对应 `@/assets/icons/{group}/` 下的子目录名 | `string` | `'mono'` |
-| cdnBaseUrl | CDN 资源地址（Image 图标，优先级高于全局配置） | `string` | `''` |
-| baseUrl | `cdnBaseUrl` 的别名 | `string` | `''` |
+| mode | SVG 图标模式 | `'mono' \| 'multi'` | `'mono'` |
+| group | 图标分组（Image 图标） | `string` | - |
+| cdnBaseUrl | CDN 资源地址（Image 图标） | `string` | `''` |
+| baseUrl | cdnBaseUrl 的别名 | `string` | `''` |
 | ext | 图片扩展名（Image 图标） | `string` | `'png'` |
-| source | 资源来源模式（Image 图标）：`'auto' \| 'local' \| 'cdn'` | `'auto' \| 'local' \| 'cdn'` | `'auto'` |
-| inline | Iconify 行内渲染模式 | `boolean` | `false` |
+| source | 资源来源模式（Image 图标） | `'auto' \| 'local' \| 'cdn'` | `'auto'` |
 
-### Slots
+---
 
-| 插槽名 | 说明 |
-| --- | --- |
-| default | 图标内容（可用于自定义图标） |
+## 按钮结合图标
 
-### 引入方式
+图标可以与按钮等组件结合使用。
 
-```ts
-// 全量引入
-import { HxIcon } from '@hx/ui'
+:::demo 将图标与按钮组件结合使用
+icon/button
+:::
 
-// 按需引入子组件
-import { SvgIcon, IconifyIcon, ImageIcon } from '@hx/ui'
-```
+---
 
 ## 类型定义
 
@@ -233,4 +245,14 @@ import type {
   ImageIconProps,
   FlipDirection,
 } from '@hx/ui'
+```
+
+### 引入方式
+
+```ts
+// 全量引入
+import { HxIcon } from '@hx/ui'
+
+// 按需引入子组件
+import { SvgIcon, IconifyIcon, ImageIcon } from '@hx/ui'
 ```

@@ -200,6 +200,18 @@ watch(
 </script>
 
 <style lang="scss" scoped>
+$primary: var(--hx-primary-color);
+$bg: var(--hx-bg-color);
+$bg-page: var(--hx-bg-color-page);
+$bg-hover: var(--hx-bg-color-hover);
+$bg-active: var(--hx-bg-color-active);
+$text-primary: var(--hx-text-color-primary);
+$text-regular: var(--hx-text-color-regular);
+$text-secondary: var(--hx-text-color-secondary);
+$text-placeholder: var(--hx-text-color-placeholder);
+$border-base: var(--hx-border-color-base);
+$border-light: var(--hx-border-color-light);
+
 .hx-filter-item {
   display: block;
   padding: 0;
@@ -215,7 +227,7 @@ watch(
     padding-top: 7px;
     font-size: 13px;
     font-weight: 500;
-    color: #3b4458;
+    color: $text-regular;
     letter-spacing: 0.01em;
     line-height: 1;
     white-space: nowrap;
@@ -241,7 +253,7 @@ watch(
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background-color: #c2c8d4;
+    background-color: $text-placeholder;
     animation: hx-filter-item__loading-bounce 1.2s infinite ease-in-out both;
 
     &:nth-child(1) {
@@ -270,7 +282,7 @@ watch(
 
   &__empty {
     font-size: 13px;
-    color: #a8afc2;
+    color: $text-placeholder;
     padding: 7px 8px;
     font-style: italic;
   }
@@ -282,9 +294,9 @@ watch(
     height: 28px;
     padding: 0 12px;
     border-radius: 6px;
-    border: 1px solid #e2e7ee;
-    background: #fff;
-    color: #4a5568;
+    border: 1px solid $border-base;
+    background: $bg;
+    color: $text-regular;
     font-size: 13px;
     cursor: pointer;
     position: relative;
@@ -304,31 +316,31 @@ watch(
     }
 
     &:hover:not(.disabled) {
-      border-color: #2d5be6;
-      color: #2d5be6;
-      background: #f5f7fd;
+      border-color: $primary;
+      color: $primary;
+      background: $bg-hover;
     }
 
     &.active {
-      background-color: #eff3fd;
-      color: #2d5be6;
-      border: 1px solid #2d5be6;
+      background-color: var(--hx-option-active-bg, #eff3fd);
+      color: $primary;
+      border: 1px solid $primary;
       font-weight: 500;
 
       &:hover:not(.disabled) {
-        background-color: #e4ebfc;
+        background-color: var(--hx-option-active-hover-bg, #e4ebfc);
       }
     }
 
     &.disabled {
-      color: #c2c8d4;
-      border-color: #edf0f6;
+      color: $text-placeholder;
+      border-color: var(--hx-option-disabled-border, #edf0f6);
       cursor: not-allowed;
-      background-color: #fafafc;
+      background-color: var(--hx-option-disabled-bg, #fafafc);
     }
 
     &:focus-visible {
-      outline: 2px solid rgba(45, 91, 230, 0.3);
+      outline: 2px solid rgba($primary, 0.3);
       outline-offset: 2px;
     }
   }

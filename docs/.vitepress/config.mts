@@ -195,9 +195,11 @@ export default defineConfig({
     resolve: {
       alias: [
         { find: '@', replacement: resolve(__dirname, '../../play/src') },
+        // CSS 别名必须在 @hx/ui 之前，防止被更宽泛的别名覆盖
+        { find: '@hx/ui/dist/index.css', replacement: resolve(__dirname, '../../packages/dist/index.css') },
         { find: '@hx/ui/index.css', replacement: resolve(__dirname, '../../packages/dist/index.css') },
         { find: '@hx/ui', replacement: resolve(__dirname, '../../packages/index.ts') },
-        { find: '@iconify-json', replacement: resolve(__dirname, '../../node_modules/@iconify/json/json'),}
+        { find: '@iconify-json', replacement: resolve(__dirname, '../../node_modules/@iconify/json/json') },
       ],
     },
   },

@@ -1,44 +1,37 @@
 # Button 按钮
 
-用于触发业务动作，基于 Element Plus 的 `ElButton` 二次封装。
+基于 Element Plus 的 `el-button` 二次封装，支持所有 ElButton 原生属性和事件。
 
 ## 基础用法
 
-使用 `type`、`plain`、`round`、`dashed` 和 `circle` 来定义按钮样式。
+使用 `type` 属性定义按钮样式。
 
-:::demo 使用 type、plain、round、dashed 和 circle 定义按钮样式。
+:::demo 展示不同类型、样式变体、状态和尺寸。
 button/basic
-:::
-
-## 扩展事件
-
-:::demo 在 custom-click 事件里扩展业务交互。
-button/custom-event
-:::
-
-## 扩展属性
-
-:::demo 通过 custom-prop 注入业务语义。
-button/custom-prop
 :::
 
 ## API
 
 ### Props
 
+继承 `ElButton` 所有属性，常用属性如下：
+
 | 名称 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| custom-prop | 业务扩展属性示例 | string | '' |
-| type | 按钮类型（继承 ElButton） | string | - |
-| size | 按钮尺寸（继承 ElButton） | string | - |
+| type | 按钮类型 | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info'` | - |
+| size | 按钮尺寸 | `'large' \| 'default' \| 'small'` | - |
+| plain | 是否为朴素按钮 | `boolean` | false |
+| round | 是否为圆角按钮 | `boolean` | false |
+| circle | 是否为圆形按钮 | `boolean` | false |
+| dashed | 是否为虚线边框 | `boolean` | false |
+| disabled | 是否禁用 | `boolean` | false |
+| loading | 是否加载中 | `boolean` | false |
 
-> 除 `custom-prop` 外，其余 `ElButton` 原生属性均可通过 `v-bind="$attrs"` 继续透传。
+> 其他 `ElButton` 原生属性均可通过 `v-bind="$attrs"` 透传。
 
 ### Events
 
-| 事件名 | 说明 | 回调参数 |
-| --- | --- | --- |
-| custom-click | 自定义点击事件 | `(e: MouseEvent) => void` |
+继承 `ElButton` 所有事件。
 
 ### Slots
 

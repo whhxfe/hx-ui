@@ -222,13 +222,16 @@ async function copy() {
 
 <style lang="scss">
 // ── 变量 ─────────────────────────────────────────────────────────────
-$primary: #2d5be6;
-$text-main: #1a1d24;
-$text-secondary: #56657a;
-$text-placeholder: #a8afc2;
-$border-color: #e8eaf0;
-$bg-hover: #f5f7fb;
-$success: #0ea57a;
+$primary: var(--hx-primary-color);
+$success: var(--hx-success-color);
+$text-main: var(--hx-text-color-primary);
+$text-regular: var(--hx-text-color-regular);
+$text-secondary: var(--hx-text-color-secondary);
+$text-placeholder: var(--hx-text-color-placeholder);
+$border-color: var(--hx-border-color-base);
+$bg: var(--hx-bg-color);
+$bg-hover: var(--hx-bg-color-hover);
+$bg-page: var(--hx-bg-color-page);
 
 .hx-content-text {
   display: block;
@@ -322,14 +325,14 @@ $success: #0ea57a;
     border: 1px solid $border-color;
     border-radius: 8px;
     overflow: hidden;
-    background: #fafbff;
+    background: var(--hx-content-text-json-bg, #fafbff);
 
     &-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 6px 12px;
-      background: linear-gradient(135deg, #f0f3ff 0%, #f5f7fb 100%);
+      background: var(--hx-content-text-json-header-bg, linear-gradient(135deg, #f0f3ff 0%, #f5f7fb 100%));
       border-bottom: 1px solid $border-color;
     }
 
@@ -370,7 +373,7 @@ $success: #0ea57a;
     height: 24px;
     padding: 0 8px;
     border-radius: 5px;
-    background: #fff;
+    background: $bg;
     border: 1px solid $border-color;
     color: $text-secondary;
     font-size: 12px;
@@ -420,39 +423,39 @@ $success: #0ea57a;
   }
 
   &__key {
-    color: #c678dd;
+    color: var(--hx-json-key, #c678dd);
   }
 
   &__string {
-    color: #98c379;
+    color: var(--hx-json-string, #98c379);
   }
 
   &__number {
-    color: #d19a66;
+    color: var(--hx-json-number, #d19a66);
   }
 
   &__boolean,
   &__constant {
-    color: #56b6c2;
+    color: var(--hx-json-boolean, #56b6c2);
   }
 
   &__null {
-    color: #6c71c4;
+    color: var(--hx-json-null, #6c71c4);
     font-style: italic;
   }
 
   &__comma {
-    color: #abb2bf;
+    color: var(--hx-json-comma, #abb2bf);
   }
 
   &__brackets {
-    color: #abb2bf;
+    color: var(--hx-json-brackets, #abb2bf);
   }
 
   &__value {
     &-node {
       &::before {
-        color: #abb2bf;
+        color: $text-secondary;
       }
     }
   }

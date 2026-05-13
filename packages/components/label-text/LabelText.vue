@@ -53,8 +53,8 @@ const textLineClass = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-$label-color: #94a3b8;
-$text-color: #111827;
+$label-color: var(--hx-text-color-secondary);
+$text-color: var(--hx-text-color-primary);
 
 .hx-label-text {
   display: inline-flex;

@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { HxConfigProvider } from '@hx/ui'
-import type { IconifyCollectionName } from "@hx/ui";
-
-
 
 /** 本地 glob 资源 */
 const imageIconModules = import.meta.glob<{ default: string }>(
@@ -10,24 +7,20 @@ const imageIconModules = import.meta.glob<{ default: string }>(
   { eager: true },
 )
 
-const iconifyCollections = ['ep', 'mdi', 'logos', 'twemoji']
-// const iconifyCollections:string[] = []
-
 const iconConfig = {
   svg: {},
   image: {
-    source: "auto" as const,
+    source: "local" as const,
     imageIconModules: [imageIconModules],
-    cdnBaseUrl: '/icons',
   },
   iconify: {
-    // ===== Offline 模式 =====
-    source: "offline" as const,
-    collections: iconifyCollections  as IconifyCollectionName[],
+    // ===== CDN 模式（推荐）- 开发环境使用 CDN，按需加载图标 ======
+    source: "cdn" as const,
+    cdnUrl: "https://api.iconify.design",
 
-    // ===== CDN 模式 =====
-    // source: "cdn" as const,
-    // cdnUrl: "https://api.iconify.design",
+    // ===== Offline 模式（生产环境使用，需要预加载图标集）======
+    // source: "offline" as const,
+    // collections: ['ep', 'mdi', 'logos', 'twemoji'],
   },
 };
 

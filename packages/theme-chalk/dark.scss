@@ -1,0 +1,57 @@
+// HxUI Dark Theme
+// Dark theme overrides - applied when html has class="dark"
+
+html.dark {
+  // Brand colors - adjust for dark mode
+  --hx-primary-color: #1890ff;
+  --hx-success-color: #52c41a;
+  --hx-warning-color: #faad14;
+  --hx-danger-color: #ff4d4f;
+  --hx-info-color: #909399;
+
+  // Background colors
+  --hx-bg-color: #1a1a1a;
+  --hx-bg-color-page: #121212;
+  --hx-bg-color-hover: #2a2a2a;
+  --hx-bg-color-active: #1a3a5c;
+
+  // Text colors
+  --hx-text-color-primary: #e8e8e8;
+  --hx-text-color-regular: #b0b0b0;
+  --hx-text-color-secondary: #808080;
+  --hx-text-color-placeholder: #606060;
+  --hx-text-color-disabled: #505050;
+
+  // Border colors
+  --hx-border-color-base: #404040;
+  --hx-border-color-light: #333333;
+  --hx-border-color-lighter: #2a2a2a;
+  --hx-border-color-extra-light: #242424;
+
+  // Shadow
+  --hx-shadow-color: rgba(0, 0, 0, 0.3);
+  --hx-shadow-color-light: rgba(0, 0, 0, 0.2);
+
+  // FilterPanel Chip colors
+  --hx-chip-bg: #1e2a3a;
+  --hx-chip-border: #3a4a5e;
+  --hx-chip-sep: #5a6a7e;
+  --hx-chip-close-hover-bg: #3d1a1a;
+
+  // FilterItem option colors
+  --hx-option-active-bg: #1e2a3a;
+  --hx-option-active-hover-bg: #253044;
+  --hx-option-disabled-border: #2a2a2a;
+  --hx-option-disabled-bg: #1a1a1a;
+
+  // ContentText colors
+  --hx-content-text-json-bg: #1a1d24;
+  --hx-content-text-json-header-bg: linear-gradient(135deg, #1e2a3a 0%, #1a2030 100%);
+  --hx-json-key: #c678dd;
+  --hx-json-string: #98c379;
+  --hx-json-number: #d19a66;
+  --hx-json-boolean: #56b6c2;
+  --hx-json-null: #6c71c4;
+  --hx-json-comma: #abb2bf;
+  --hx-json-brackets: #abb2bf;
+}

@@ -239,9 +239,20 @@ const getSelectionLabel = (prop: string | number, value: ValueType) => {
 </script>
 
 <style lang="scss" scoped>
+$primary: var(--hx-primary-color);
+$bg: var(--hx-bg-color);
+$bg-page: var(--hx-bg-color-page);
+$bg-hover: var(--hx-bg-color-hover);
+$bg-active: var(--hx-bg-color-active);
+$text-primary: var(--hx-text-color-primary);
+$text-regular: var(--hx-text-color-regular);
+$text-secondary: var(--hx-text-color-secondary);
+$border-base: var(--hx-border-color-base);
+$border-light: var(--hx-border-color-light);
+
 .hx-filter-panel {
-  background: #fff;
-  border: 1px solid #e8eaf0;
+  background: $bg;
+  border: 1px solid $border-base;
   border-radius: 10px;
   overflow: hidden;
 
@@ -251,13 +262,13 @@ const getSelectionLabel = (prop: string | number, value: ValueType) => {
     align-items: flex-start;
     gap: 0 12px;
     padding: 16px 20px 12px;
-    border-bottom: 1px solid #f0f2f5;
+    border-bottom: 1px solid $border-light;
   }
 
   &__title {
     font-size: 15px;
     font-weight: 600;
-    color: #1a1d24;
+    color: $text-primary;
     flex: 0 0 auto;
     line-height: 1;
     padding-top: 4px;
@@ -299,30 +310,30 @@ const getSelectionLabel = (prop: string | number, value: ValueType) => {
     font-family: inherit;
 
     &--reset {
-      color: #56657a;
-      background: #f5f7fb;
-      border-color: #e2e7ee;
+      color: $text-secondary;
+      background: $bg-page;
+      border-color: $border-base;
 
       svg {
         flex-shrink: 0;
       }
 
       &:hover {
-        color: #1a1d24;
-        background: #ecedf2;
-        border-color: #cdd2dc;
+        color: $text-primary;
+        background: $bg-hover;
+        border-color: $text-secondary;
       }
     }
 
     &--collapse {
-      color: #8a92a6;
+      color: $text-secondary;
       background: transparent;
       border-color: transparent;
       padding: 0 8px;
 
       &:hover {
-        color: #56657a;
-        background: #f5f7fb;
+        color: $text-regular;
+        background: $bg-hover;
       }
     }
   }
@@ -358,11 +369,11 @@ const getSelectionLabel = (prop: string | number, value: ValueType) => {
   max-width: 100%;
   box-sizing: border-box;
   padding: 3px 4px 3px 10px;
-  background-color: #eff3fd;
-  border: 1px solid #d4def8;
+  background-color: var(--hx-chip-bg, #eff3fd);
+  border: 1px solid var(--hx-chip-border, #d4def8);
   border-radius: 6px;
   font-size: 13px;
-  color: #3b4458;
+  color: $text-primary;
   gap: 4px;
   flex-wrap: wrap;
   word-break: break-word;
@@ -370,7 +381,7 @@ const getSelectionLabel = (prop: string | number, value: ValueType) => {
 
   &-label {
     flex: 0 0 auto;
-    color: #8a92a6;
+    color: $text-secondary;
     white-space: nowrap;
     font-weight: 400;
     line-height: 1.4;
@@ -378,7 +389,7 @@ const getSelectionLabel = (prop: string | number, value: ValueType) => {
 
   &-sep {
     flex: 0 0 auto;
-    color: #c2c8d4;
+    color: var(--hx-chip-sep, #c2c8d4);
     line-height: 1.4;
   }
 
@@ -387,7 +398,7 @@ const getSelectionLabel = (prop: string | number, value: ValueType) => {
     min-width: 0;
     max-width: 240px;
     font-weight: 500;
-    color: #2d5be6;
+    color: $primary;
     line-height: 1.4;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -405,17 +416,17 @@ const getSelectionLabel = (prop: string | number, value: ValueType) => {
     background: transparent;
     border: none;
     cursor: pointer;
-    color: #8a92a6;
+    color: $text-secondary;
     padding: 0;
     transition: all 0.15s ease;
 
     &:hover {
-      color: #e53e3e;
-      background: #ffeaea;
+      color: var(--hx-danger-color);
+      background: var(--hx-chip-close-hover-bg, #ffeaea);
     }
 
     &:focus-visible {
-      outline: 2px solid rgba(45, 91, 230, 0.3);
+      outline: 2px solid rgba($primary, 0.3);
       outline-offset: 1px;
     }
   }

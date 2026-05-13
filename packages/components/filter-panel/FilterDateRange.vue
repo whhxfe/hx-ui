@@ -191,6 +191,15 @@ function onPickerChange(val: unknown) {
 </script>
 
 <style lang="scss" scoped>
+$primary: var(--hx-primary-color);
+$bg: var(--hx-bg-color);
+$bg-page: var(--hx-bg-color-page);
+$bg-hover: var(--hx-bg-color-hover);
+$text-primary: var(--hx-text-color-primary);
+$text-regular: var(--hx-text-color-regular);
+$text-secondary: var(--hx-text-color-secondary);
+$border-base: var(--hx-border-color-base);
+
 .hx-filter-date-range {
   display: flex;
   align-items: flex-start;
@@ -203,7 +212,7 @@ function onPickerChange(val: unknown) {
     flex: 0 0 auto;
     min-width: 70px;
     line-height: 32px;
-    color: #666;
+    color: $text-regular;
     font-size: 14px;
   }
 
@@ -221,24 +230,24 @@ function onPickerChange(val: unknown) {
     line-height: 30px;
     text-align: center;
     font-size: 14px;
-    color: #333;
-    border: 1px solid #e2e7ee;
+    color: $text-primary;
+    border: 1px solid $border-base;
     border-radius: 3px;
     padding: 0 16px;
     cursor: pointer;
-    background: #fff;
+    background: $bg;
     transition: all 0.2s ease;
     user-select: none;
 
     &:hover {
-      border-color: #3382ff;
-      color: #3382ff;
+      border-color: $primary;
+      color: $primary;
     }
 
     &.active {
-      background-color: #f0f7ff;
-      color: #3382ff;
-      border-color: #3382ff;
+      background-color: $bg-hover;
+      color: $primary;
+      border-color: $primary;
       font-weight: 500;
     }
   }

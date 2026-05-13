@@ -1,0 +1,83 @@
+// HxUI CSS Variables - Light Theme
+
+// Brand colors
+$primary-color: #1890ff;
+$success-color: #52c41a;
+$warning-color: #faad14;
+$danger-color: #ff4d4f;
+$info-color: #909399;
+
+// Background colors
+$bg-color: #ffffff;
+$bg-color-page: #f5f7fa;
+$bg-color-hover: #f5f7fa;
+$bg-color-active: #e6f7ff;
+
+// Text colors
+$text-color-primary: #333333;
+$text-color-regular: #666666;
+$text-color-secondary: #999999;
+$text-color-placeholder: #c0c4cc;
+$text-color-disabled: #c0c4cc;
+
+// Border colors
+$border-color-base: #dcdfe6;
+$border-color-light: #e4e7ed;
+$border-color-lighter: #ebeef5;
+$border-color-extra-light: #f2f6fc;
+
+// Shadow colors
+$shadow-color: rgba(0, 0, 0, 0.1);
+$shadow-color-light: rgba(0, 0, 0, 0.05);
+
+// CSS Variables output
+:root {
+  // Brand colors
+  --hx-primary-color: #{$primary-color};
+  --hx-success-color: #{$success-color};
+  --hx-warning-color: #{$warning-color};
+  --hx-danger-color: #{$danger-color};
+  --hx-info-color: #{$info-color};
+
+  // Background colors
+  --hx-bg-color: #{$bg-color};
+  --hx-bg-color-page: #{$bg-color-page};
+  --hx-bg-color-hover: #{$bg-color-hover};
+  --hx-bg-color-active: #{$bg-color-active};
+
+  // Text colors
+  --hx-text-color-primary: #{$text-color-primary};
+  --hx-text-color-regular: #{$text-color-regular};
+  --hx-text-color-secondary: #{$text-color-secondary};
+  --hx-text-color-placeholder: #{$text-color-placeholder};
+  --hx-text-color-disabled: #{$text-color-disabled};
+
+  // Border colors
+  --hx-border-color-base: #{$border-color-base};
+  --hx-border-color-light: #{$border-color-light};
+  --hx-border-color-lighter: #{$border-color-lighter};
+  --hx-border-color-extra-light: #{$border-color-extra-light};
+
+  // Shadow
+  --hx-shadow-color: #{$shadow-color};
+  --hx-shadow-color-light: #{$shadow-color-light};
+
+  // Border radius
+  --hx-border-radius-base: 4px;
+  --hx-border-radius-small: 2px;
+  --hx-border-radius-round: 20px;
+
+  // Spacing
+  --hx-spacing-xs: 8px;
+  --hx-spacing-sm: 12px;
+  --hx-spacing-md: 16px;
+  --hx-spacing-lg: 24px;
+  --hx-spacing-xl: 32px;
+
+  // Font size
+  --hx-font-size-xs: 12px;
+  --hx-font-size-sm: 13px;
+  --hx-font-size-base: 14px;
+  --hx-font-size-lg: 16px;
+  --hx-font-size-xl: 18px;
+}

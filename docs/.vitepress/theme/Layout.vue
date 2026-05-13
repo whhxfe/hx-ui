@@ -12,9 +12,8 @@ const imageIconModules = import.meta.glob<{ default: string }>(
 const iconConfig = {
   svg: {},
   image: {
-    source: "auto" as const,
+    source: "local" as const,
     imageIconModules: [imageIconModules],
-    cdnBaseUrl: '/icons',
   },
   iconify: {
     // ===== Offline 模式 =====
