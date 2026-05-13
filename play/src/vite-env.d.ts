@@ -9,3 +9,9 @@ declare module 'virtual:svg-icons-names' {
   const iconsNames: string[]
   export default iconsNames
 }
+
+declare module '*.vue' {
+  import type { DefineComponent } from 'vue'
+  const component: DefineComponent<{}, {}, any>
+  export default component
+}

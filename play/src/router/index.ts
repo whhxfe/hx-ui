@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-import { componentRoutes } from '@/config/routes'
+import { componentRoutes } from '@/views/demos/demo-registry'
 
 const children: RouteRecordRaw[] = Object.keys(componentRoutes).map(name => ({
   path: name,
@@ -15,7 +15,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/components',
-    component: () => import('@/layouts/DefaultLayout.vue'),
+    component: () => import('@/components/demo-layout/index.vue'),
     children,
   },
 ]

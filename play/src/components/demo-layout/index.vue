@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { componentRoutes } from '@/config/routes'
+import { componentRoutes } from '@/views/demos/demo-registry'
 import { ThemeToggle } from '@hx/ui'
 
 const route = useRoute()
@@ -18,6 +18,7 @@ const activeMenu = ref(route.path)
 
 <template>
   <div class="app-layout">
+    <!-- 侧边栏：第一层 -->
     <aside class="sidebar" :class="{ collapsed: isCollapse }">
       <div class="logo">
         <span v-if="!isCollapse" class="logo-text">HxUI</span>
@@ -43,7 +44,9 @@ const activeMenu = ref(route.path)
       </el-menu>
     </aside>
 
+    <!-- 主区域：第二层 -->
     <div class="main-wrapper">
+      <!-- 顶栏：第三层（浮于主区域上方） -->
       <header class="topbar">
         <hx-icon
           type="iconify"
@@ -58,6 +61,7 @@ const activeMenu = ref(route.path)
         </div>
       </header>
 
+      <!-- 内容区：第四层（浮于主区域上方，在顶栏下方） -->
       <main class="main-content">
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
@@ -70,6 +74,9 @@ const activeMenu = ref(route.path)
 </template>
 
 <style scoped>
+/* ===================================
+   第一层：整体容器
+   =================================== */
 .app-layout {
   display: flex;
   height: 100%;
@@ -77,16 +84,24 @@ const activeMenu = ref(route.path)
   overflow: hidden;
 }
 
+/* ===================================
+   第二层：侧边栏
+   阴影：右侧投影（复合深+浅），浮于主区域之上
+   =================================== */
 .sidebar {
   width: 220px;
   background: var(--hx-bg-color);
-  border-right: 1px solid var(--hx-border-color-base);
   display: flex;
   flex-direction: column;
   transition: width 0.3s ease;
   flex-shrink: 0;
   min-height: 0;
   overflow: hidden;
+  position: relative;
+  z-index: 10;
+  border-right: 1px solid var(--hx-border-color-light);
+  box-shadow: 2px 0 4px var(--hx-shadow-color),
+              2px 0 12px var(--hx-shadow-color-light);
 }
 
 .sidebar.collapsed {
@@ -98,12 +113,12 @@ const activeMenu = ref(route.path)
   display: flex;
   align-items: center;
   justify-content: center;
-  border-bottom: 1px solid var(--hx-border-color-lighter);
   font-size: 20px;
   font-weight: 700;
   color: var(--hx-primary-color);
   letter-spacing: 2px;
   flex-shrink: 0;
+  border-bottom: 1px solid var(--hx-border-color-light);
 }
 
 .sidebar-menu {
@@ -117,6 +132,9 @@ const activeMenu = ref(route.path)
   width: 220px;
 }
 
+/* ===================================
+   第三层：主区域
+   =================================== */
 .main-wrapper {
   flex: 1;
   min-width: 0;
@@ -127,15 +145,23 @@ const activeMenu = ref(route.path)
   background: var(--hx-bg-color-page);
 }
 
+/* ===================================
+   第四层：顶栏
+   阴影：底部投影 + 底部边框线，浮于内容区之上
+   =================================== */
 .topbar {
   height: 60px;
   background: var(--hx-bg-color);
-  border-bottom: 1px solid var(--hx-border-color-base);
   display: flex;
   align-items: center;
   padding: 0 20px;
   gap: 12px;
   flex-shrink: 0;
+  position: relative;
+  z-index: 5;
+  border-bottom: 1px solid var(--hx-border-color-light);
+  box-shadow: 0 2px 4px var(--hx-shadow-color),
+              0 4px 12px var(--hx-shadow-color-light);
 }
 
 .topbar-actions {
@@ -158,14 +184,23 @@ const activeMenu = ref(route.path)
   color: var(--hx-text-color-primary);
 }
 
+/* ===================================
+   第五层：内容区
+   阴影：内凹阴影（复合深+浅），体现嵌入感
+   =================================== */
 .main-content {
   flex: 1;
   min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
   padding: 24px;
+  box-shadow: inset 0 1px 3px var(--hx-shadow-color),
+              inset 0 4px 12px var(--hx-shadow-color-light);
 }
 
+/* ===================================
+   过渡动画
+   =================================== */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.2s ease;

@@ -12,4 +12,8 @@ export const componentRoutes: Record<string, RouteMeta> = {
     title: '图标 Icon',
     icon: 'ep-picture-outline-round',
   },
+  link: {
+    title: '链接 Link',
+    icon: 'ep-link',
+  },
 }

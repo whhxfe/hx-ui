@@ -1,13 +1,10 @@
 <template>
   <div class="demo-section">
-    <p class="demo-title">基础类型</p>
+    <p class="demo-title">下划线模式</p>
     <div class="link-demo-row">
-      <HxLink href="https://github.com" target="_blank">默认</HxLink>
-      <HxLink type="primary">主要</HxLink>
-      <HxLink type="success">成功</HxLink>
-      <HxLink type="warning">警告</HxLink>
-      <HxLink type="danger">危险</HxLink>
-      <HxLink type="info">信息</HxLink>
+      <HxLink href="#" underline="always">始终显示</HxLink>
+      <HxLink href="#" underline="hover">悬停显示</HxLink>
+      <HxLink href="#" underline="never">从不显示</HxLink>
     </div>
   </div>
 </template>

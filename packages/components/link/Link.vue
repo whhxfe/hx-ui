@@ -3,16 +3,16 @@
   支持自动跳转和点击事件
 -->
 <template>
-  <!-- 单层根为 el-link 时，scoped 会落在内部 <a> 上，:deep(a.el-link) 无法匹配「自身」；包一层保证样式选择器生效 -->
+  <!-- 包一层 <span> 使 scoped 样式 :deep(a.el-link) 能正确匹配 -->
   <span class="hx-link">
-    <el-link v-bind="linkProps" @click="handleClick">
+    <el-link v-bind="linkAttrs" @click="handleClick">
       <slot />
     </el-link>
   </span>
 </template>
 
 <script lang="ts" setup>
-import { computed, useAttrs } from 'vue'
+import { computed } from 'vue'
 import { ElLink } from 'element-plus'
 import type { HxLinkProps } from './types'
 
@@ -26,18 +26,18 @@ const emit = defineEmits<{
   (e: 'click', evt: MouseEvent): void
 }>()
 
-const attrs = useAttrs()
+/** 从 props 中分离出 autoJump，其余透传给 el-link */
+const { autoJump: _autoJump, ...restProps } = props
 
-const linkProps = computed(() => ({
-  ...props,
-  ...attrs,
+const linkAttrs = computed(() => ({
+  ...restProps,
 }))
 
 function handleClick(evt: MouseEvent) {
   emit('click', evt)
 
   if (!props.disabled && props.autoJump && props.href) {
-    window.open(props.href, (attrs.target as string) ?? '_self')
+    window.open(props.href, props.target ?? '_self')
   }
 }
 </script>

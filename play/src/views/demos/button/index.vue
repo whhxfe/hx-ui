@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { PageLayout } from '@/components/layout'
-import DemoBlock from '@/components/demo/DemoBlock.vue'
+import { PageLayout, DemoBlock } from '@/components'
 </script>
 
 <template>

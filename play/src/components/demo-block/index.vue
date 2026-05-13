@@ -30,7 +30,7 @@
           <span class="hx-demo-block__filename">{{ filename }}</span>
         </div>
         <div class="hx-demo-block__code-body">
-          <pre><code>{{ source }}</code></pre>
+          <pre><code ref="codeRef" :class="`language-${lang}`">{{ source }}</code></pre>
         </div>
       </div>
     </transition>
@@ -38,7 +38,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch, nextTick } from 'vue'
+import hljs from 'highlight.js/lib/core'
+import xml from 'highlight.js/lib/languages/xml'
+import css from 'highlight.js/lib/languages/css'
+import scss from 'highlight.js/lib/languages/scss'
+import javascript from 'highlight.js/lib/languages/javascript'
+import typescript from 'highlight.js/lib/languages/typescript'
+import 'highlight.js/styles/github.css'
+
+hljs.registerLanguage('xml', xml)
+hljs.registerLanguage('css', css)
+hljs.registerLanguage('scss', scss)
+hljs.registerLanguage('javascript', javascript)
+hljs.registerLanguage('typescript', typescript)
 
 const props = defineProps<{
   path: string
@@ -46,6 +59,7 @@ const props = defineProps<{
 
 const showCode = ref(false)
 const copied = ref(false)
+const codeRef = ref<HTMLElement>()
 
 const filename = computed(() => props.path.split('/').pop() || props.path)
 
@@ -68,6 +82,27 @@ const source = computed(() => {
   })
   const key = Object.keys(modules).find(k => k.endsWith(props.path))
   return key ? (modules[key] as string) : `<!-- Not found: ${props.path} -->`
+})
+
+// 检测语言
+const lang = computed(() => {
+  const name = filename.value
+  if (name.endsWith('.vue') || name.endsWith('.html')) return 'xml'
+  if (name.endsWith('.ts') || name.endsWith('.tsx')) return 'typescript'
+  if (name.endsWith('.js') || name.endsWith('.jsx')) return 'javascript'
+  if (name.endsWith('.css')) return 'css'
+  if (name.endsWith('.scss')) return 'scss'
+  return 'xml'
+})
+
+// 展开源码时触发高亮
+watch(showCode, async (val) => {
+  if (val) {
+    await nextTick()
+    if (codeRef.value) {
+      hljs.highlightElement(codeRef.value)
+    }
+  }
 })
 
 const toggleCode = () => {
