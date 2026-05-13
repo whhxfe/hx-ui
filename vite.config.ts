@@ -11,6 +11,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@iconify-json': resolve(__dirname, 'node_modules/@iconify/json/json'),
+      '@': resolve(__dirname, 'packages'),
     },
   },
   plugins: [
