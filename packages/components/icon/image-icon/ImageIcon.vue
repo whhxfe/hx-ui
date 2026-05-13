@@ -35,7 +35,7 @@
 import { computed, ref, watch } from 'vue'
 import type { CSSProperties } from 'vue'
 import type { ImageIconProps } from '../types'
-import { useConfig } from '../../../config/composable'
+import { useConfig } from '../../../hooks/useConfig'
 
 defineOptions({
   name: 'HxImageIcon',

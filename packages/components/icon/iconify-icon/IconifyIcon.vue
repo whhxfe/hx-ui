@@ -3,8 +3,8 @@ import { Icon } from '@iconify/vue'
 import { Icon as OfflineIcon } from '@iconify/vue/offline'
 import { computed, watch, onMounted, ref } from 'vue'
 import type { IconifyIconProps } from '../types'
-import { useConfig } from '../../../config/composable'
-import { registerIconCollection } from '../../../config/offline-icons'
+import { useConfig } from '../../../hooks/useConfig'
+import { registerIconCollection } from '../../../utils/offline-icons'
 
 defineOptions({
   name: 'HxIconifyIcon',
@@ -20,8 +20,8 @@ const props = withDefaults(defineProps<IconifyIconProps>(), {
 
 const config = useConfig()
 const isOffline = computed(() => config.iconifyIcon.source.source === 'offline')
-// 图标集是否已加载完成
-const iconReady = ref(false)
+// 离线模式下需要等待图标集加载完成
+const iconReady = ref(!isOffline.value)  // CDN 模式直接设为 true
 
 const widthHeight = computed(() =>
   typeof props.size === 'number' ? props.size : props.size,
@@ -38,19 +38,23 @@ const iconStyle = computed(() => ({
   display: props.inline ? ('inline' as const) : ('inline-block' as const),
 }))
 
-// 动态注册图标集，等待加载完成后显示
+// 离线模式下动态注册图标集
 const ensureIconLoaded = async () => {
+  if (!isOffline.value) return  // CDN 模式不需要注册
   await registerIconCollection(props.icon)
   iconReady.value = true
 }
 
-// 组件挂载时注册当前图标集
+// 离线模式：组件挂载时注册当前图标集
 onMounted(() => {
-  ensureIconLoaded()
+  if (isOffline.value) {
+    ensureIconLoaded()
+  }
 })
 
-// 监听 icon 属性变化，重新检测并注册
+// 离线模式：监听 icon 属性变化，重新检测并注册
 watch(() => props.icon, () => {
+  if (!isOffline.value) return
   iconReady.value = false
   ensureIconLoaded()
 })

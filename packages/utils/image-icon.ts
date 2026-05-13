@@ -1,19 +1,4 @@
-import { inject, type InjectionKey } from 'vue'
-import type { HxConfig, ImageIconSourceItem, IconifyIconConfig } from './types'
-
-/** App-wide injection key */
-export const HxConfigKey: InjectionKey<HxConfig> = Symbol('hx-config')
-
-/**
- * 在组件内调用，读取最近的 HxConfigProvider 注入的配置。
- * 若无 Provider 则返回默认值。
- */
-export function useConfig(): HxConfig {
-  const config = inject(HxConfigKey, getDefaultConfig())
-  return config
-}
-
-// ---------- image icon helpers ----------
+import type { ImageIconSourceItem } from '../types/config'
 
 /**
  * 注册单张图片
@@ -69,25 +54,4 @@ export function buildImageSourceMap(
   }
 
   return map
-}
-
-// ---------- default config ----------
-
-function getDefaultConfig(): HxConfig {
-  return {
-    svgIcon: {
-      symbolPrefix: 'icon',
-    },
-    imageIcon: {
-      cdnBaseUrl: '',
-      source: 'auto',
-      sourceMap: {},
-      groups: [],
-      defaultGroup: 'title',
-    },
-    iconifyIcon: {
-      source: { source: 'offline', cdnUrl: undefined },
-      offlineCollections: [],
-    },
-  }
 }

@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import type { CSSProperties } from 'vue'
 import type { SvgIconProps } from '../types'
-import { useConfig } from '../../../config/composable'
+import { useConfig } from '../../../hooks/useConfig'
 
 defineOptions({
   name: 'HxSvgIcon',

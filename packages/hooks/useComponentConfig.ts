@@ -11,7 +11,7 @@
  * ```
  */
 import { inject, computed, type Ref } from 'vue'
-import { HxConfigKey } from './composable'
+import { HxConfigKey } from '../components/config-provider/injection'
 
 export function useComponentConfig<T extends Record<string, unknown>>(
   componentName: string,

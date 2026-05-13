@@ -69,7 +69,9 @@
       "import": "./dist/components/map/index.js"
     },
     "./index.css": "./dist/index.css",
-    "./dist/index.css": "./dist/index.css"
+    "./dist/index.css": "./dist/index.css",
+    "./theme-chalk": "./theme-chalk/index.scss",
+    "./theme-chalk/dark.scss": "./theme-chalk/dark.scss"
   },
   "sideEffects": [
     "**/*.css",

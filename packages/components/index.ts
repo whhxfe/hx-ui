@@ -65,6 +65,7 @@ export { HxText } from './text'
 export type { HxTextProps } from './text'
 export { HxUpload } from './upload'
 export type { UploadProps } from './upload'
+export { ThemeToggle } from './theme-toggle'
 
 
 

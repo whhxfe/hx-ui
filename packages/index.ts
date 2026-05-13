@@ -1,7 +1,29 @@
 // 注意：uno.css 由使用方在 uno.config.ts 中配置并在其入口处 import
 export * from './components'
-export { HxConfigProvider } from './config'
-export type { IconifyCollectionName } from './config/types'
+export { default as HxConfigProvider } from './components/config-provider/index.vue'
+export { useConfig } from './hooks/useConfig'
+export { useComponentConfig } from './hooks/useComponentConfig'
+export { registerOfflineCollections } from './utils/offline-icons'
+export { buildImageSourceMap, registerImageIcon } from './utils/image-icon'
+export type { IconifyCollectionName } from './types/config'
+export type {
+  HxConfig,
+  HxConfigProviderProps,
+  IconConfig,
+  ImageIconConfig,
+  ImageIconSourceItem,
+  IconifyIconConfig,
+  SvgIconConfig,
+  ImageProps,
+  SvgProps,
+  IconifyProps,
+  RequestProviderProps,
+  ComponentDefaults,
+} from './types/config'
+export { ThemeToggle } from './components/theme-toggle'
+
+// Hooks
+export { useTheme } from './hooks'
 
 // 兼容全局注册（HxUI.install 会按需注册 hx-* 标签名）
 import {
@@ -11,10 +33,10 @@ import {
   HxFilterPanel, HxContentText, HxMenu, HxLink, HxText,
   HxQuickDateButton, HxUploadFilePreviewList,
 } from './components'
-import { HxConfigProvider as _HxConfigProvider } from './config'
+import _HxConfigProviderFile from './components/config-provider/index.vue'
 import { withInstall } from './utils/install'
 
-const HxConfigProvider = withInstall(_HxConfigProvider, 'HxConfigProvider')
+const HxConfigProvider = withInstall(_HxConfigProviderFile, 'HxConfigProvider')
 
 const components = [
   HxButton,

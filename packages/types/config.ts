@@ -32,7 +32,7 @@ export interface IconifyIconSourceConfig {
   cdnUrl?: string
 }
 
-// 内置支持的离线图标集名称
+/** 内置支持的离线图标集名称 */
 export type IconifyCollectionName = string
 
 export interface IconifyIconConfig {
@@ -47,20 +47,6 @@ export interface IconifyIconConfig {
 export interface SvgIconConfig {
   /** SVG symbol 前缀 */
   symbolPrefix: string
-}
-
-// ========== Component Defaults ==========
-
-/**
- * 组件通用属性默认值。
- * 各组件可在此定义默认的 size、type 等属性，
- * 当组件自身未传对应 prop 时，回退到这里的值。
- */
-export interface ComponentDefaults {
-  /** 全局默认尺寸，作用于 Button、Input、Select 等支持 size 的组件 */
-  size?: 'small' | 'default' | 'large'
-  /** 各组件专属默认值 */
-  [componentName: string]: unknown
 }
 
 export interface ImageProps {
@@ -92,6 +78,15 @@ export interface IconConfig {
   iconify?: IconifyProps
 }
 
+/** Request Provider Props，与 utils/request.ts 中的 RequestOptions 对应 */
+export interface RequestProviderProps {
+  /** 全局默认请求头，会被请求级别的 headers 合并覆盖 */
+  headers?: Record<string, string>
+}
+
+/** 组件通用默认值 */
+export type ComponentDefaults = Record<string, Record<string, unknown>>
+
 export interface HxConfigProviderProps {
   /** Icon 组件全局配置 */
   icon?: IconConfig
@@ -99,12 +94,6 @@ export interface HxConfigProviderProps {
   request?: RequestProviderProps
   /** 组件通用默认值 */
   componentDefaults?: ComponentDefaults
-}
-
-/** Request Provider Props，与 utils/request.ts 中的 RequestOptions 对应 */
-export interface RequestProviderProps {
-  /** 全局默认请求头，会被请求级别的 headers 合并覆盖 */
-  headers?: Record<string, string>
 }
 
 export interface HxConfig {
