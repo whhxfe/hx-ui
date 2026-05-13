@@ -297,7 +297,6 @@ icon/inline
 | mode | SVG 图标模式 | `'mono' \| 'multi'` | `'mono'` |
 | group | 图标分组（Image 图标） | `string` | - |
 | cdnBaseUrl | CDN 资源地址（Image 图标） | `string` | `''` |
-| baseUrl | cdnBaseUrl 的别名 | `string` | `''` |
 | ext | 图片扩展名（Image 图标） | `string` | `'png'` |
 | source | 资源来源模式（Image 图标） | `'auto' \| 'local' \| 'cdn'` | `'auto'` |
 

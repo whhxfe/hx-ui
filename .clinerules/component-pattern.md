@@ -139,6 +139,73 @@ const props = withDefaults(defineProps<ImageIconProps>(), {
 <ImageIcon src="logo.png" />
 ```
 
+## ConfigProvider 注入模式
+
+本组件库通过 `provide/inject` 实现全局配置的透传。
+
+### 配置层级
+
+配置优先级：**组件 Props > ConfigProvider 全局配置 > 组件内部默认值**
+
+```
+组件 Props（最高优先级）
+  ↑ 回退
+ConfigProvider 全局配置
+  ↑ 回退
+组件内部 withDefaults 默认值（最低优先级）
+```
+
+### ConfigProvider 工作原理
+
+`HxConfigProvider` 接收用户配置，处理后通过 `provide` 注入：
+
+```typescript
+// config-provider/index.vue
+const config: HxConfig = {
+  svgIcon: { symbolPrefix: iconSvgConfig?.symbolPrefix ?? 'icon' },
+  imageIcon: {
+    cdnBaseUrl: iconImageConfig?.cdnBaseUrl ?? '',
+    source: (iconImageConfig?.source ?? 'auto') as 'auto' | 'local' | 'cdn',
+    // ...
+  },
+  iconifyIcon: { /* ... */ },
+  request: props.request,
+  componentDefaults: props.componentDefaults,
+}
+
+provide(HxConfigKey, config)
+```
+
+### 组件消费配置
+
+组件使用 `inject` 获取全局配置，并和自身 Props 合并：
+
+```typescript
+// 方式一：直接 inject（简单场景）
+import { HxConfigKey } from '../config-provider/injection'
+
+const config = inject<HxConfig>(HxConfigKey)
+const cdnBaseUrl = computed(() => props.cdnBaseUrl ?? config?.imageIcon?.cdnBaseUrl ?? '')
+```
+
+使用 `HxConfigKey` 的 injection key 保证类型安全。
+
+```typescript
+// 方式二：useComponentConfig（组件级默认值）
+import { useComponentConfig } from '../../hooks/useComponentConfig'
+
+const componentDefaults = useComponentConfig('Button', { size: 'default' as const })
+// ↑ 返回 { size: Ref<'default' | undefined> }
+// ↑ 优先级：config.componentDefaults.Button?.size > localDefaults.size
+```
+
+### 何时使用哪种方式
+
+- **图标、CDN URL 等全局资源路径**：直接 `inject` + computed 合并
+- **组件的通用样式/行为默认值**（如 size）：
+  - 需要被 ConfigProvider 的 `componentDefaults` 覆盖 → 使用 `useComponentConfig`
+  - 不需要被覆盖 → 直接 `withDefaults`
+
 ## 导出规范
 
 ### Barrel 导出
@@ -158,6 +225,37 @@ export type { ImageIconProps, BaseIconProps }
 
 - 组件 Props 接口必须从 index.ts 导出，供外部使用
 - 仅导出公开的 Props 接口，内部辅助类型不需要导出
+
+### 完整导出链路
+
+新组件从创建到可被消费者使用，需要完成以下链路：
+
+```
+packages/components/<component>/index.ts    # 1) 组件级 barrel 导出
+  → packages/components/index.ts            # 2) 统一 barrel 导出
+    → packages/index.ts                     # 3) 库入口（由 vite build 自动扫描）
+      → packages/package.json exports       # 4) 按需加载入口（手动注册）
+```
+
+**步骤详解：**
+
+1. **组件级 barrel**（`<component>/index.ts`）：导出组件本身及其 Props 类型
+2. **统一 barrel**（`packages/components/index.ts`）：将组件添加到全局导出
+3. **库入口**（`packages/index.ts`）：已经通过 `packages/components/index.ts` 自动涵盖，不需要手动添加
+4. **exports 注册**（`packages/package.json`）：在 `exports` 字段中添加按需加载的入口路径
+
+```jsonc
+// packages/package.json
+{
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+    "./components/your-component": {           // ← 新增
+      "types": "./dist/components/your-component/index.d.ts",
+      "import": "./dist/components/your-component/index.js"
+    }
+  }
+}
+```
 
 ## 避免过度抽象
 

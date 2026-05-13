@@ -1,0 +1,88 @@
+# 文档编写规范
+
+## 技术选型
+
+使用 VitePress 构建文档站点。
+
+## 文件组织
+
+```
+docs/
+├── index.md                 # 首页
+├── guide/                   # 指南
+│   ├── quickstart.md        # 快速开始
+│   └── wrapper-flow.md      # 二次封装流程
+├── components/              # 组件文档
+│   ├── icon.md              # 每个组件一个 md 文件
+│   └── table.md
+├── examples/                # 文档示例
+│   ├── icon/                # 与组件目录对应
+│   │   ├── basic.vue
+│   │   └── svg.vue
+│   └── table/
+├── public/                  # 静态资源
+└── package.json
+```
+
+## 文档编写规范
+
+### 组件文档
+
+每个组件应有独立的 Markdown 文件，包含以下内容结构：
+
+```
+# 组件名
+简要描述
+
+## 基本用法
+:::demo 描述文字
+component/demo-name
+:::
+
+### Props / Events 表格
+| 属性 | 说明 | 类型 | 默认值 |
+
+### 注意事项（可选）
+```
+
+### 示例文件
+
+- 示例 Vue 文件存放在 `docs/examples/<component>/` 下
+- 文件名为 kebab-case（如 `image-local.vue`、`svg-local.vue`）
+- 示例文件应完整可运行，不需要额外嵌套 wrapper
+- 示例内容聚焦演示单个功能点，避免示例过大
+
+### Demo 容器
+
+使用 VitePress 的 `:::demo` 自定义容器引用示例：
+
+```markdown
+:::demo 展示图标的基本用法
+icon/basic
+:::
+```
+
+第一个参数为容器类型 `demo`，第二行为示例路径（相对于 `docs/examples/` 目录，不含 `.vue` 后缀）。
+
+引用路径规则：
+- `icon/basic` → 对应 `docs/examples/icon/basic.vue`
+- `table/remote` → 对应 `docs/examples/table/remote.vue`
+
+## 编写要求
+
+- 新组件文档必须与组件代码同时提交，不允许滞后
+- 组件 Props 变更时，同步更新文档中的 Props 表格
+- 示例代码中涉及的 import 路径，应使用 `@hx/ui` 而非相对路径
+- 示例应覆盖组件的主要使用场景，包括各种模式/状态
+
+## 同步规则
+
+组件源码变更时，文档必须同步更新：
+
+| 变更类型 | 需要更新的文档内容 |
+|---------|------------------|
+| 新增组件 | 新建 `.md` + 至少一个示例 |
+| 新增/修改 prop | 更新 Props 表格 |
+| 新增/修改 emit | 更新 Events 表格 |
+| 新增/修改 slot | 更新 Slots 表格 |
+| 修改行为 | 更新功能描述 |
