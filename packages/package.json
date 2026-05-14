@@ -60,6 +60,10 @@
       "types": "./dist/components/content-text/index.d.ts",
       "import": "./dist/components/content-text/index.js"
     },
+    "./components/json-view": {
+      "types": "./dist/components/json-view/index.d.ts",
+      "import": "./dist/components/json-view/index.js"
+    },
     "./components/*": {
       "types": "./dist/components/*/index.d.ts",
       "import": "./dist/components/*/index.js"
@@ -80,6 +84,7 @@
   ],
   "files": [
     "dist",
+    "theme-chalk",
     "Readme.md"
   ],
   "license": "ISC",

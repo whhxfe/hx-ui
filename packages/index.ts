@@ -1,4 +1,8 @@
 // 注意：uno.css 由使用方在 uno.config.ts 中配置并在其入口处 import
+
+// 导入主题样式（CSS 变量定义），构建时会提取到 dist/index.css 中
+import './theme-chalk/index.scss'
+
 export * from './components'
 export { default as HxConfigProvider } from './components/config-provider/index.vue'
 export { useConfig } from './hooks/useConfig'
