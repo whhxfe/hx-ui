@@ -35,10 +35,10 @@
           重置
         </button>
         <button class="hx-filter-panel__btn hx-filter-panel__btn--collapse" @click="toggle">
-          {{ collapse ? '展开' : '收起' }}
+          {{ collapseState ? '展开' : '收起' }}
           <svg
             class="hx-filter-panel__caret"
-            :class="{ 'hx-filter-panel__caret--up': !collapse }"
+            :class="{ 'hx-filter-panel__caret--up': !collapseState }"
             width="10" height="10" viewBox="0 0 10 10" fill="none"
           >
             <path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -48,22 +48,23 @@
     </div>
     <div class="hx-filter-panel__body">
       <transition name="collapse">
-        <div class="hx-filter-panel__items" :class="{ 'is-collapsed': collapse }">
+        <div class="hx-filter-panel__items" :class="{ 'is-collapsed': collapseState }">
           <template v-for="filter in filters" :key="filter.prop">
             <FilterItem
               v-if="filter.type === 'filter-item'"
-              :ref="(el: any) => (filterItemRefs[filter.prop] = el)"
+              :ref="(el: any) => { if (el) filterItemRefs[filter.prop] = el as FilterItemInstance }"
               v-model="innerModelValue[filter.prop]"
               :label="filter.label"
               :options="filter.options"
               :remote="filter.remote"
               :multiple="filter.multiple"
+              :model-value-type="filter.modelValueType"
               :label-key="filter.labelKey || 'label'"
               :value-key="filter.valueKey || 'value'"
               :depends-on="filter.remote?.dependsOn"
               :depends-on-value="filter.remote?.dependsOn ? innerModelValue[filter.remote.dependsOn] : undefined"
               @change="handleFilterChange(filter.prop, $event)"
-              @options-updated="handleFilterItemOptionsUpdated"
+              @options-updated="() => {}"
             />
             <FilterDateRange
               v-else-if="filter.type === 'date-range'"
@@ -82,92 +83,75 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
+import { isEqual } from '../../utils'
 import FilterItem from './FilterItem.vue'
 import FilterDateRange from './FilterDateRange.vue'
 import type {
   FilterItemInstance,
   FilterConfig,
   FilterState,
-  ValueType,
+  FilterValueType,
   FilterOption,
+  FilterPanelProps,
+  FilterPanelEmits,
 } from './types'
 
-const filterItemRefs = ref<Record<string, FilterItemInstance | undefined>>({})
-const chipRenderTick = ref(0)
-const handleFilterItemOptionsUpdated = () => {
-  chipRenderTick.value++
-}
+const filterItemRefs = ref<Record<string, FilterItemInstance>>({})
 
-function cloneDeep<T>(value: T): T {
-  if (value === null || typeof value !== 'object') return value
-  if (Array.isArray(value)) return value.map(cloneDeep) as unknown as T
-  const result: Record<string, unknown> = {}
-  for (const key in value) {
-    if (Object.prototype.hasOwnProperty.call(value, key)) {
-      result[key] = cloneDeep((value as Record<string, unknown>)[key])
+const emit = defineEmits<FilterPanelEmits>()
+const props = withDefaults(defineProps<FilterPanelProps>(), {
+  title: '筛选条件',
+  collapse: false,
+})
+
+/**
+ * 根据 filter 配置生成初始空值状态
+ * - multiple 为 true 时使用空数组（modelValueType="string" 时用空字符串）
+ * - 其他情况使用空字符串
+ */
+function createEmptyState(filters: FilterConfig[]): FilterState {
+  const state: Record<string, FilterValueType> = {}
+  filters.forEach((filter) => {
+    if (filter.multiple && filter.modelValueType !== 'string') {
+      state[filter.prop] = []
+    } else {
+      state[filter.prop] = ''
     }
-  }
-  return result as T
+  })
+  return state
 }
 
-function isEqual(a: unknown, b: unknown): boolean {
-  if (a === b) return true
-  if (typeof a !== typeof b) return false
-  if (a === null || b === null) return a === b
-  if (typeof a !== 'object') return a === b
-  const keysA = Object.keys(a as object)
-  const keysB = Object.keys(b as object)
-  if (keysA.length !== keysB.length) return false
-  return keysA.every((key) => isEqual((a as Record<string, unknown>)[key], (b as Record<string, unknown>)[key]))
-}
+const initialSelections = createEmptyState(props.filters)
 
-const emit = defineEmits<{
-	'update:modelValue': [value: FilterState]
-	'change': [value: FilterState]
-	'filter-change': [key: string, value: unknown]
-	'reset': []
-}>()
-const props = withDefaults(defineProps<{
-	modelValue?: FilterState
-	title?: string
-	filters: FilterConfig[]
-	collapse?: boolean
-}>(), {
-	title: '筛选条件',
-	collapse: false,
-})
-
-const initialSelections = ref<FilterState>({})
-props.filters.forEach((filter) => {
-  initialSelections.value[filter.prop] = ''
-})
-
-const innerModelValue = reactive<FilterState>({ ...initialSelections.value })
+const innerModelValue = reactive<FilterState>({ ...initialSelections })
 
 if (props.modelValue) {
   Object.assign(innerModelValue, props.modelValue)
 }
 
+// 同步外部 modelValue 到内部状态
 watch(
   () => props.modelValue,
   (val) => {
-    if (!isEqual(val, innerModelValue)) {
+    if (val && !isEqual(val, innerModelValue)) {
       Object.assign(innerModelValue, val)
     }
   },
   { immediate: true, deep: true },
 )
 
+// 内部状态变化时同步到外部
 watch(
-  () => innerModelValue,
+  () => ({ ...innerModelValue }),
   (newVal) => {
     if (!isEqual(newVal, props.modelValue)) {
-      emit('update:modelValue', cloneDeep(newVal))
+      emit('update:modelValue', { ...newVal })
     }
   },
-  { deep: true, immediate: false },
+  { deep: true },
 )
 
+// 筛选出有值的字段用于展示 chip
 const activeFilters = computed(() => {
   return Object.fromEntries(
     Object.entries(innerModelValue).filter(([, value]) => {
@@ -180,35 +164,55 @@ const activeFilters = computed(() => {
 
 const hasActiveFilters = computed(() => Object.keys(activeFilters.value).length > 0)
 
-const collapse = ref(false)
+/**
+ * 折叠状态：由 props.collapse 控制，
+ * 组件内部 toggle 切换时同步更新 props.collapse
+ */
+const collapseState = ref(props.collapse)
+
+watch(
+  () => props.collapse,
+  (val) => {
+    collapseState.value = val
+  },
+)
 
 const toggle = () => {
-  collapse.value = !collapse.value
+  collapseState.value = !collapseState.value
 }
 
-const handleFilterChange = (prop: string, value: ValueType) => {
+const handleFilterChange = (prop: string, value: FilterValueType) => {
   innerModelValue[prop] = value
   emit('filter-change', prop, value)
 }
 
 const clearFilter = (prop: string | number) => {
   const filter = props.filters.find((f) => f.prop === prop)
-  innerModelValue[prop] = filter?.multiple ? [] : ''
+  if (filter?.multiple && filter.modelValueType !== 'string') {
+    innerModelValue[prop] = []
+  } else {
+    innerModelValue[prop] = ''
+  }
 }
 
 const handleReset = () => {
   Object.keys(innerModelValue).forEach((prop) => {
-    clearFilter(prop)
+    const filter = props.filters.find((f) => f.prop === prop)
+    if (filter?.multiple && filter.modelValueType !== 'string') {
+      innerModelValue[prop] = []
+    } else {
+      innerModelValue[prop] = ''
+    }
   })
   emit('reset')
 }
 
 const getFilterLabel = (prop: string | number) => {
   const filter = props.filters.find((f) => f.prop === prop)
-  return filter?.label || prop
+  return filter?.label || String(prop)
 }
 
-const getSelectionLabel = (prop: string | number, value: ValueType) => {
+const getSelectionLabel = (prop: string | number, value: FilterValueType) => {
   const filter = props.filters.find((f) => f.prop === prop)
   if (!filter || !value) return ''
   const labelKey = filter.labelKey || 'label'
