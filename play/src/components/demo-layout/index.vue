@@ -18,50 +18,57 @@ const activeMenu = ref(route.path)
 
 <template>
   <div class="app-layout">
-    <!-- 侧边栏：第一层 -->
-    <aside class="sidebar" :class="{ collapsed: isCollapse }">
-      <div class="logo">
-        <span v-if="!isCollapse" class="logo-text">HxUI</span>
-        <span v-else class="logo-text">H</span>
-      </div>
-      <el-menu
-        :default-active="activeMenu"
-        :collapse="isCollapse"
-        :collapse-transition="false"
-        router
-        class="sidebar-menu"
-      >
-        <el-menu-item
-          v-for="item in menuItems"
-          :key="item.index"
-          :index="item.index"
-        >
-          <hx-icon type="iconify" :name="item.icon" size="18px" />
-          <template #title>
-            <span>{{ item.title }}</span>
-          </template>
-        </el-menu-item>
-      </el-menu>
-    </aside>
-
-    <!-- 主区域：第二层 -->
-    <div class="main-wrapper">
-      <!-- 顶栏：第三层（浮于主区域上方） -->
-      <header class="topbar">
-        <hx-icon
-          type="iconify"
-          name="ep:fold"
-          size="20px"
-          class="collapse-btn"
-          @click="isCollapse = !isCollapse"
-        />
-        <span class="page-title">{{ route.meta?.title || '组件示例' }}</span>
-        <div class="topbar-actions">
-          <ThemeToggle />
+    <!-- 顶栏：全宽，位于最顶部 -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo-area" :class="{ collapsed: isCollapse }">
+          <div class="logo">
+            <span class="logo-text">HxUI</span>
+          </div>
         </div>
-      </header>
+        <span class="page-title">{{ route.meta?.title || '组件示例' }}</span>
+      </div>
+      <div class="header-right">
+        <ThemeToggle />
+      </div>
+    </header>
 
-      <!-- 内容区：第四层（浮于主区域上方，在顶栏下方） -->
+    <!-- 主体区域：侧边栏 + 内容区 -->
+    <div class="app-body">
+      <!-- 侧边栏 -->
+      <aside class="sidebar" :class="{ collapsed: isCollapse }">
+        <el-menu
+          :default-active="activeMenu"
+          :collapse="isCollapse"
+          :collapse-transition="false"
+          router
+          class="sidebar-menu"
+        >
+          <el-menu-item
+            v-for="item in menuItems"
+            :key="item.index"
+            :index="item.index"
+          >
+            <hx-icon type="iconify" :name="item.icon" size="18px" />
+            <template #title>
+              <span>{{ item.title }}</span>
+            </template>
+          </el-menu-item>
+        </el-menu>
+        <div class="sidebar-footer">
+          <div class="sidebar-collapse-area">
+            <hx-icon
+              type="iconify"
+              :name="isCollapse ? 'ep:expand' : 'ep:fold'"
+              size="20px"
+              class="collapse-btn"
+              @click="isCollapse = !isCollapse"
+            />
+          </div>
+        </div>
+      </aside>
+
+      <!-- 内容区 -->
       <main class="main-content">
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
@@ -75,18 +82,77 @@ const activeMenu = ref(route.path)
 
 <style scoped>
 /* ===================================
-   第一层：整体容器
+   第一层：整体容器（flex 列布局）
    =================================== */
 .app-layout {
   display: flex;
+  flex-direction: column;
   height: 100%;
   min-height: 0;
   overflow: hidden;
 }
 
 /* ===================================
-   第二层：侧边栏
-   阴影：右侧投影（复合深+浅），浮于主区域之上
+   第二层：顶栏（全宽，悬浮于内容上方）
+   阴影：底部投影 + 底部边框，浮于 body 之上
+   =================================== */
+.app-header {
+  height: 60px;
+  background: var(--hx-bg-color);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 20;
+  border-bottom: 1px solid var(--hx-border-color-light);
+  box-shadow: 0 2px 4px var(--hx-shadow-color),
+              0 4px 12px var(--hx-shadow-color-light);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.collapse-btn {
+  cursor: pointer;
+  color: var(--hx-text-color-regular);
+  transition: color 0.2s;
+}
+
+.collapse-btn:hover {
+  color: var(--hx-primary-color);
+}
+
+.page-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--hx-text-color-primary);
+}
+
+/* ===================================
+   第三层：主体区域（flex 行布局）
+   =================================== */
+.app-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ===================================
+   第四层：侧边栏
+   阴影：右侧投影（复合深+浅），浮于内容区之上
    =================================== */
 .sidebar {
   width: 220px;
@@ -108,8 +174,21 @@ const activeMenu = ref(route.path)
   width: 64px;
 }
 
+.logo-area {
+  width: 220px;
+  flex-shrink: 0;
+  transition: width 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -20px;
+}
+
+.logo-area.collapsed {
+  width: 64px;
+}
+
 .logo {
-  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -118,7 +197,18 @@ const activeMenu = ref(route.path)
   color: var(--hx-primary-color);
   letter-spacing: 2px;
   flex-shrink: 0;
-  border-bottom: 1px solid var(--hx-border-color-light);
+}
+
+.sidebar-footer {
+  flex-shrink: 0;
+  border-top: 1px solid var(--hx-border-color-light);
+}
+
+.sidebar-collapse-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
 }
 
 .sidebar-menu {
@@ -133,67 +223,17 @@ const activeMenu = ref(route.path)
 }
 
 /* ===================================
-   第三层：主区域
-   =================================== */
-.main-wrapper {
-  flex: 1;
-  min-width: 0;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: var(--hx-bg-color-page);
-}
-
-/* ===================================
-   第四层：顶栏
-   阴影：底部投影 + 底部边框线，浮于内容区之上
-   =================================== */
-.topbar {
-  height: 60px;
-  background: var(--hx-bg-color);
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  gap: 12px;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 5;
-  border-bottom: 1px solid var(--hx-border-color-light);
-  box-shadow: 0 2px 4px var(--hx-shadow-color),
-              0 4px 12px var(--hx-shadow-color-light);
-}
-
-.topbar-actions {
-  margin-left: auto;
-}
-
-.collapse-btn {
-  cursor: pointer;
-  color: var(--hx-text-color-regular);
-  transition: color 0.2s;
-}
-
-.collapse-btn:hover {
-  color: var(--hx-primary-color);
-}
-
-.page-title {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--hx-text-color-primary);
-}
-
-/* ===================================
    第五层：内容区
-   阴影：内凹阴影（复合深+浅），体现嵌入感
+   内凹阴影（复合深+浅），体现嵌入感
    =================================== */
 .main-content {
   flex: 1;
+  min-width: 0;
   min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
   padding: 24px;
+  background: var(--hx-bg-color-page);
   box-shadow: inset 0 1px 3px var(--hx-shadow-color),
               inset 0 4px 12px var(--hx-shadow-color-light);
 }
