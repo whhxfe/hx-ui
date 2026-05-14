@@ -48,35 +48,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, type Ref, computed } from 'vue'
-import type { FilterOption, FilterItemInstance, FilterValueType, ValueType, FilterRemoteConfig } from './types'
+import { computed, watch, useAttrs } from 'vue'
+import type { FilterOption, FilterItemInstance, FilterItemProps, FilterItemEmits } from './types'
 import { useFilterRemoteOptions } from '../../hooks/useFilterRemoteOptions'
 
-const props = withDefaults(defineProps<{
-	modelValue?: FilterValueType
-	label?: string
-	options?: FilterOption[]
-	labelKey?: string
-	valueKey?: string
-	multiple?: boolean
-	allowDeselectAll?: boolean
-	remote?: FilterRemoteConfig
-	dependsOn?: string
-	dependsOnValue?: FilterValueType
-}>(), {
-	modelValue: undefined,
-	label: '',
-	labelKey: 'label',
-	valueKey: 'value',
-	multiple: true,
-	allowDeselectAll: true,
+const props = withDefaults(defineProps<FilterItemProps>(), {
+  modelValue: undefined,
+  label: '',
+  labelKey: 'label',
+  valueKey: 'value',
+  multiple: false,
+  modelValueType: 'array',
+  allowDeselectAll: true,
 })
 
-const emit = defineEmits<{
-	'update:modelValue': [value: FilterValueType]
-	'change': [value: FilterValueType]
-	'options-updated': []
-}>()
+const emit = defineEmits<FilterItemEmits>()
+
+defineOptions({ inheritAttrs: false })
+const attrs = useAttrs()
+
+const MODEL_VALUE_SEPARATOR = ","
+
+/** 解析 modelValueType：优先从 props 取，未注册时从 attrs 取 */
+const modelValueTypeResolved = computed((): "string" | "array" => {
+  const p = props.modelValueType
+  if (p === "array" || p === "string") return p
+  const raw = attrs["model-value-type"] ?? attrs.modelValueType
+  if (typeof raw === "string") {
+    const s = raw.trim()
+    if (s === "array" || s === "string") return s
+  }
+  return "array"
+})
 
 // --- 远程 options（传 getter 让 watch 追踪 props.dependsOnValue 变化） ---
 const { remoteOptions, loading } = useFilterRemoteOptions(props.remote, {
@@ -109,34 +112,45 @@ const getValue = (option: FilterOption): string | number => {
   return typeof value === 'number' || typeof value === 'string' ? value : ''
 }
 
-// --- normalize / isSameValue ---
-const normalizeModelValue = (value: ValueType | undefined): ValueType => {
-  if (props.multiple) {
-    return Array.isArray(value) ? [...value] : []
-  }
-  return Array.isArray(value) ? (value[0] ?? '') : (value ?? '')
-}
+// --- currentValue: computed getter/setter（参考 Select.vue 模式） ---
+const currentValue = computed({
+  get: () => {
+    const v = props.modelValue
+    const useArray = props.multiple && modelValueTypeResolved.value === "array"
+    if (!useArray) {
+      // multiple + string: 从逗号字符串转数组（仅内部用于 isActive 判断）
+      if (typeof v === "string" && v) return v.split(MODEL_VALUE_SEPARATOR).map(x => x.trim()).filter(Boolean)
+      if (props.multiple) return []
+      return v ?? ""
+    }
+    // multiple + array
+    return Array.isArray(v) ? [...v] : []
+  },
+  set: (val) => {
+    const useArray = props.multiple && modelValueTypeResolved.value === "array"
+    if (!useArray) {
+      if (!props.multiple) {
+        emit("update:modelValue", val)
+        emit("change", val)
+        return
+      }
+      // multiple + string: join array to comma-separated string
+      emit("update:modelValue", Array.isArray(val) ? val.join(MODEL_VALUE_SEPARATOR) : "")
+      emit("change", Array.isArray(val) ? val.join(MODEL_VALUE_SEPARATOR) : "")
+      return
+    }
+    // multiple + array: emit array
+    emit("update:modelValue", val)
+    emit("change", val)
+  },
+})
 
-const isSameValue = (a: ValueType, b: ValueType): boolean => {
-  if (Array.isArray(a) && Array.isArray(b)) {
-    if (a.length !== b.length) return false
-    return a.every((item, index) => item === b[index])
-  }
-  return !Array.isArray(a) && !Array.isArray(b) && a === b
-}
-
-// --- currentValue 必须在所有 watch 之前声明 ---
-const currentValue: Ref<ValueType> = ref(normalizeModelValue(props.modelValue))
-const isSyncingFromProps = ref(false)
-
-// --- 联动：父值变化 → 清空自身选中 ---
+// --- 联动：父值变化 → 清空自身选中（通过 setter 自动 emit） ---
 watch(
   () => props.dependsOnValue,
   () => {
     if (!props.dependsOn) return
-    currentValue.value = normalizeModelValue(undefined)
-    emit('update:modelValue', currentValue.value)
-    emit('change', currentValue.value)
+    currentValue.value = props.multiple ? [] : ''
   },
   { immediate: true },
 )
@@ -149,6 +163,23 @@ const isActive = (option: FilterOption): boolean => {
   return currentValue.value === value
 }
 
+const handleSingleSelect = (value: string | number) => {
+  currentValue.value = currentValue.value !== value ? value : ''
+}
+
+const handleMultipleSelect = (value: string | number) => {
+  const currentValues = Array.isArray(currentValue.value) ? [...(currentValue.value as (string | number)[])] : []
+  const index = currentValues.indexOf(value)
+  let newValues: (string | number)[]
+  if (index > -1) {
+    const sliced = [...currentValues.slice(0, index), ...currentValues.slice(index + 1)]
+    newValues = props.allowDeselectAll || sliced.length > 0 ? sliced : currentValues
+  } else {
+    newValues = [...currentValues, value]
+  }
+  currentValue.value = newValues
+}
+
 const handleClick = (option: FilterOption) => {
   if (option.disabled) return
   const value = getValue(option)
@@ -158,45 +189,6 @@ const handleClick = (option: FilterOption) => {
     handleSingleSelect(value)
   }
 }
-
-const handleSingleSelect = (value: string | number) => {
-  currentValue.value = currentValue.value !== value ? value : ''
-}
-
-const handleMultipleSelect = (value: string | number) => {
-  if (!Array.isArray(currentValue.value)) {
-    currentValue.value = []
-  }
-  const currentValues = currentValue.value as (string | number)[]
-  const index = currentValues.indexOf(value)
-  if (index > -1) {
-    const newValues = [...currentValues.slice(0, index), ...currentValues.slice(index + 1)]
-    currentValue.value = props.allowDeselectAll || newValues.length > 0 ? newValues : currentValues
-  } else {
-    currentValue.value = [...currentValues, value]
-  }
-}
-
-watch(
-  () => props.modelValue,
-  (newVal) => {
-    const normalizedValue = normalizeModelValue(newVal)
-    if (isSameValue(currentValue.value, normalizedValue)) return
-    isSyncingFromProps.value = true
-    currentValue.value = normalizedValue
-    isSyncingFromProps.value = false
-  },
-)
-
-watch(
-  currentValue,
-  (newVal) => {
-    if (isSyncingFromProps.value) return
-    if (isSameValue(newVal, normalizeModelValue(props.modelValue))) return
-    emit('update:modelValue', newVal)
-    emit('change', newVal)
-  },
-)
 </script>
 
 <style lang="scss" scoped>

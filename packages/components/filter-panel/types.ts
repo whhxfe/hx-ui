@@ -1,3 +1,6 @@
+/**
+ * 筛选面板中单个选项的数据结构
+ */
 export interface FilterOption {
   [key: string]: any
   disabled?: boolean
@@ -35,14 +38,26 @@ export interface FilterRemoteConfig {
 	dependsOnIn?: "query" | "body"
 }
 
+/**
+ * 单个筛选字段的配置项
+ */
 export interface FilterConfig {
+  /** 字段标识，对应 FilterState 的 key */
   prop: string
+  /** 显示名称 */
   label: string
   /** 静态选项列表；使用 remote 时可省略 */
   options?: FilterOption[]
   labelKey?: string
   valueKey?: string
   multiple?: boolean
+  /**
+   * 多选时 v-model 的值类型：
+   * - `"array"`：值为数组（默认）
+   * - `"string"`：值为逗号拼接字符串（仅在 multiple=true 时有效）
+   */
+  modelValueType?: 'string' | 'array'
+  /** 筛选类型：'filter-item' 为普通选项筛选，'date-range' 为日期范围 */
   type: 'filter-item' | 'date-range'
   /** `filter-item`：远程数据配置（优先级高于 options），支持联动字段 dependsOn */
   remote?: FilterRemoteConfig
@@ -52,21 +67,27 @@ export interface FilterConfig {
   dateFormat?: string
 }
 
+/** 单个筛选字段的值类型 */
 export type FilterValueType = string | number | (string | number)[] | null | undefined
 
-export type ValueType = FilterValueType
-
+/** 筛选面板完整的值状态集合 */
 export interface FilterState {
   [key: string]: FilterValueType
 }
 
+/** HxFilterPanel 组件 Props */
 export interface FilterPanelProps {
+  /** 当前筛选值状态（v-model） */
   modelValue?: FilterState
+  /** 面板标题 */
   title?: string
+  /** 筛选字段配置数组 */
   filters: FilterConfig[]
+  /** 是否折叠筛选条件区域 */
   collapse?: boolean
 }
 
+/** HxFilterPanel 组件 Emits */
 export interface FilterPanelEmits {
   (e: 'update:modelValue', value: FilterState): void
   (e: 'change', value: FilterState): void
@@ -74,36 +95,48 @@ export interface FilterPanelEmits {
   (e: 'reset'): void
 }
 
+/** FilterItem 组件暴露的实例方法 */
 export interface FilterItemInstance {
   effectiveOptions: FilterOption[]
 }
 
+/** FilterDateRange 组件 Props */
 export interface FilterDateRangeProps {
-	modelValue?: FilterValueType
-	label?: string
-	/** 快捷范围：结束日期为今天，开始为今天往前推 `days` 天（与 HxQuickDateButton 一致） */
-	shortcuts?: FilterDateRangeShortcut[]
-	format?: string
+  modelValue?: FilterValueType
+  label?: string
+  /** 快捷范围：结束日期为今天，开始为今天往前推 `days` 天（与 HxQuickDateButton 一致） */
+  shortcuts?: FilterDateRangeShortcut[]
+  format?: string
+  /** 日期选择框弹出位置：'bottom' 下方（默认）, 'right' 右侧 */
+  dropdownPlacement?: 'bottom' | 'right'
 }
 
+/** FilterItem 组件 Props */
 export interface FilterItemProps {
-	modelValue?: FilterValueType
-	label?: string
-	options?: FilterOption[]
-	labelKey?: string
-	valueKey?: string
-	multiple?: boolean
-	allowDeselectAll?: boolean
-	/** 远程数据配置（优先级高于 options） */
-	remote?: FilterRemoteConfig
-	/** 联动：依赖的父级 prop 名称 */
-	dependsOn?: string
-	/** 联动：父级 prop 当前选中的值 */
-	dependsOnValue?: FilterValueType
+  modelValue?: FilterValueType
+  label?: string
+  options?: FilterOption[]
+  labelKey?: string
+  valueKey?: string
+  multiple?: boolean
+  /**
+   * 多选时 v-model 的值类型：
+   * - `"array"`：值为数组（默认）
+   * - `"string"`：值为逗号拼接字符串（仅在 multiple=true 时有效）
+   */
+  modelValueType?: 'string' | 'array'
+  allowDeselectAll?: boolean
+  /** 远程数据配置（优先级高于 options） */
+  remote?: FilterRemoteConfig
+  /** 联动：依赖的父级 prop 名称 */
+  dependsOn?: string
+  /** 联动：父级 prop 当前选中的值 */
+  dependsOnValue?: FilterValueType
 }
 
+/** FilterItem 组件 Emits */
 export interface FilterItemEmits {
-	(e: 'update:modelValue', value: FilterValueType): void
-	(e: 'change', value: FilterValueType): void
-	(e: 'options-updated'): void
+  (e: 'update:modelValue', value: FilterValueType): void
+  (e: 'change', value: FilterValueType): void
+  (e: 'options-updated'): void
 }
