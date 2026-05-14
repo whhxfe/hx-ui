@@ -136,6 +136,8 @@ export default defineConfig({
           text: '业务组件',
           items: [
             { text: 'FilterPanel 筛选面板', link: '/components/filter-panel' },
+            { text: 'FilterItem 筛选选项', link: '/components/filter-item' },
+            { text: 'FilterDateRange 日期范围选择', link: '/components/filter-date-range' },
             { text: 'HxQuickDateButton 快捷日期按钮', link: '/components/quick-date-button' },
           ],
         },

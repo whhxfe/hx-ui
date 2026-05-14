@@ -58,14 +58,14 @@ const filters: FilterConfig[] = [
     type: 'date-range',
     prop: 'dateRange',
     label: '时间范围',
-    options: [],
   },
 ]
 
 const filterState = ref<FilterState>({
-  category: [],
-  status: '',
-  dateRange: '',
+  category: ["electronics",
+    "home"],
+  status: 'doing',
+  dateRange: [],
 })
 
 const onFilterChange = (prop: string, value: unknown) => {
