@@ -34,7 +34,7 @@ import {
   HxButton, HxTable, HxIcon, HxLabelText, HxFilePreview,
   HxForm, HxSelect, HxRadio, HxCheckbox, HxRichEditor,
   HxTransfer, HxQrCode, HxInput, HxCascader, HxUpload,
-  HxFilterPanel, HxContentText, HxMenu, HxLink, HxText,
+  HxFilterPanel, HxFilterItem, HxFilterDateRange, HxContentText, HxMenu, HxLink, HxText,
   HxQuickDateButton, HxUploadFilePreviewList,
 } from './components'
 import _HxConfigProviderFile from './components/config-provider/index.vue'
@@ -59,6 +59,8 @@ const components = [
   HxCascader,
   HxUpload,
   HxFilterPanel,
+  HxFilterItem,
+  HxFilterDateRange,
   HxContentText,
   HxMenu,
   HxLink,

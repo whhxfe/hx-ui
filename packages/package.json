@@ -28,6 +28,14 @@
       "types": "./dist/components/table/types.d.ts",
       "import": "./dist/components/table/Table.vue.js"
     },
+    "./components/filter-item": {
+      "types": "./dist/components/filter-panel/types.d.ts",
+      "import": "./dist/components/filter-panel/FilterItem.vue.js"
+    },
+    "./components/filter-date-range": {
+      "types": "./dist/components/filter-panel/types.d.ts",
+      "import": "./dist/components/filter-panel/FilterDateRange.vue.js"
+    },
     "./hooks": {
       "types": "./dist/hooks/index.d.ts",
       "import": "./dist/hooks/index.js"

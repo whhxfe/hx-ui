@@ -43,7 +43,7 @@ export type {
 } from './transfer'
 export { HxQrCode } from './qrcode'
 export type { QrCodeProps, QrCodeRenderMode, QrCodeErrorCorrectionLevel, QrCodeLogo } from './qrcode'
-export { HxFilterPanel } from './filter-panel'
+export { HxFilterPanel, HxFilterItem, HxFilterDateRange } from './filter-panel'
 export type {
   FilterPanelProps,
   FilterPanelEmits,
@@ -52,7 +52,11 @@ export type {
   FilterDateRangeShortcut,
   FilterState,
   FilterItemInstance,
-  ValueType,
+  FilterItemProps,
+  FilterItemEmits,
+  FilterDateRangeProps,
+  FilterRemoteConfig,
+  FilterValueType,
 } from './filter-panel'
 export { HxContentText } from './content-text'
 export type { ContentTextProps } from './content-text'
