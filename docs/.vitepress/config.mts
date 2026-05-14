@@ -111,6 +111,7 @@ export default defineConfig({
           text: 'Data 数据展示',
           items: [
             { text: 'Table 表格', link: '/components/table' },
+            { text: 'CardList 卡片列表', link: '/components/card-list' },
             { text: 'LabelText 标签文本', link: '/components/label-text' },
             { text: 'ContentText 内容文本', link: '/components/content-text' },
             { text: 'JsonView JSON 视图', link: '/components/json-view' },
