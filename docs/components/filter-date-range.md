@@ -22,7 +22,7 @@ filter-date-range/dropdown-placement
 | label | 左侧标签文本 | `string` | `''` |
 | shortcuts | 快捷区间按钮列表，省略时为默认近 7 / 30 / 90 天 | `FilterDateRangeShortcut[]` | — |
 | format | 日期输出与展示格式 | `string` | `'YYYY-MM-DD'` |
-| dropdownPlacement | 自定义日期选择器弹出位置 | `'bottom' \| 'right'` | `'bottom'` |
+| dropdownPlacement | 自定义日期选择器弹出位置 | `'bottom' \| 'right'` | `'right'` |
 
 ### HxFilterDateRange Emits
 

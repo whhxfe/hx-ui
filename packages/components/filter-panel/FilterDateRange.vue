@@ -15,18 +15,16 @@
       <div class="hx-filter-date-range__custom-wrapper">
         <button
           type="button"
-          class="hx-filter-date-range__btn"
+          class="hx-filter-date-range__btn custom"
           :class="{ active: activeMode === 'custom' }"
           @click.stop="onCustomClick"
-        >
-          自定义
-        </button>
+        >自定义</button>
         <div
           v-show="popoverVisible"
           class="hx-filter-date-range__dropdown"
+          :class="dropdownClasses"
         >
           <el-date-picker
-            ref="pickerRef"
             v-model="pickerRange"
             type="daterange"
             unlink-panels
@@ -37,7 +35,6 @@
             end-placeholder="结束日期"
             :prefix-icon="Calendar"
             :clearable="true"
-            :popper-class="`hx-filter-date-range__popper--${props.dropdownPlacement}`"
             @change="onPickerChange"
           />
         </div>
@@ -47,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import dayjs from 'dayjs'
 import { Calendar } from '@element-plus/icons-vue'
 import type { FilterValueType, FilterDateRangeProps } from './types'
@@ -57,7 +54,7 @@ const props = withDefaults(defineProps<FilterDateRangeProps>(), {
   label: '',
   shortcuts: undefined,
   format: 'YYYY-MM-DD',
-  dropdownPlacement: 'bottom',
+  dropdownPlacement: 'right',
 })
 
 const emit = defineEmits<{
@@ -71,21 +68,14 @@ const DEFAULT_SHORTCUTS = [
   { label: '最近90天', days: 90 },
 ]
 
-const pickerRef = ref()
-const popoverVisible = ref(false)
-
-function onDocumentClick(e: MouseEvent) {
-  if (!popoverVisible.value) return
-  const wrapper = document.querySelector('.hx-filter-date-range__custom-wrapper')
-  if (wrapper && !wrapper.contains(e.target as Node)) {
-    // popoverVisible.value = false
-  }
-}
-
-onMounted(() => document.addEventListener('click', onDocumentClick))
-onUnmounted(() => document.removeEventListener('click', onDocumentClick))
+const popoverVisible = computed(() => activeMode.value === 'custom')
 
 const resolvedShortcuts = computed(() => props.shortcuts?.length ? props.shortcuts : DEFAULT_SHORTCUTS)
+
+const dropdownClasses = computed(() => ({
+  'hx-filter-date-range__dropdown--right': props.dropdownPlacement === 'right',
+  'hx-filter-date-range__dropdown--bottom': props.dropdownPlacement === 'bottom',
+}))
 
 type InnerMode = 'none' | 'preset' | 'custom'
 
@@ -94,18 +84,6 @@ const activeDays = ref<number | null>(null)
 const pickerRange = ref<[string, string] | null>(null)
 const syncingFromProps = ref(false)
 const applyingPreset = ref(false)
-
-const isCustomMode = computed(() => activeMode.value === 'custom')
-
-watch(isCustomMode, (val) => {
-  popoverVisible.value = val
-})
-
-watch(popoverVisible, (val) => {
-  if (!val) {
-    activeMode.value = 'none'
-  }
-})
 
 function rangeForDays(days: number): [string, string] {
   const end = dayjs().format(props.format)
@@ -210,11 +188,10 @@ function onPickerChange(val: unknown) {
     emitRange(null)
     return
   }
-  const tuple = parsed
-  pickerRange.value = tuple
+  pickerRange.value = parsed
   activeMode.value = 'custom'
   activeDays.value = null
-  emitRange(tuple)
+  emitRange(parsed)
 }
 </script>
 
@@ -258,6 +235,7 @@ $border-base: var(--hx-border-color-base);
   &__btn {
     display: inline-flex;
     align-items: center;
+    
     height: 28px;
     line-height: 1;
     padding: 0 12px;
@@ -293,30 +271,24 @@ $border-base: var(--hx-border-color-base);
   &__dropdown {
     position: absolute;
     z-index: 2000;
-    background: #fff;
+    background: var(--hx-bg-color, #fff);
     border-radius: 8px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 6px 20px var(--hx-shadow-color, rgba(0, 0, 0, 0.12));
     padding: 12px;
+
+    &--right {
+      left: 100%;
+      top: 0;
+    }
+
+    &--bottom {
+      left: 0;
+      top: calc(100% + 4px);
+    }
 
     :deep(.el-date-editor) {
       width: 260px;
     }
   }
-
- 
-    .hx-filter-date-range__popper--bottom.el-popper,
-    .hx-filter-date-range__popper--bottom > .el-date-editor {
-      top: 100% !important;
-      left: 0 !important;
-      margin-top: 4px;
-    }
-
-    .hx-filter-date-range__popper--right.el-popper,
-    .hx-filter-date-range__popper--right > .el-date-editor {
-      top: 0 !important;
-      left: 100% !important;
-      margin-left: 4px;
-    }
-  }
-
+}
 </style>

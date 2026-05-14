@@ -107,7 +107,7 @@ export interface FilterDateRangeProps {
   /** 快捷范围：结束日期为今天，开始为今天往前推 `days` 天（与 HxQuickDateButton 一致） */
   shortcuts?: FilterDateRangeShortcut[]
   format?: string
-  /** 日期选择框弹出位置：'bottom' 下方（默认）, 'right' 右侧 */
+  /** 日期选择框弹出位置：'right' 右侧（默认）, 'bottom' 下方 */
   dropdownPlacement?: 'bottom' | 'right'
 }
 
