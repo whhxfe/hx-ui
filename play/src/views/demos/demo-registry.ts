@@ -16,4 +16,8 @@ export const componentRoutes: Record<string, RouteMeta> = {
     title: '链接 Link',
     icon: 'ep-link',
   },
+  text: {
+    title: '文本 Text',
+    icon: 'ep-document-copy',
+  },
 }

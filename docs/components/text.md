@@ -14,15 +14,15 @@ text/basic
 
 ### Props
 
-| 名称       | 说明                                      | 类型                                    | 默认值  |
-| ---------- | ----------------------------------------- | --------------------------------------- | ------- |
-| type       | 文本类型                                  | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info' \| ''` | `''`   |
-| size       | 文本尺寸                                  | `'large' \| 'default' \| 'small'`       | `''`    |
-| truncated  | 溢出时显示省略号                          | `boolean`                               | `false` |
-| line-clamp | 最大行数，超出显示省略号                  | `number \| string`                     | `undefined` |
-| tag        | 自定义标签，默认为 span                    | `string`                               | `'span'` |
+| 名称       | 说明                                      | 类型                                                       | 默认值      |
+| ---------- | ----------------------------------------- | ---------------------------------------------------------- | ----------- |
+| type       | 文本类型                                  | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info' \| ''` | `''`        |
+| size       | 文本尺寸                                  | `'large' \| 'default' \| 'small'`                          | `''`        |
+| truncated  | 溢出时显示省略号                          | `boolean`                                                  | `false`     |
+| line-clamp | 最大行数，超出显示省略号                  | `number \| string`                                         | `undefined` |
+| tag        | 自定义标签                                | `string`                                                   | `'span'`    |
 
-> 其余 `ElText` 原生属性均可通过 `v-bind="$attrs"` 透传。
+> 其余 `ElText` 原生属性均可直接传入。
 
 ### Events
 
