@@ -1,6 +1,6 @@
 {
   "name": "@hx/ui",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "基于 Vue 3 + TypeScript + Element Plus 的业务组件库",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -9,129 +9,53 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
+      "import": "./dist/index.js"
     },
-    "./components/button": {
-      "types": "./dist/components/button/index.d.ts",
-      "import": "./dist/components/button/index.js"
-    },
-    "./components/table": {
-      "types": "./dist/components/table/index.d.ts",
-      "import": "./dist/components/table/index.js"
-    },
-    "./components/icon": {
-      "types": "./dist/components/icon/index.d.ts",
-      "import": "./dist/components/icon/index.js"
-    },
-    "./components/file-preview": {
-      "types": "./dist/components/file-preview/index.d.ts",
-      "import": "./dist/components/file-preview/index.js"
-    },
-    "./components/rich-editor": {
-      "types": "./dist/components/rich-editor/index.d.ts",
-      "import": "./dist/components/rich-editor/index.js"
-    },
-    "./components/form": {
-      "types": "./dist/components/form/index.d.ts",
-      "import": "./dist/components/form/index.js"
-    },
-    "./components/select": {
-      "types": "./dist/components/select/index.d.ts",
-      "import": "./dist/components/select/index.js"
-    },
-    "./components/checkbox": {
-      "types": "./dist/components/checkbox/index.d.ts",
-      "import": "./dist/components/checkbox/index.js"
-    },
-    "./components/radio": {
-      "types": "./dist/components/radio/index.d.ts",
-      "import": "./dist/components/radio/index.js"
-    },
-    "./components/transfer": {
-      "types": "./dist/components/transfer/index.d.ts",
-      "import": "./dist/components/transfer/index.js"
-    },
-    "./components/qrcode": {
-      "types": "./dist/components/qrcode/index.d.ts",
-      "import": "./dist/components/qrcode/index.js"
-    },
-    "./components/content-text": {
-      "types": "./dist/components/content-text/index.d.ts",
-      "import": "./dist/components/content-text/index.js"
+    "./index.css": "./dist/index.css",
+    "./components/text": {
+      "types": "./dist/components/text/types.d.ts",
+      "import": "./dist/components/text/text.vue.js"
     },
     "./components/json-view": {
       "types": "./dist/components/json-view/index.d.ts",
-      "import": "./dist/components/json-view/index.js"
+      "import": "./dist/components/json-view/JsonView.vue.js"
     },
-    "./components/*": {
-      "types": "./dist/components/*/index.d.ts",
-      "import": "./dist/components/*/index.js"
+    "./components/card-list": {
+      "types": "./dist/components/card-list/index.d.ts",
+      "import": "./dist/components/card-list/CardList.vue.js"
     },
-    "./components/map": {
-      "types": "./dist/components/map/index.d.ts",
-      "import": "./dist/components/map/index.js"
+    "./components/table": {
+      "types": "./dist/components/table/types.d.ts",
+      "import": "./dist/components/table/Table.vue.js"
     },
-    "./index.css": "./dist/index.css",
-    "./dist/index.css": "./dist/index.css",
-    "./theme-chalk": "./theme-chalk/index.scss",
-    "./theme-chalk/dark.scss": "./theme-chalk/dark.scss"
+    "./hooks": {
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.js"
+    }
   },
-  "sideEffects": [
-    "**/*.css",
-    "**/*.scss",
-    "**/*.vue"
-  ],
   "files": [
-    "dist",
-    "theme-chalk",
-    "Readme.md"
+    "dist"
   ],
-  "license": "ISC",
-  "packageManager": "pnpm@10.18.3",
+  "scripts": {
+    "dev": "vite build --watch --mode development",
+    "build": "vue-tsc --declaration --emitDeclarationOnly --noEmit true && vite build",
+    "prepublishOnly": "pnpm build"
+  },
   "peerDependencies": {
-    "@element-plus/icons-vue": ">=2.3.2",
+    "@element-plus/icons-vue": ">=2.3.1",
     "@iconify/vue": ">=4.3.0",
-    "@wangeditor/editor": "^5.1.23",
-    "@wangeditor/editor-for-vue": "5.1.12",
-    "dayjs": ">=1.11.0",
-    "element-plus": "^2.13.5",
-    "flv.js": "^1.6.2",
-    "hls.js": "^1.5.19",
-    "ol": "^10.4.0",
-    "pdfjs-dist": "^4.10.38",
-    "qrcode": "^1.5.4",
-    "vue": "^3.5.30"
+    "element-plus": ">=2.9.0",
+    "vue": ">=3.5.0"
   },
   "peerDependenciesMeta": {
-    "@element-plus/icons-vue": {
-      "optional": true
-    },
-    "@wangeditor/editor": {
-      "optional": true
-    },
-    "@wangeditor/editor-for-vue": {
-      "optional": true
-    },
-    "flv.js": {
-      "optional": true
-    },
-    "hls.js": {
+    "qrcode": {
       "optional": true
     },
     "pdfjs-dist": {
       "optional": true
-    },
-    "qrcode": {
-      "optional": true
     }
   },
   "devDependencies": {
-    "@rolldown/binding-win32-x64-msvc": "1.0.0-rc.9",
-    "@types/qrcode": "^1.5.6",
-    "axios": "^1.15.0",
-    "dayjs": "^1.11.20",
-    "sass": "^1.86.0",
-    "vue-json-pretty": "^2.6.0"
+    "@types/qrcode": "^1.5.5"
   }
 }
