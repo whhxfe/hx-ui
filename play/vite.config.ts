@@ -34,8 +34,6 @@ export default defineConfig({
       '@iconify-json': resolve(__dirname, '../node_modules/@iconify/json/json'),
       // CSS 文件需要指向 dist 目录（必须在 @hx/ui 之前，防止被更宽泛的别名覆盖）
       '@hx/ui/index.css': resolve(__dirname, '../packages/dist/index.css'),
-      // 主题样式
-      '@hx/ui/theme-chalk': resolve(__dirname, '../packages/theme-chalk'),
       // 直接解析到源码而不是 dist（指向 index.ts 而非目录，避免被 package.json#module 覆盖）
       '@hx/ui': resolve(__dirname, '../packages/index.ts'),
     },
