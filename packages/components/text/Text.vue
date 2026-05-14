@@ -5,14 +5,14 @@
 <template>
   <!-- 外层 span 保证 scoped :deep() 样式可命中 el-text 内部元素 -->
   <span class="hx-text">
-    <el-text v-bind="textProps" @click="handleClick">
+    <el-text v-bind="textAttrs" @click="handleClick">
       <slot />
     </el-text>
   </span>
 </template>
 
 <script lang="ts" setup>
-import { computed, useAttrs } from 'vue'
+import { computed } from 'vue'
 import { ElText } from 'element-plus'
 import type { HxTextProps } from './types'
 
@@ -27,11 +27,8 @@ const emit = defineEmits<{
   (e: 'click', evt: MouseEvent): void
 }>()
 
-const attrs = useAttrs()
-
-const textProps = computed(() => ({
+const textAttrs = computed(() => ({
   ...props,
-  ...attrs,
 }))
 
 function handleClick(evt: MouseEvent) {

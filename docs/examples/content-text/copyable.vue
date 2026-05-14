@@ -3,9 +3,6 @@
     <p class="demo-title">普通文本 + 复制（hover 查看）</p>
     <HxContentText :content="plainText" :copyable="true" />
 
-    <p class="demo-title" style="margin-top: 28px">JSON + 复制 + 展开</p>
-    <HxContentText :content="jsonData" :copyable="true" />
-
     <p class="demo-title" style="margin-top: 28px">空内容占位</p>
     <HxContentText :content="emptyText" :copyable="true" placeholder="暂无数据" />
   </div>
@@ -15,13 +12,6 @@
 import { HxContentText } from '@hx/ui'
 
 const plainText = '可通过 Ctrl+C 或点击复制按钮复制本段内容。'
-
-const jsonData = JSON.stringify({
-  key: 'value',
-  list: [1, 2, 3],
-  flag: false,
-  total: 42,
-}, null, 2)
 
 const emptyText = ''
 </script>
