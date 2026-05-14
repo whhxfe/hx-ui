@@ -1,31 +1,13 @@
 <template>
   <div class="hx-content-text" :class="{ 'is-copyable': copyable }">
-    <!-- 普通文本视图 -->
-    <div
-      v-if="line > 0"
-      class="hx-content-text__text hx-content-text__text--clamp"
-      :class="`line-clamp-${Math.min(line, 10)}`"
-      :style="clampStyle"
-      :title="content"
-    >{{ displayContent }}</div>
-    <div
-      v-else
-      class="hx-content-text__text"
-      :style="clampStyle"
-    >{{ displayContent }}</div>
-
-    <div
-      v-if="line > 0 && canExpand"
-      class="hx-content-text__expand-btn"
-      @click="toggleExpand"
-    >
-      <span>{{ expanded ? '收起' : '展开' }}</span>
-      <svg
-        width="10" height="10" viewBox="0 0 10 10" fill="none"
-        :style="{ transform: expanded ? 'rotate(180deg)' : '', transition: 'transform 0.2s' }"
-      >
-        <path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+    <div class="hx-content-text__container">
+      <div
+        ref="textRef"
+        class="hx-content-text__text"
+        :class="{ 'hx-content-text__text--clamp': shouldClamp && !expanded }"
+        :style="textStyle"
+        :title="line > 0 && !expanded && isTruncated ? content : ''"
+      >{{ displayContent }}</div>
     </div>
 
     <!-- 复制按钮 -->
@@ -37,21 +19,32 @@
         :title="copyFeedback ? '已复制' : '复制'"
         @click="copy"
       >
-        <svg v-if="!copyFeedback" width="13" height="13" viewBox="0 0 13 13" fill="none">
-          <rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
-          <path d="M9 4V2.5A1.5 1.5 0 0 0 7.5 1H2.5A1.5 1.5 0 0 0 1 2.5v5A1.5 1.5 0 0 0 2.5 9H4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-        </svg>
-        <svg v-else width="13" height="13" viewBox="0 0 13 13" fill="none">
-          <path d="M2 7l3.5 3.5L11 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <HxIcon v-if="!copyFeedback" type="iconify" name="mdi:content-copy" />
+        <HxIcon v-else type="iconify" name="mdi:check" />
       </button>
     </transition>
+
+    <!-- 展开/折叠按钮 -->
+    <div
+      v-if="line > 0 && canExpand"
+      class="hx-content-text__expand-btn"
+      @click="toggleExpand"
+    >
+      <span>{{ expanded ? '收起' : '展开' }}</span>
+      <HxIcon
+        type="iconify"
+        name="mdi:chevron-down"
+        class="hx-content-text__expand-icon"
+        :class="{ rotated: expanded }"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import type { ContentTextProps } from './types'
+import { computed, ref, nextTick, watch, onMounted } from 'vue'
+import { HxIcon } from '../icon'
+import type { ContentTextProps } from './index'
 
 defineOptions({ name: 'HxContentText' })
 
@@ -62,32 +55,103 @@ const props = withDefaults(defineProps<ContentTextProps>(), {
   maxHeight: 0,
 })
 
-// ── 展开状态 ────────────────────────────────────────────────────────
-const expanded = ref(false)
+const textRef = ref<HTMLElement>()
 
-const canExpand = computed(() => props.line > 0)
+const expanded = ref(false)
+const isTruncated = ref(false)
 
 function toggleExpand() {
   expanded.value = !expanded.value
 }
 
-// ── 普通文本显示 ───────────────────────────────────────────────────
+function checkTruncated() {
+  if (!textRef.value || props.line <= 0) {
+    isTruncated.value = false
+    return
+  }
+  const el = textRef.value
+
+  // 临时移除截断样式，测量完整高度
+  const originalLineClamp = el.style.webkitLineClamp
+  const originalOverflow = el.style.overflow
+  const originalMaxHeight = el.style.maxHeight
+  const originalDisplay = el.style.display
+
+  el.style.webkitLineClamp = 'unset'
+  el.style.overflow = 'visible'
+  el.style.maxHeight = 'none'
+  el.style.display = 'block'    // 确保不受 -webkit-box 影响
+
+  const fullHeight = el.scrollHeight
+
+  // 恢复
+  el.style.webkitLineClamp = originalLineClamp
+  el.style.overflow = originalOverflow
+  el.style.maxHeight = originalMaxHeight
+  el.style.display = originalDisplay
+
+  // 计算限制行数下的最大可见高度
+  const style = getComputedStyle(el)
+  let lineHeight = 0
+  if (style.lineHeight === 'normal') {
+    lineHeight = parseFloat(style.fontSize) * 1.2
+  } else {
+    lineHeight = parseFloat(style.lineHeight)
+  }
+
+  const maxVisibleHeight = lineHeight * props.line
+  isTruncated.value = fullHeight > maxVisibleHeight + 1
+}
+
+watch(
+  () => [props.content, props.line],
+  () => {
+    nextTick(() => {
+      requestAnimationFrame(() => {
+        checkTruncated()
+      })
+    })
+  },
+  { immediate: true }
+)
+
+onMounted(() => {
+  nextTick(() => {
+    requestAnimationFrame(() => {
+      checkTruncated()
+    })
+  })
+})
+
+const canExpand = computed(() => props.line > 0 && isTruncated.value)
+
 const displayContent = computed(() => {
   if (!props.content && props.placeholder) return props.placeholder
   return props.content ?? ''
 })
 
-const clampStyle = computed(() => {
+const shouldClamp = computed(() => props.line > 0)
+
+const textStyle = computed(() => {
+  const style: Record<string, string | number> = {}
+
+  // 行数截断 — 通过 -webkit-line-clamp 控制
+  if (props.line > 0 && !expanded.value) {
+    style['-webkit-line-clamp'] = props.line
+  }
+
+  // maxHeight 截断 — 超出时显示滚动条
   if (typeof props.maxHeight === 'number' && props.maxHeight > 0) {
-    return { maxHeight: `${props.maxHeight}px`, overflow: 'hidden' }
+    style.maxHeight = expanded.value ? 'none' : `${props.maxHeight}px`
+    style.overflow = expanded.value ? 'visible' : 'auto'
+  } else if (typeof props.maxHeight === 'string' && props.maxHeight) {
+    style.maxHeight = expanded.value ? 'none' : props.maxHeight
+    style.overflow = expanded.value ? 'visible' : 'auto'
   }
-  if (typeof props.maxHeight === 'string' && props.maxHeight) {
-    return { maxHeight: props.maxHeight, overflow: 'hidden' }
-  }
-  return {}
+
+  return style
 })
 
-// ── 复制 ───────────────────────────────────────────────────────────
 const copyFeedback = ref(false)
 
 async function copy() {
@@ -109,106 +173,106 @@ async function copy() {
 }
 </script>
 
-<style lang="scss">
-// ── 变量 ─────────────────────────────────────────────────────────────
-$primary: var(--hx-primary-color);
-$success: var(--hx-success-color);
-$text-main: var(--hx-text-color-primary);
-$text-regular: var(--hx-text-color-regular);
-$text-secondary: var(--hx-text-color-secondary);
-$text-placeholder: var(--hx-text-color-placeholder);
-$border-color: var(--hx-border-color-base);
-$bg-hover: var(--hx-bg-color-hover);
-
+<style scoped>
+/* 根容器 */
 .hx-content-text {
   display: block;
   position: relative;
   font-size: 14px;
-  color: $text-main;
+  color: var(--hx-text-color-primary, #333);
   line-height: 1.6;
-
-  // ── 普通文本样式 ─────────────────────────────────────────────────
-  &__text {
-    color: $text-main;
-    word-break: break-word;
-    font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
-    font-size: 14px;
-    line-height: 1.6;
-
-    &--clamp {
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-    }
-
-    @for $i from 1 through 10 {
-      &.line-clamp-#{$i} {
-        -webkit-line-clamp: $i;
-        line-clamp: $i;
-      }
-    }
-  }
-
-  // ── 展开按钮 ────────────────────────────────────────────────────
-  &__expand-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    margin-top: 4px;
-    font-size: 12px;
-    color: $primary;
-    cursor: pointer;
-    user-select: none;
-    font-family: inherit;
-
-    &:hover {
-      opacity: 0.75;
-    }
-  }
-
-  // ── 复制按钮 ────────────────────────────────────────────────────
-  &__copy-btn {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 5px;
-    background: transparent;
-    border: 1px solid $border-color;
-    color: $text-secondary;
-    cursor: pointer;
-    padding: 0;
-    opacity: 0;
-    transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-    font-family: inherit;
-
-    .hx-content-text:hover & {
-      opacity: 1;
-    }
-
-    &:hover {
-      color: $primary;
-      border-color: $primary;
-      background: $bg-hover;
-    }
-
-    &.copied {
-      color: $success;
-      border-color: $success;
-    }
-
-    &:focus-visible {
-      outline: 2px solid rgba($primary, 0.3);
-      outline-offset: 2px;
-    }
-  }
 }
 
-// ── 过渡 ─────────────────────────────────────────────────────────────
+/* 文本容器 */
+.hx-content-text__container {
+  position: relative;
+}
+
+/* 文本内容 */
+.hx-content-text__text {
+  color: var(--hx-text-color-primary, #333);
+  word-break: break-word;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* 截断模式 */
+.hx-content-text__text--clamp {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+/* 展开按钮 */
+.hx-content-text__expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--hx-primary-color, #1890ff);
+  cursor: pointer;
+  user-select: none;
+  font-family: inherit;
+}
+.hx-content-text__expand-btn:hover {
+  opacity: 0.75;
+}
+
+/* 展开图标 */
+.hx-content-text__expand-icon {
+  font-size: 12px;
+  transition: transform 0.2s;
+}
+.hx-content-text__expand-icon.rotated {
+  transform: rotate(180deg);
+}
+
+/* 复制按钮 */
+.hx-content-text__copy-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--hx-border-color-base, #dcdfe6);
+  color: var(--hx-text-color-secondary, #999);
+  cursor: pointer;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  font-family: inherit;
+  z-index: 1;
+}
+
+/* hover 显示复制按钮 */
+.hx-content-text:hover .hx-content-text__copy-btn {
+  opacity: 1;
+}
+
+.hx-content-text__copy-btn:hover {
+  color: var(--hx-primary-color, #1890ff);
+  border-color: var(--hx-primary-color, #1890ff);
+  background: #fff;
+}
+
+.hx-content-text__copy-btn.copied {
+  color: var(--hx-success-color, #52c41a);
+  border-color: var(--hx-success-color, #52c41a);
+}
+
+.hx-content-text__copy-btn:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--hx-primary-color, #1890ff) 30%, transparent);
+  outline-offset: 2px;
+}
+
+/* 过渡 */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.18s ease;

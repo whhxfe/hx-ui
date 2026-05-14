@@ -22,7 +22,7 @@ content-text/copyable
 | --- | --- | --- | --- |
 | content | 显示的文本内容 | `string` | — |
 | line | 行数限制，超出后显示「展开」按钮，0 表示不限制 | `number` | `0` |
-| copyable | 是否支持复制，hover 后显示复制按钮 | `boolean` | `false` |
+| copyable | 是否支持复制，hover 后显示复制按钮 | `boolean` | `true` |
 | placeholder | 内容为空时的占位文本 | `string` | `''` |
 | maxHeight | 最大高度（px 或带单位字符串），超出后截断 | `number \| string` | `0` |
 
@@ -36,3 +36,9 @@ content-text/copyable
 
 ```ts
 import type { ContentTextProps } from '@hx/ui'
+// ContentTextProps:
+// content?: string
+// line?: number
+// copyable?: boolean
+// placeholder?: string
+// maxHeight?: number | string

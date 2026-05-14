@@ -20,4 +20,8 @@ export const componentRoutes: Record<string, RouteMeta> = {
     title: '文本 Text',
     icon: 'ep-document-copy',
   },
+  'content-text': {
+    title: '文本内容 ContentText',
+    icon: 'ep-document-copy',
+  },
 }
