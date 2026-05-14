@@ -1,0 +1,116 @@
+---
+description: Monorepo 工作区管理和包构建规范
+alwaysApply: false
+---
+
+# Monorepo 工程规范
+
+## Workspace 组织
+
+本仓库使用 pnpm workspace 管理，包含以下子包：
+
+| 包路径 | 包名 | 用途 |
+|--------|------|------|
+| `packages/` | `@hx/ui` | 组件库主包（库代码） |
+| `docs/` | — | VitePress 文档站点 |
+| `play/` | — | 开发调试沙盒 |
+| `server/` | `@hx/ui-server` | 示例后端服务 |
+
+## 构建流程
+
+### 组件库构建（packages/）
+
+```bash
+pnpm build:ui
+```
+
+- 使用 Vite + rolldown 构建，入口为 `packages/index.ts`
+- 输出到 `packages/dist/`，格式为 ES Module
+- 使用 `preserveModules` 保持源文件结构，实现组件级按需加载
+- 使用 `vite-plugin-dts` 生成 `.d.ts` 类型声明
+- 外部依赖（Vue、Element Plus、Iconify 等）通过 `rollupOptions.external` 排除，不打包进产物
+
+### 文档构建（docs/）
+
+```bash
+pnpm docs:dev    # 本地开发
+pnpm docs:build  # 构建
+pnpm docs:preview # 预览
+```
+
+- 使用 VitePress 构建文档站点
+- 文档示例文件存放在 `docs/examples/<component>/` 下
+
+### Play 开发调试
+
+```bash
+pnpm play:dev
+```
+
+- 独立的 Vite 应用，用于组件开发时的实时调试
+- 可以使用 `@hx/ui` 的全部导出
+
+## 依赖管理策略
+
+### 根目录 package.json
+
+- **devDependencies**：项目级的构建工具和公共依赖（vite, typescript, unocss 等）
+- 不包含子包运行时依赖
+
+### 子包依赖
+
+- **peerDependencies**：运行时依赖（vue, element-plus, @iconify/vue 等）
+  - 使用 `>=` 范围声明，允许消费者使用更高版本
+  - 可选依赖（如 pdfjs-dist, qrcode 等）配置 `peerDependenciesMeta.optional: true`
+- **devDependencies**：构建所需的类型声明等（@types/*）
+
+### 安装原则
+
+```bash
+# 全局依赖（根目录）
+pnpm add -wD <package>
+
+# 子包依赖
+pnpm add <package> --filter @hx/ui
+
+# 工作空间内部依赖
+pnpm add @hx/ui --filter play
+```
+
+## 包命名规范
+
+| 包名 | 规范 |
+|------|------|
+| 组件库 | `@hx/ui` |
+| 后端服务 | `@hx/ui-server` |
+| 目录命名 | kebab-case |
+
+## 组件导出链路
+
+组件从源码到可被消费者使用，需要经过三层注册：
+
+```
+packages/<component>/index.ts     # 1) 组件级 barrel 导出
+  → packages/components/index.ts  # 2) 统一 barrel 导出
+    → packages/index.ts           # 3) 库入口
+      → packages/package.json     # 4) exports 字段（按需加载入口）
+```
+
+任何新组件都必须完成以上所有步骤。
+
+## 文件组织
+
+```
+packages/
+├── components/       # 组件实现
+│   ├── <component>/  # 单个组件目录
+│   │   ├── index.ts  # barrel 导出
+│   │   ├── types.ts  # props/emits 类型
+│   │   └── *.vue     # 组件实现
+│   └── index.ts      # 全局 barrel 导出
+├── hooks/            # composable 函数
+├── utils/            # 工具函数
+├── constants/        # 常量
+├── types/            # 全局类型定义
+└── theme-chalk/      # 样式
+```
