@@ -1,6 +1,6 @@
 <template>
   <div class="hx-filter-date-range">
-    <label v-if="label" class="hx-filter-date-range__label">{{ label }}:</label>
+    <label v-if="label" class="hx-filter-date-range__label">{{ label }}</label>
     <div class="hx-filter-date-range__row">
       <button
         v-for="s in resolvedShortcuts"
@@ -12,62 +12,78 @@
       >
         {{ s.label }}
       </button>
-      <button
-        type="button"
-        class="hx-filter-date-range__btn"
-        :class="{ active: activeMode === 'custom' }"
-        @click="onCustomClick"
-      >
-        自定义
-      </button>
-      <el-date-picker
-        v-show="activeMode === 'custom'"
-        v-model="pickerRange"
-        class="hx-filter-date-range__picker"
-        type="daterange"
-        unlink-panels
-        :value-format="format"
-        :format="format"
-        range-separator=" - "
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-        :prefix-icon="Calendar"
-        :clearable="true"
-        @change="onPickerChange"
-      />
+      <div class="hx-filter-date-range__custom-wrapper">
+        <button
+          type="button"
+          class="hx-filter-date-range__btn"
+          :class="{ active: activeMode === 'custom' }"
+          @click.stop="onCustomClick"
+        >
+          自定义
+        </button>
+        <div
+          v-show="popoverVisible"
+          class="hx-filter-date-range__dropdown"
+        >
+          <el-date-picker
+            ref="pickerRef"
+            v-model="pickerRange"
+            type="daterange"
+            unlink-panels
+            :value-format="format"
+            :format="format"
+            range-separator=" - "
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :prefix-icon="Calendar"
+            :clearable="true"
+            :popper-class="`hx-filter-date-range__popper--${props.dropdownPlacement}`"
+            @change="onPickerChange"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import dayjs from 'dayjs'
 import { Calendar } from '@element-plus/icons-vue'
+import type { FilterValueType, FilterDateRangeProps } from './types'
 
-type ValueType = string | number | (string | number)[] | null | undefined
-
-const props = withDefaults(defineProps<{
-	modelValue?: ValueType
-	label?: string
-	shortcuts?: { label: string; days: number }[]
-	format?: string
-}>(), {
-	modelValue: undefined,
-	label: '',
-	shortcuts: undefined,
-	format: 'YYYY-MM-DD',
+const props = withDefaults(defineProps<FilterDateRangeProps>(), {
+  modelValue: undefined,
+  label: '',
+  shortcuts: undefined,
+  format: 'YYYY-MM-DD',
+  dropdownPlacement: 'bottom',
 })
 
 const emit = defineEmits<{
-	'update:modelValue': [value: ValueType]
-	'change': [value: ValueType]
+  'update:modelValue': [value: FilterValueType]
+  'change': [value: FilterValueType]
 }>()
 
 const DEFAULT_SHORTCUTS = [
-	{ label: '最近7天', days: 7 },
-	{ label: '最近30天', days: 30 },
-	{ label: '最近90天', days: 90 },
+  { label: '最近7天', days: 7 },
+  { label: '最近30天', days: 30 },
+  { label: '最近90天', days: 90 },
 ]
+
+const pickerRef = ref()
+const popoverVisible = ref(false)
+
+function onDocumentClick(e: MouseEvent) {
+  if (!popoverVisible.value) return
+  const wrapper = document.querySelector('.hx-filter-date-range__custom-wrapper')
+  if (wrapper && !wrapper.contains(e.target as Node)) {
+    // popoverVisible.value = false
+  }
+}
+
+onMounted(() => document.addEventListener('click', onDocumentClick))
+onUnmounted(() => document.removeEventListener('click', onDocumentClick))
 
 const resolvedShortcuts = computed(() => props.shortcuts?.length ? props.shortcuts : DEFAULT_SHORTCUTS)
 
@@ -78,6 +94,18 @@ const activeDays = ref<number | null>(null)
 const pickerRange = ref<[string, string] | null>(null)
 const syncingFromProps = ref(false)
 const applyingPreset = ref(false)
+
+const isCustomMode = computed(() => activeMode.value === 'custom')
+
+watch(isCustomMode, (val) => {
+  popoverVisible.value = val
+})
+
+watch(popoverVisible, (val) => {
+  if (!val) {
+    activeMode.value = 'none'
+  }
+})
 
 function rangeForDays(days: number): [string, string] {
   const end = dayjs().format(props.format)
@@ -90,7 +118,7 @@ function rangesEqual(a: [string, string] | null | undefined, b: [string, string]
   return a[0] === b[0] && a[1] === b[1]
 }
 
-function normalizeIncoming(val: ValueType | undefined): [string, string] | null {
+function normalizeIncoming(val: FilterValueType | undefined): [string, string] | null {
   if (val === '' || val === null || val === undefined) return null
   if (!Array.isArray(val) || val.length !== 2) return null
   const a = String(val[0])
@@ -108,12 +136,12 @@ function inferPresetDays(range: [string, string]): number | null {
 }
 
 function emitRange(range: [string, string] | null) {
-  const out: ValueType = range ? [range[0], range[1]] : ''
+  const out: FilterValueType = range ? [range[0], range[1]] : ''
   emit('update:modelValue', out)
   emit('change', out)
 }
 
-function syncFromModel(val: ValueType | undefined) {
+function syncFromModel(val: FilterValueType | undefined) {
   const range = normalizeIncoming(val)
   if (!range) {
     activeMode.value = 'none'
@@ -208,12 +236,14 @@ $border-base: var(--hx-border-color-base);
   gap: 0 8px;
 
   &__label {
-    margin-right: 0.5em;
-    flex: 0 0 auto;
-    min-width: 70px;
-    line-height: 32px;
+    flex: 0 0 72px;
+    padding-top: 7px;
+    font-size: 13px;
+    font-weight: 500;
     color: $text-regular;
-    font-size: 14px;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    white-space: nowrap;
   }
 
   &__row {
@@ -226,18 +256,22 @@ $border-base: var(--hx-border-color-base);
   }
 
   &__btn {
-    height: 32px;
-    line-height: 30px;
-    text-align: center;
-    font-size: 14px;
-    color: $text-primary;
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    line-height: 1;
+    padding: 0 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 450;
+    font-family: inherit;
+    color: $text-regular;
     border: 1px solid $border-base;
-    border-radius: 3px;
-    padding: 0 16px;
-    cursor: pointer;
     background: $bg;
-    transition: all 0.2s ease;
+    cursor: pointer;
     user-select: none;
+    white-space: nowrap;
+    transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
 
     &:hover {
       border-color: $primary;
@@ -245,21 +279,44 @@ $border-base: var(--hx-border-color-base);
     }
 
     &.active {
-      background-color: $bg-hover;
+      background-color: var(--hx-option-active-bg, #eff3fd);
       color: $primary;
       border-color: $primary;
       font-weight: 500;
     }
   }
 
-  &__picker {
-    flex: 1;
-    min-width: 220px;
-    max-width: 360px;
+  &__custom-wrapper {
+    position: relative;
   }
 
-  :deep(.el-date-editor.el-input__wrapper) {
-    width: 100%;
+  &__dropdown {
+    position: absolute;
+    z-index: 2000;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    padding: 12px;
+
+    :deep(.el-date-editor) {
+      width: 260px;
+    }
   }
-}
+
+ 
+    .hx-filter-date-range__popper--bottom.el-popper,
+    .hx-filter-date-range__popper--bottom > .el-date-editor {
+      top: 100% !important;
+      left: 0 !important;
+      margin-top: 4px;
+    }
+
+    .hx-filter-date-range__popper--right.el-popper,
+    .hx-filter-date-range__popper--right > .el-date-editor {
+      top: 0 !important;
+      left: 100% !important;
+      margin-left: 4px;
+    }
+  }
+
 </style>
