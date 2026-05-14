@@ -7,10 +7,9 @@
 
       <el-table-column
         v-if="$slots.action"
-        fixed="right"
         align="center"
         label="操作"
-        v-bind="actionColumnProps"
+        v-bind="resolvedActionColumnProps"
       >
         <template #default="{ row, $index }">
           <slot name="action" :row="row" :index="$index" />
@@ -25,25 +24,26 @@
       </template>
     </el-table>
 
-    <div v-if="showPagination && paginationTotal > 0" class="hx-table__pagination">
+    <div v-if="showPagination" class="hx-table__pagination">
       <el-pagination
-        :current-page="currentPage"
-        :page-size="pageSize"
+        :current-page="externalCurrentPage"
+        :page-size="externalPageSize"
         :page-sizes="pageSizes"
         :total="paginationTotal"
         :layout="paginationLayout"
         background
-        @size-change="(val: number) => emit('size-change', val)"
-        @current-change="(val: number) => emit('current-change', val)"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, provide, ref, useAttrs, useSlots } from 'vue'
+import { computed, provide, ref, useAttrs, useSlots, watch } from 'vue'
 import TableColumnItem from './ColumnItem.vue'
 import { TABLE_SLOTS_KEY } from '../../constants'
+import { useFrontPagination } from '../../hooks/useFrontPagination'
 import type { TableColumn } from './types'
 
 defineOptions({
@@ -54,6 +54,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<{
     columns?: TableColumn[]
+    data?: any[]
     actionColumnProps?: Record<string, any>
     showPagination?: boolean
     currentPage?: number
@@ -65,7 +66,8 @@ const props = withDefaults(
   }>(),
   {
     columns: () => [],
-    actionColumnProps: () => ({ width: 180 }),
+    data: () => [],
+    actionColumnProps: () => ({ width: 180, fixed: 'right' as const }),
     showPagination: false,
     currentPage: 1,
     pageSize: 10,
@@ -77,35 +79,115 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  (e: 'update:currentPage', page: number): void
+  (e: 'update:pageSize', size: number): void
   (e: 'size-change', size: number): void
   (e: 'current-change', page: number): void
 }>()
 
-const attrs = useAttrs()
-const slots = useSlots()
 const tableRef = ref()
 
-provide(TABLE_SLOTS_KEY, slots)
+provide(TABLE_SLOTS_KEY, useSlots())
 
+// 将 data 从 attrs 中排除，避免与 prop 冲突
 const tableAttrs = computed(() => {
-  const { data, ...rest } = attrs as Record<string, any>
+  const { data: _, ...rest } = useAttrs() as Record<string, any>
   return rest
 })
 
-const rawData = computed<any[]>(() => (attrs.data as any[]) || [])
-
-const displayData = computed(() => {
-  if (!props.frontPagination) return rawData.value
-  const start = (props.currentPage - 1) * props.pageSize
-  return rawData.value.slice(start, start + props.pageSize)
-})
-
-const paginationTotal = computed(() => (props.frontPagination ? rawData.value.length : props.total))
-
 const visibleColumns = computed(() => props.columns.filter((col) => !col.hidden))
 
+const resolvedActionColumnProps = computed(() => ({
+  ...props.actionColumnProps,
+}))
+
+// 当 props 从外部控制时（非前端分页模式），使用 props 中的值
+const externalCurrentPage = computed(() =>
+  props.frontPagination ? frontPaginationState.currentPage.value : props.currentPage
+)
+const externalPageSize = computed(() =>
+  props.frontPagination ? frontPaginationState.pageSize.value : props.pageSize
+)
+
+// 前端分页
+const frontPaginationState = useFrontPagination(
+  computed(() => props.data),
+  { pageSize: props.pageSize, pageSizes: props.pageSizes, paginationLayout: props.paginationLayout },
+)
+
+// 同步前端分页变化到外部 emit
+watch(frontPaginationState.currentPage, (val) => {
+  if (props.frontPagination) {
+    emit('update:currentPage', val)
+    emit('current-change', val)
+  }
+})
+watch(frontPaginationState.pageSize, (val) => {
+  if (props.frontPagination) {
+    emit('update:pageSize', val)
+    emit('size-change', val)
+  }
+})
+
+const displayData = computed(() => {
+  if (!props.frontPagination) return props.data
+  return frontPaginationState.pageData.value
+})
+
+const paginationTotal = computed(() => {
+  if (props.frontPagination) return frontPaginationState.total.value
+  return props.total
+})
+
+function handleSizeChange(val: number) {
+  if (props.frontPagination) {
+    frontPaginationState.onSizeChange(val)
+  } else {
+    emit('update:pageSize', val)
+    emit('size-change', val)
+  }
+}
+
+function handleCurrentChange(val: number) {
+  if (props.frontPagination) {
+    frontPaginationState.onCurrentChange(val)
+  } else {
+    emit('update:currentPage', val)
+    emit('current-change', val)
+  }
+}
+
+/** 代理 el-table 常用方法 */
+function clearSelection() {
+  tableRef.value?.clearSelection()
+}
+function toggleRowSelection(row: any, selected?: boolean) {
+  tableRef.value?.toggleRowSelection(row, selected)
+}
+function toggleAllSelection() {
+  tableRef.value?.toggleAllSelection()
+}
+function setCurrentRow(row: any) {
+  tableRef.value?.setCurrentRow(row)
+}
+function clearSort() {
+  tableRef.value?.clearSort()
+}
+function clearFilter(columnKey?: string[]) {
+  tableRef.value?.clearFilter(columnKey)
+}
+function getTableRef() {
+  return tableRef.value
+}
+
 defineExpose({
-  getTableRef: () => tableRef.value,
+  clearSelection,
+  toggleRowSelection,
+  toggleAllSelection,
+  setCurrentRow,
+  clearSort,
+  clearFilter,
+  getTableRef,
 })
 </script>
 

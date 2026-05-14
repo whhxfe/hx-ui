@@ -4,14 +4,18 @@
     :columns="columns"
     show-pagination
     front-pagination
-    :current-page="1"
-    :page-size="5"
+    v-model:current-page="currentPage"
+    v-model:page-size="pageSize"
     border
   />
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue"
 import { HxTable as Table } from "@hx/ui"
+
+const currentPage = ref(1)
+const pageSize = ref(5)
 
 const data = [
   { name: 'User-1', dept: 'A' },

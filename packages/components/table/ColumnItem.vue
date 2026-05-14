@@ -7,36 +7,19 @@
     </template>
   </el-table-column>
 
-  <el-table-column v-else-if="column.render" v-bind="columnBindings">
-    <template v-if="column.headerRender" #header="{ column: col, $index }">
-      <component :is="() => column.headerRender!(column, $index)" />
-    </template>
-    <template v-else-if="column.headerSlot && tableSlots[column.headerSlot]" #header="{ column: col, $index }">
-      <component :is="tableSlots[column.headerSlot!]" :column="col" :index="$index" />
-    </template>
-    <template #default="{ row, $index }">
-      <component :is="() => column.render!(row, $index)" />
-    </template>
-  </el-table-column>
-
-  <el-table-column v-else-if="column.slot" v-bind="columnBindings">
-    <template v-if="column.headerRender" #header="{ column: col, $index }">
-      <component :is="() => column.headerRender!(column, $index)" />
-    </template>
-    <template v-else-if="column.headerSlot && tableSlots[column.headerSlot]" #header="{ column: col, $index }">
-      <component :is="tableSlots[column.headerSlot!]" :column="col" :index="$index" />
-    </template>
-    <template #default="{ row, $index }">
-      <component v-if="tableSlots[column.slot!]" :is="tableSlots[column.slot!]" :row="row" :index="$index" />
-    </template>
-  </el-table-column>
-
   <el-table-column v-else v-bind="columnBindings">
-    <template v-if="column.headerRender" #header="{ column: col, $index }">
-      <component :is="() => column.headerRender!(column, $index)" />
+    <template #header="{ column: col, $index }">
+      <component :is="() => column.headerRender!(column, $index)" v-if="column.headerRender" />
+      <component
+        v-else-if="column.headerSlot && tableSlots[column.headerSlot]"
+        :is="tableSlots[column.headerSlot!]"
+        :column="col"
+        :index="$index"
+      />
     </template>
-    <template v-else-if="column.headerSlot && tableSlots[column.headerSlot]" #header="{ column: col, $index }">
-      <component :is="tableSlots[column.headerSlot!]" :column="col" :index="$index" />
+    <template #default="{ row, $index }">
+      <component :is="() => column.render!(row, $index)" v-if="column.render" />
+      <component v-else-if="column.slot && tableSlots[column.slot]" :is="tableSlots[column.slot!]" :row="row" :index="$index" />
     </template>
   </el-table-column>
 </template>
@@ -45,7 +28,8 @@
 import { computed, inject } from 'vue'
 import type { Slots } from 'vue'
 import { TABLE_SLOTS_KEY } from '../../constants'
-import type { TableColumn } from './types'
+import { COLUMN_DIRECT_PROPS } from './types'
+import type { TableColumn, ColumnDirectProp } from './types'
 
 defineOptions({ name: 'TableColumnItem' })
 
@@ -60,36 +44,7 @@ const columnBindings = computed(() => {
   const col = props.column
   const bindings: Record<string, any> = {}
 
-  // el-table-column 支持的所有原生属性
-  const directProps = [
-    'type',
-    'columnKey',
-    'index',
-    'label',
-    'prop',
-    'width',
-    'minWidth',
-    'fixed',
-    'render',
-    'renderHeader',
-    'sortable',
-    'sortOrders',
-    'sortMethod',
-    'resizable',
-    'showOverflowTooltip',
-    'align',
-    'headerAlign',
-    'className',
-    'labelClassName',
-    'selectable',
-    'reserveSelection',
-    'filters',
-    'filterMethod',
-    'filteredValue',
-    'tooltipEffect',
-  ] as const
-
-  for (const key of directProps) {
+  for (const key of COLUMN_DIRECT_PROPS) {
     if (col[key] !== undefined) {
       bindings[key] = col[key]
     }
