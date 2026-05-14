@@ -56,6 +56,8 @@ export type {
 } from './filter-panel'
 export { HxContentText } from './content-text'
 export type { ContentTextProps } from './content-text'
+export { HxJsonView } from './json-view'
+export type { JsonViewProps } from './json-view'
 export { HxMenu, HxMenuItem } from './menu'
 export type { MenuItem, MenuProps, MenuIconProps, MenuItemType } from './menu'
 export { HxLink } from './link'
