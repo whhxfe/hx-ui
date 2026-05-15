@@ -87,6 +87,28 @@ export interface RequestProviderProps {
 /** 组件通用默认值 */
 export type ComponentDefaults = Record<string, Record<string, unknown>>
 
+/** 二维码配置 */
+export interface QrCodeConfig {
+  /** 默认渲染模式，默认 'svg' */
+  renderMode?: 'svg' | 'canvas'
+  /** 默认尺寸，默认 120 */
+  size?: string | number
+  /** 默认前景色，默认 #000000 */
+  colorDark?: string
+  /** 默认背景色，默认 #ffffff */
+  colorLight?: string
+  /** 默认纠错等级，默认 'M' */
+  errorCorrectionLevel?: 'L' | 'M' | 'Q' | 'H'
+  /** 默认边距，默认 2 */
+  margin?: number
+}
+
+/** 二维码 Provider Props */
+export interface QrCodeProviderProps {
+  /** 二维码组件全局配置 */
+  qrCode?: QrCodeConfig
+}
+
 export interface HxConfigProviderProps {
   /** Icon 组件全局配置 */
   icon?: IconConfig
@@ -94,6 +116,19 @@ export interface HxConfigProviderProps {
   request?: RequestProviderProps
   /** 组件通用默认值 */
   componentDefaults?: ComponentDefaults
+  /** 二维码组件全局配置 */
+  qrCode?: QrCodeConfig
+
+  // ========== 顶层快捷配置（优先级高于 icon 对象）==========
+
+  /** SVG symbol 前缀，默认 'icon' */
+  iconSymbolPrefix?: string
+  /** Iconify 图标源模式：'offline'（默认） | 'cdn' */
+  iconifySource?: 'offline' | 'cdn'
+  /** Iconify CDN 服务地址（当 iconifySource 为 'cdn' 时使用） */
+  iconifyCdnUrl?: string
+  /** Iconify 离线图标集名称列表 */
+  iconifyCollections?: IconifyCollectionName[]
 }
 
 export interface HxConfig {
@@ -103,4 +138,6 @@ export interface HxConfig {
   request?: RequestProviderProps
   /** 组件通用默认值 */
   componentDefaults?: ComponentDefaults
+  /** 二维码全局配置 */
+  qrCode?: QrCodeConfig
 }

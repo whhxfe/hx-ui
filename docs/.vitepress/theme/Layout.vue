@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import DefaultTheme from "vitepress/theme";
 import { HxConfigProvider } from "@hx/ui";
-import type { IconifyCollectionName } from "@hx/ui";
 
 /** 本地 glob 资源 */
 const imageIconModules = import.meta.glob<{ default: string }>(
@@ -9,20 +8,11 @@ const imageIconModules = import.meta.glob<{ default: string }>(
   { eager: true },
 )
 
+/** 图标全局配置 - 使用顶层快捷配置 */
 const iconConfig = {
-  svg: {},
   image: {
     source: "local" as const,
     imageIconModules: [imageIconModules],
-  },
-  iconify: {
-    // ===== Offline 模式 =====
-    source: "offline" as const,
-    collections: ['ep', 'mdi', 'logos', 'twemoji'] as IconifyCollectionName[],
-
-    // ===== CDN 模式 =====
-    // source: "cdn" as const,
-    // cdnUrl: "https://api.iconify.design",
   },
 };
 
@@ -36,7 +26,12 @@ const requestConfig = {
 </script>
 
 <template>
-  <HxConfigProvider :icon="iconConfig" :request="requestConfig">
+  <HxConfigProvider
+    :icon="iconConfig"
+    :request="requestConfig"
+    iconify-source="offline"
+    :iconify-collections="['ep', 'mdi', 'logos', 'twemoji']"
+  >
     <DefaultTheme.Layout />
   </HxConfigProvider>
 </template>

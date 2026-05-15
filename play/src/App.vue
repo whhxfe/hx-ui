@@ -7,20 +7,11 @@ const imageIconModules = import.meta.glob<{ default: string }>(
   { eager: true },
 )
 
+/** 图标全局配置 - 使用顶层快捷配置 */
 const iconConfig = {
-  svg: {},
   image: {
     source: "local" as const,
     imageIconModules: [imageIconModules],
-  },
-  iconify: {
-    // ===== CDN 模式（推荐）- 开发环境使用 CDN，按需加载图标 ======
-    source: "cdn" as const,
-    cdnUrl: "https://api.iconify.design",
-
-    // ===== Offline 模式（生产环境使用，需要预加载图标集）======
-    // source: "offline" as const,
-    // collections: ['ep', 'mdi', 'logos', 'twemoji'],
   },
 };
 
@@ -34,7 +25,12 @@ const requestConfig = {
 </script>
 
 <template>
-  <HxConfigProvider :icon="iconConfig">
+  <HxConfigProvider
+    :icon="iconConfig"
+    iconify-source="cdn"
+    iconify-cdn-url="http://localhost:3333"
+    :request="requestConfig"
+  >
     <router-view />
   </HxConfigProvider>
 </template>
