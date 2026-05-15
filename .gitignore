@@ -16,6 +16,7 @@ dist-ssr
 .vite
 docs/.vitepress/cache
 docs/.vitepress/dist
+docs/.vitepress/.temp
 packages/*/dist
 packages/*/dist-types
 packages/*/dist/types
