@@ -32,6 +32,28 @@ qrcode/custom
 qrcode/dynamic
 :::
 
+## Logo
+
+支持在二维码中心展示 Logo，自动添加白色背景。
+
+:::demo 通过 `logo` 属性配置 Logo 图片。
+qrcode/logo
+:::
+
+> Logo 与纠错等级 `L` 不兼容，请使用 `M` 及以上等级。
+
+## 全局配置
+
+可通过 `HxConfigProvider` 在应用顶层统一配置二维码默认值：
+
+```vue
+<template>
+  <HxConfigProvider :qrCode="{ size: 200, colorDark: '#333333' }">
+    <App />
+  </HxConfigProvider>
+</template>
+```
+
 ## 渲染模式
 
 | 模式 | 说明 | 适用场景 |
@@ -59,15 +81,16 @@ qrcode/dynamic
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | value | 二维码内容（URL 或任意文本） | `string` | — |
-| renderMode | 渲染方式 | `'svg' \| 'canvas'` | `'svg'` |
-| size | 二维码尺寸（宽高，单位 px） | `number \| string` | `120` |
-| colorDark | 前景色（深色模块颜色） | `string` | `'#000000'` |
-| colorLight | 背景色 | `string` | `'#ffffff'` |
-| errorCorrectionLevel | 纠错等级 | `'L' \| 'M' \| 'Q' \| 'H'` | `'M'` |
-| margin | 周围留白（单位 px） | `number` | `0` |
+| renderMode | 渲染方式 | `'svg' \| 'canvas'` | `'svg'` 或 ConfigProvider 配置 |
+| size | 二维码尺寸（宽高） | `number \| string` | `120` 或 ConfigProvider 配置 |
+| colorDark | 前景色（深色模块颜色） | `string` | `'#000000'` 或 ConfigProvider 配置 |
+| colorLight | 背景色 | `string` | `'#ffffff'` 或 ConfigProvider 配置 |
+| errorCorrectionLevel | 纠错等级 | `'L' \| 'M' \| 'Q' \| 'H'` | `'M'` 或 ConfigProvider 配置 |
+| margin | 周围留白（单位 px） | `number` | `2` 或 ConfigProvider 配置 |
 | showDownload | 是否显示下载按钮 | `boolean` | `true` |
 | downloadText | 下载按钮文案 | `string` | `'下载二维码'` |
 | downloadFileName | 下载文件名（不含扩展名） | `string` | `'qrcode'` |
+| downloadIcon | 下载按钮图标组件 | `Component` | `Download` |
 | logo | Logo 配置 | `QrCodeLogo` | `undefined` |
 | style | 自定义样式 | `Record<string, string>` | `{}` |
 
@@ -80,6 +103,12 @@ qrcode/dynamic
 | height | Logo 高度（px） | `number` | `40` |
 | offsetX | Logo 距中心的水平偏移（px） | `number` | `0` |
 | offsetY | Logo 距中心的垂直偏移（px） | `number` | `0` |
+
+### Expose
+
+| 方法 | 说明 | 参数 | 返回值 |
+| --- | --- | --- | --- |
+| regenerate | 重新生成二维码 | — | `Promise<void>` |
 
 ### 类型定义
 
