@@ -20,7 +20,6 @@
 | `HxRadio` | 单选框组，基于 el-radio-group |
 | `HxCheckbox` | 多选框组，基于 el-checkbox-group |
 | `HxRichEditor` | 富文本编辑器 |
-| `HxQuickDateButton` | 快捷日期按钮 |
 | `HxTransfer` | 穿梭框 |
 | `HxQrCode` | 二维码 |
 | `HxFilterPanel` | 筛选面板 |
