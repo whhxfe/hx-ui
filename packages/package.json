@@ -61,7 +61,16 @@
     },
     "pdfjs-dist": {
       "optional": true
+    },
+    "ol": {
+      "optional": true
+    },
+    "ol-layerswitcher": {
+      "optional": true
     }
+  },
+  "dependencies": {
+    "ol-layerswitcher": "^4.1.2"
   },
   "devDependencies": {
     "@types/qrcode": "^1.5.5"

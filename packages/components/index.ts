@@ -70,7 +70,12 @@ export { HxUpload } from './upload'
 export type { UploadProps } from './upload'
 export { HxCardList } from './card-list'
 export { ThemeToggle } from './theme-toggle'
-
-
+export { HxMap, HxMapMarkers } from './map'
+export type {
+  MapMarkerItem,
+  MapCenter,
+  BaseMapProps,
+  MarkerProps,
+} from './map'
 
 export { useRemoteOptions, useFilterRemoteOptions, useClickOutside, useZIndex, useTeleport } from '../hooks'

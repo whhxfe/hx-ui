@@ -103,10 +103,32 @@ export interface QrCodeConfig {
   margin?: number
 }
 
+/** 地图全局配置 */
+export interface MapConfig {
+  /** 标准地图瓦片 URL */
+  normalUrl?: string
+  /** 卫星地图瓦片 URL */
+  satelliteUrl?: string
+  /** 默认中心点 */
+  center?: { lon: number; lat: number }
+  /** 默认缩放级别 */
+  zoom?: number
+  /** 最大缩放级别 */
+  maxZoom?: number
+  /** 最小缩放级别 */
+  minZoom?: number
+}
+
 /** 二维码 Provider Props */
 export interface QrCodeProviderProps {
   /** 二维码组件全局配置 */
   qrCode?: QrCodeConfig
+}
+
+/** 地图 Provider Props */
+export interface MapProviderProps {
+  /** 地图组件全局配置 */
+  map?: MapConfig
 }
 
 export interface HxConfigProviderProps {
@@ -118,6 +140,8 @@ export interface HxConfigProviderProps {
   componentDefaults?: ComponentDefaults
   /** 二维码组件全局配置 */
   qrCode?: QrCodeConfig
+  /** 地图组件全局配置 */
+  map?: MapConfig
 
   // ========== 顶层快捷配置（优先级高于 icon 对象）==========
 
@@ -140,4 +164,6 @@ export interface HxConfig {
   componentDefaults?: ComponentDefaults
   /** 二维码全局配置 */
   qrCode?: QrCodeConfig
+  /** 地图全局配置 */
+  map?: MapConfig
 }

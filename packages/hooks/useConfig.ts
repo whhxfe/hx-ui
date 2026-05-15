@@ -40,5 +40,14 @@ function getDefaultConfig(): HxConfig {
       errorCorrectionLevel: 'M',
       margin: 2,
     },
+    // ArcGIS 完全免费可用
+    map: {
+      normalUrl: 'https://server.arcgisonline.com/arcgis/rest/services/World_Street_Map/MapServer/tile',
+      satelliteUrl: 'https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile',
+      center: { lon: 116.4, lat: 39.9 },
+      zoom: 10,
+      maxZoom: 18,
+      minZoom: 3,
+    },
   }
 }
