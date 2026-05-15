@@ -6,7 +6,7 @@ export interface FilterOption {
   disabled?: boolean
 }
 
-/** `date-range` 快捷项：结束为今天，开始为今天往前 `days` 天（与 HxQuickDateButton 一致） */
+/** `date-range` 快捷项：结束为今天，开始为今天往前 `days` 天 */
 export interface FilterDateRangeShortcut {
   label: string
   days: number
@@ -61,7 +61,7 @@ export interface FilterConfig {
   type: 'filter-item' | 'date-range'
   /** `filter-item`：远程数据配置（优先级高于 options），支持联动字段 dependsOn */
   remote?: FilterRemoteConfig
-  /** `date-range`：快捷区间，默认 最近7天 / 30天 / 90天 */
+  /** `date-range`：`FilterDateRangeShortcut[]` 快捷区间，默认 最近7天 / 30天 / 90天 */
   dateShortcuts?: FilterDateRangeShortcut[]
   /** `date-range`：输出与展示格式，默认 `YYYY-MM-DD` */
   dateFormat?: string
@@ -104,7 +104,7 @@ export interface FilterItemInstance {
 export interface FilterDateRangeProps {
   modelValue?: FilterValueType
   label?: string
-  /** 快捷范围：结束日期为今天，开始为今天往前推 `days` 天（与 HxQuickDateButton 一致） */
+  /** 快捷范围：结束日期为今天，开始为今天往前推 `days` 天 */
   shortcuts?: FilterDateRangeShortcut[]
   format?: string
   /** 日期选择框弹出位置：'right' 右侧（默认）, 'bottom' 下方 */
