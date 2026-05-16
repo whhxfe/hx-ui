@@ -1,8 +1,11 @@
-import { watch, onUnmounted, shallowRef, type ShallowRef } from 'vue'
-import { render, type VNode } from 'vue'
-
+import { watch, onUnmounted } from 'vue'
+import type { VNode } from 'vue'
 import type { Map as OlMap } from 'ol'
-import type { MapMarkerItem } from '../types'
+import type { MapMarkerItem, MarkerStyleOptions } from '../types'
+import { useOlModules, ensureOlModules } from './useOlModules'
+import { usePopup } from './usePopup'
+
+type MapMarkerStyle = MarkerStyleOptions
 
 export interface UseMarkerLayerOptions {
   map: OlMap | null
@@ -10,154 +13,176 @@ export interface UseMarkerLayerOptions {
   markerRadius?: number
   markerColor?: string
   markerContent?: (item: MapMarkerItem) => VNode | string
+  markerStyle?: MarkerStyleOptions
 }
 
 export function useMarkerLayer(options: UseMarkerLayerOptions) {
   const { map, markerRadius = 6, markerColor = '#ff0000' } = options
 
+  const popup = usePopup({
+    markerContent: options.markerContent,
+    popupOffset: [0, -markerRadius],
+  })
+
   let layer: any = null
   let source: any = null
   let clickKey: any = null
+  let initialized = false
 
-  const overlayMap = new Map<string | number, any>()
-  let activePopupId: string | number | null = null
+  const buildMarkerStyle = async (item: MapMarkerItem) => {
+    const modules = await ensureOlModules()
+    const { Style, Circle, Fill, Stroke, Icon } = modules
+    const { markerStyle, markerRadius = 6, markerColor = '#ff0000' } = options
+
+    // 模式1：URL 图标
+    if (markerStyle?.iconUrl) {
+      const targetSize = markerStyle.iconSize
+      const originalSize = markerStyle.iconOriginalSize ?? targetSize
+
+      let scale: number | undefined
+      let imgSize: [number, number] | undefined
+
+      if (targetSize && originalSize) {
+        scale = targetSize[0] / originalSize[0]
+        imgSize = originalSize
+      }
+
+      return new Style({
+        image: new Icon({
+          src: markerStyle.iconUrl,
+          imgSize: imgSize,
+          scale: scale,
+          anchor: markerStyle.iconAnchor ?? [0.5, 1],
+        }),
+      })
+    }
+
+    // 模式2：自定义渲染函数
+    if (markerStyle?.render) {
+      try {
+        const content = markerStyle.render(item)
+        let htmlContent = ''
+        if (typeof content === 'string') {
+          htmlContent = content
+        } else {
+          htmlContent = `<div>${item.name || ''}</div>`
+        }
+
+        const canvas = document.createElement('canvas')
+        const size = markerStyle.iconSize ?? [80, 40]
+        canvas.width = size[0]
+        canvas.height = size[1]
+        const ctx = canvas.getContext('2d')
+        if (ctx) {
+          ctx.fillStyle = '#ffffff'
+          ctx.shadowColor = 'rgba(0,0,0,0.2)'
+          ctx.shadowBlur = 4
+          ctx.shadowOffsetY = 2
+          ctx.beginPath()
+          ctx.roundRect(0, 0, size[0], size[1], 4)
+          ctx.fill()
+          ctx.fillStyle = '#333'
+          ctx.font = '14px sans-serif'
+          ctx.textAlign = 'center'
+          ctx.textBaseline = 'middle'
+          const text = item.name || ''
+          ctx.fillText(text, size[0] / 2, size[1] / 2)
+        }
+
+        return new Style({
+          image: new Icon({
+            img: canvas,
+            imgSize: size,
+            anchor: markerStyle.iconAnchor ?? [0.5, 0.5],
+          }),
+        })
+      } catch (err) {
+        console.error('[useMarkerLayer] buildMarkerStyle custom mode error:', err)
+        throw err
+      }
+    }
+
+    // 模式3：默认圆形
+    return new Style({
+      image: new Circle({
+        radius: markerRadius,
+        fill: new Fill({ color: markerColor }),
+        stroke: new Stroke({ color: '#fff', width: 1.5 }),
+      }),
+    })
+  }
+
+  // 保存当前选项的引用
+  const currentOptions = options
+
+  const rebuildMarkers = async (newMarkerStyle?: MapMarkerStyle) => {
+    if (!map || !source) return
+
+    currentOptions.markerStyle = newMarkerStyle
+
+    source.clear()
+    popup.removeAllPopups(map)
+
+    const modules = await ensureOlModules()
+    const { Feature, Point } = modules
+
+    for (const item of options.markers) {
+      const feature = new Feature({
+        geometry: new Point(modules.fromLonLat([item.lon, item.lat])),
+        data: item,
+      })
+
+      const style = await buildMarkerStyle(item)
+      feature.setStyle(style)
+
+      source.addFeature(feature)
+
+      if (options.markerContent) {
+        popup.createPopup(map, item)
+      }
+    }
+  }
 
   const initLayer = async () => {
     if (!map) return
 
-    const [
-      { default: VectorLayer },
-      { default: VectorSource },
-      { Feature },
-      { default: Point },
-      { default: Overlay },
-      { fromLonLat },
-      { Style, Fill, Stroke, Circle },
-      { default: MapBrowserEvent },
-      { unByKey },
-    ] = await Promise.all([
-      import('ol/layer/Vector'),
-      import('ol/source/Vector'),
-      import('ol/Feature'),
-      import('ol/geom/Point'),
-      import('ol/Overlay'),
-      import('ol/proj'),
-      import('ol/style'),
-      import('ol/MapBrowserEvent').catch(() => ({ default: class {} })),
-      import('ol/Observable'),
-    ])
+    const modules = await ensureOlModules()
+    const { VectorLayer, VectorSource } = modules
 
-    const CircleStyle = Circle
-
-    const createPopup = (item: MapMarkerItem) => {
-      const root = document.createElement('div')
-      root.className = 'map-marker-popup'
-
-      const content = document.createElement('div')
-      content.className = 'map-marker-popup-content'
-      root.appendChild(content)
-
-      const closeBtn = document.createElement('button')
-      closeBtn.className = 'map-marker-popup-close'
-      closeBtn.innerHTML = '&times;'
-      root.appendChild(closeBtn)
-
-      if (options.markerContent) {
-        const contentNode = options.markerContent(item)
-        if (typeof contentNode === 'string') {
-          content.innerHTML = contentNode
-        } else {
-          render(contentNode, content)
-        }
-      }
-
-      const overlay = new Overlay({
-        element: root,
-        positioning: 'bottom-center',
-        offset: [0, -markerRadius],
-      })
-
-      closeBtn.onclick = () => hidePopup(item.id)
-
-      overlayMap.set(item.id, overlay)
-      map!.addOverlay(overlay)
+    if (!layer) {
+      source = new VectorSource()
+      layer = new VectorLayer({ source })
+      map.addLayer(layer)
     }
 
-    const showPopup = (id: string | number, coord: any) => {
-      if (activePopupId && activePopupId !== id) {
-        hidePopup(activePopupId)
-      }
-      overlayMap.get(id)?.setPosition(coord)
-      activePopupId = id
-    }
+    if (!clickKey) {
+      clickKey = map.on('singleclick', (e: any) => {
+        let hit = false
 
-    const hidePopup = (id: string | number) => {
-      overlayMap.get(id)?.setPosition(undefined)
-      if (activePopupId === id) activePopupId = null
-    }
+        map!.forEachFeatureAtPixel(e.pixel, (feature: any) => {
+          const data = feature.get('data') as MapMarkerItem | undefined
+          if (!data) return false
 
-    const rebuildMarkers = () => {
-      if (!map || !source) return
+          popup.showPopup(data.id, feature.getGeometry().getCoordinates())
 
-      source.clear()
-      overlayMap.forEach((o) => map!.removeOverlay(o))
-      overlayMap.clear()
-      activePopupId = null
-
-      options.markers.forEach((item) => {
-        const feature = new Feature({
-          geometry: new Point(fromLonLat([item.lon, item.lat])),
-          data: item,
+          hit = true
+          return true
         })
 
-        feature.setStyle(
-          new Style({
-            image: new CircleStyle({
-              radius: markerRadius,
-              fill: new Fill({ color: markerColor }),
-              stroke: new Stroke({ color: '#fff', width: 1.5 }),
-            }),
-          }),
-        )
-
-        source!.addFeature(feature)
-
-        if (options.markerContent) {
-          createPopup(item)
-        }
+        if (!hit) popup.hideActivePopup()
       })
     }
 
-    clickKey = map.on('singleclick', (e: any) => {
-      let hit = false
-
-      map!.forEachFeatureAtPixel(e.pixel, (feature: any) => {
-        const data = feature.get('data') as MapMarkerItem | undefined
-        if (!data) return false
-
-        showPopup(data.id, feature.getGeometry().getCoordinates())
-
-        hit = true
-        return true
-      })
-
-      if (!hit && activePopupId) {
-        hidePopup(activePopupId)
-      }
-    })
-
-    source = new VectorSource()
-    layer = new VectorLayer({ source })
-
-    map.addLayer(layer)
-    rebuildMarkers()
+    await rebuildMarkers()
+    initialized = true
   }
 
-  const destroyLayer = () => {
+  const destroyLayer = async () => {
     if (!map) return
 
     if (clickKey) {
-      import('ol/Observable').then(({ unByKey }) => unByKey(clickKey))
+      const { unByKey } = await ensureOlModules()
+      unByKey(clickKey)
       clickKey = null
     }
 
@@ -166,27 +191,17 @@ export function useMarkerLayer(options: UseMarkerLayerOptions) {
       layer = null
     }
 
-    overlayMap.forEach((o) => map!.removeOverlay(o))
-    overlayMap.clear()
+    popup.removeAllPopups(map)
 
     source = null
+    initialized = false
   }
 
   watch(
-    () => map,
-    (newMap) => {
-      if (newMap && !layer) {
-        initLayer()
-      }
-    },
-    { immediate: true },
-  )
-
-  watch(
-    () => options.markers,
+    () => [options.markers, options.markerStyle],
     () => {
-      if (source) {
-        initLayer()
+      if (initialized && source) {
+        rebuildMarkers()
       }
     },
     { deep: true },
@@ -199,5 +214,6 @@ export function useMarkerLayer(options: UseMarkerLayerOptions) {
   return {
     initLayer,
     destroyLayer,
+    rebuildMarkers,
   }
 }

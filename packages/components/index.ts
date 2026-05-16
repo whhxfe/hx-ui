@@ -76,6 +76,10 @@ export type {
   MapCenter,
   BaseMapProps,
   MarkerProps,
+  MarkerGroupConfig,
+  MarkerGroupStyle,
+  MarkerStyleOptions,
+  ClusterContentInfo,
 } from './map'
 
 export { useRemoteOptions, useFilterRemoteOptions, useClickOutside, useZIndex, useTeleport } from '../hooks'

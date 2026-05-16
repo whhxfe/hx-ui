@@ -24,4 +24,8 @@ export const componentRoutes: Record<string, RouteMeta> = {
     title: '文本内容 ContentText',
     icon: 'ep-document-copy',
   },
+  map: {
+    title: '地图 Map',
+    icon: 'ep-location-information',
+  },
 }

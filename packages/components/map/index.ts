@@ -8,6 +8,10 @@ export type {
   BaseMapEmits,
   BaseMapExposed,
   MarkerProps,
+  MarkerGroupConfig,
+  MarkerGroupStyle,
+  MarkerStyleOptions,
+  ClusterContentInfo,
 } from './types'
 
 export { MAP_CONFIG } from './types'
