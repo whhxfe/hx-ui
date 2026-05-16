@@ -2,6 +2,7 @@ import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 import UnoCSS from 'unocss/vite'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 
@@ -21,6 +22,7 @@ export default defineConfig({
     /** 显式指向仓库根 uno.config，避免仅依赖 cwd 向上查找 */
     UnoCSS({ configFile: resolve(__dirname, '../uno.config.ts') }),
     vue(),
+    vueJsx(),
     createSvgIconsPlugin({
       iconDirs: [resolve(__dirname, 'src/assets/svg')],
       symbolId: 'icon-[dir]-[name]',

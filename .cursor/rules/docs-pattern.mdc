@@ -56,6 +56,8 @@ component/demo-name
 - 文件名为 kebab-case（如 `image-local.vue`、`svg-local.vue`）
 - 示例文件应完整可运行，不需要额外嵌套 wrapper
 - 示例内容聚焦演示单个功能点，避免示例过大
+- **禁止使用 JSX 语法**（`lang="tsx"`），统一使用 Vue 的 `h()` 函数
+  - 如需使用 JSX 演示，请将示例放在 `play` 项目中
 
 ### Demo 容器
 
