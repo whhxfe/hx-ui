@@ -117,5 +117,19 @@
     "name": "Yui.jpg",
     "size": 80459,
     "mimeType": "image/jpeg"
+  },
+  "file_1779089887961_knrr80": {
+    "fileName": "1779089887957-logo.png",
+    "path": "D:\\Work\\whhxfe\\hx-ui\\server\\public\\uploads\\1779089887957-logo.png",
+    "name": "logo.png",
+    "size": 1949774,
+    "mimeType": "image/png"
+  },
+  "file_1779089908487_s3zigp": {
+    "fileName": "1779089908486-马年恭喜发财.png",
+    "path": "D:\\Work\\whhxfe\\hx-ui\\server\\public\\uploads\\1779089908486-马年恭喜发财.png",
+    "name": "马年恭喜发财.png",
+    "size": 293789,
+    "mimeType": "image/png"
   }
 }
