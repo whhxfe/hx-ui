@@ -30,6 +30,32 @@ menu/icon
 menu/group
 :::
 
+## 扩展功能
+
+### 外部链接
+
+通过 `url` 属性配置外部链接，点击后将在新窗口打开。
+
+:::demo 展示带有外部链接的菜单项。
+menu/link
+:::
+
+### 禁用与徽章
+
+通过 `disabled` 属性禁用菜单项，通过 `badge` 属性显示徽章。
+
+:::demo 展示禁用菜单项和徽章的使用。
+menu/disabled-badge
+:::
+
+### 分割线
+
+通过 `divider` 属性在菜单项前插入分割线。
+
+:::demo 展示分割线的使用。
+menu/divider
+:::
+
 ## API
 
 ### Props
@@ -40,8 +66,9 @@ menu/group
 | mode    | 布局模式                                    | `'horizontal' \| 'vertical'` | `'vertical'` |
 | width   | 垂直模式下的菜单宽度（如 `240` 或 `'16rem'`） | `string \| number`           | -            |
 | iconWidth     | 图标占位区宽度（px），写入 `--hx-menu-icon-slot-width`，折叠弹出层同步                     | `string \| number` | -      |
-| defaultActive | 当前激活的菜单项 index                                                          | `string`           | `''`   |
+| active | 当前激活的菜单项 index                                                          | `string`           | `''`   |
 | defaultOpeneds | 初始展开的 SubMenu index 数组                                                    | `string[]`         | `[]`   |
+| openeds | 展开的 SubMenu index 数组（v-model）                                                | `string[]`         | -   |
 | uniqueOpened   | 是否只保持展开一个子菜单                                                        | `boolean`          | `false`|
 | menuTrigger    | 子菜单触发方式                                                                  | `'hover' \| 'click'` | `'hover'` |
 | collapse       | 是否折叠（vertical 模式生效）                                                    | `boolean`          | `false`|
@@ -66,8 +93,12 @@ menu/group
 | type     | 菜单项类型                | `'item' \| 'sub' \| 'group'` | `'item'` |
 | title    | 菜单项显示文本（group 分组时对应标题）| `string` | -      |
 | path     | 路由路径（作为菜单唯一标识，item 类型必填）| `string` | -  |
+| url      | 外部链接地址，点击后在新窗口打开（优先级高于 path） | `string` | - |
 | icon     | 图标配置                  | `MenuIconProps` | -     |
 | children | 子菜单                   | `MenuItem[]`  | -      |
+| disabled | 是否禁用                 | `boolean`     | `false` |
+| badge    | 徽章文本                 | `string \| number` | - |
+| divider  | 是否显示分割线           | `boolean`     | `false` |
 
 ### MenuIconProps
 
@@ -79,3 +110,12 @@ menu/group
 | color  | 图标颜色                      | `string`                               | -      |
 | rotate | 旋转角度（deg）               | `number`                               | -      |
 | flip   | 翻转方向                      | `'horizontal' \| 'vertical' \| 'both'` | -      |
+
+### Events
+
+| 事件名 | 说明 | 参数 |
+| ------ | ---- | ---- |
+| select | 菜单项选中时触发 | `(index: string, indexPath: string[], item: unknown, routerResult?: unknown)` |
+| open | 子菜单展开时触发 | `(index: string, indexPath: string[])` |
+| close | 子菜单收起时触发 | `(index: string, indexPath: string[])` |
+| update:openeds | 展开状态变化时触发（v-model） | `(openeds: string[])` |

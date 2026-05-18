@@ -32,6 +32,12 @@ file-preview/audio
 file-preview/pdf
 :::
 
+## 邮件预览
+
+:::demo 自动识别 eml 格式并渲染邮件预览组件。
+file-preview/eml
+:::
+
 ## Markdown预览
 
 :::demo 自动识别 md、markdown 等格式并渲染 Markdown 预览组件。

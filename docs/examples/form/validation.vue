@@ -4,19 +4,19 @@
     :fields="fields"
     :cols="3"
   >
-    <template #actions="{ formData, validate }">
+    <template #action-buttons="{ formData, validate }">
       <div class="form-actions">
         <el-button type="primary" @click="handleSearch(formData, validate)">搜索</el-button>
         <el-button>重置</el-button>
       </div>
     </template>
   </hx-form>
-  <hx-content-text :data="formData" :json-default-expanded="true" />
+  <hx-json-view :data="formData" />
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxForm as Form, HxContentText } from "@hx/ui"
+import { HxForm as Form, HxJsonView } from "@hx/ui"
 import type { FormField } from "@hx/ui"
 import { ElMessage } from "element-plus"
 

@@ -2,29 +2,29 @@
 // HxTransfer BEM 样式
 // ============================================================
 
-@use "sass:color";
-
 // ——————————————————————————————
-// 变量
+// 变量（使用 CSS 变量，支持暗黑主题）
 // ——————————————————————————————
-$transfer-border-color: #e5e7eb;
-$transfer-bg: #ffffff;
-$transfer-text-color: #374151;
-$transfer-text-light: #6b7280;
-$transfer-text-muted: #9ca3af;
-$transfer-radius: 4px;
-$transfer-hover-bg: #f3f4f6;
-$transfer-selected-bg: #f3f4f6;
-$transfer-selected-color: #374151;
-$transfer-selected-border: #d1d5db;
-$transfer-tag-bg: #f3f4f6;
-$transfer-tag-border: #d1d5db;
-$transfer-tag-color: #374151;
-$transfer-check-color: #6b7280;
-$transfer-link-color: #374151;
-$transfer-link-hover-color: #111827;
-$transfer-shadow-focus: 0 0 0 2px rgba(156, 163, 175, 0.3);
-$transfer-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+$transfer-border-color: var(--hx-border-color-base);
+$transfer-bg: var(--hx-bg-color);
+$transfer-text-color: var(--hx-text-color-primary);
+$transfer-text-light: var(--hx-text-color-regular);
+$transfer-text-muted: var(--hx-text-color-secondary);
+$transfer-radius: var(--hx-border-radius-base, 4px);
+$transfer-hover-bg: var(--hx-bg-color-hover);
+$transfer-selected-bg: var(--hx-transfer-selected-bg, #e8eef8);
+$transfer-selected-hover-bg: var(--hx-transfer-selected-hover-bg, #d8e0f0);
+$transfer-selected-color: var(--hx-text-color-primary);
+$transfer-selected-border: var(--hx-border-color-base);
+$transfer-tag-bg: var(--hx-transfer-tag-bg, #f0f2f5);
+$transfer-tag-hover-bg: var(--hx-transfer-tag-hover-bg, #e4e7ec);
+$transfer-tag-border: var(--hx-transfer-tag-border-color, #dcdfe6);
+$transfer-tag-color: var(--hx-text-color-regular);
+$transfer-check-color: var(--hx-text-color-secondary);
+$transfer-link-color: var(--hx-text-color-regular);
+$transfer-link-hover-color: var(--hx-text-color-primary);
+$transfer-shadow-focus: 0 0 0 2px rgba(24, 144, 255, 0.2);
+$transfer-shadow-sm: 0 1px 2px var(--hx-shadow-color-light);
 $transfer-transition: color 0.15s, background-color 0.15s;
 
 // ——————————————————————————————
@@ -120,11 +120,11 @@ $transfer-transition: color 0.15s, background-color 0.15s;
 	box-sizing: border-box;
 
 	&::placeholder {
-		color: $transfer-text-light;
+		color: $transfer-text-muted;
 	}
 
 	&:focus {
-		border-color: $transfer-text-muted;
+		border-color: var(--hx-primary-color);
 		box-shadow: $transfer-shadow-focus;
 	}
 }
@@ -161,7 +161,7 @@ $transfer-transition: color 0.15s, background-color 0.15s;
 	}
 
 	&::-webkit-scrollbar-thumb {
-		background: #d1d5db;
+		background: var(--hx-border-color-base);
 		border-radius: 2px;
 	}
 }
@@ -238,7 +238,7 @@ $transfer-transition: color 0.15s, background-color 0.15s;
 		color: $transfer-selected-color;
 
 		&:hover {
-			background-color: color.scale($transfer-selected-bg, $lightness: -2%);
+			background-color: $transfer-selected-hover-bg;
 		}
 	}
 }
@@ -269,7 +269,7 @@ $transfer-transition: color 0.15s, background-color 0.15s;
 	}
 
 	&::-webkit-scrollbar-thumb {
-		background: #d1d5db;
+		background: var(--hx-border-color-base);
 		border-radius: 2px;
 	}
 }
@@ -287,7 +287,7 @@ $transfer-transition: color 0.15s, background-color 0.15s;
 	transition: background-color 0.15s;
 
 	&:hover {
-		background-color: color.scale($transfer-tag-bg, $lightness: -3%);
+		background-color: $transfer-tag-hover-bg;
 	}
 }
 
@@ -306,6 +306,6 @@ $transfer-transition: color 0.15s, background-color 0.15s;
 	transition: color 0.15s;
 
 	&:hover {
-		color: #ef4444;
+		color: var(--hx-danger-color);
 	}
 }

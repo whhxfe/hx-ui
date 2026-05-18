@@ -5,19 +5,19 @@
     :fields="fields"
     :cols="2"
   >
-    <template #actions="{ validate, reset }">
+    <template #action-buttons="{ validate, reset }">
       <div class="form-actions">
         <el-button type="primary" @click="handleSubmit">提交</el-button>
         <el-button @click="handleReset">重置</el-button>
       </div>
     </template>
   </hx-form>
-  <hx-content-text :data="formData" :json-default-expanded="true" />
+  <hx-json-view :data="formData" />
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxForm as Form, HxContentText } from "@hx/ui"
+import { HxForm as Form, HxJsonView } from "@hx/ui"
 import type { FormField, FormExpose } from "@hx/ui"
 import { ElMessage } from "element-plus"
 

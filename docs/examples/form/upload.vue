@@ -4,12 +4,12 @@
     :fields="fields"
     :cols="3"
   />
-  <hx-content-text :data="formData" :json-default-expanded="true" />
+  <hx-json-view :data="formData" />
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxForm as Form, HxContentText } from "@hx/ui"
+import { HxForm as Form, HxJsonView } from "@hx/ui"
 import type { FormField } from "@hx/ui"
 
 const formData = ref({

@@ -1,14 +1,15 @@
 <template>
-  <Form
+  <hx-form
     v-model="formData"
     :fields="fields"
     :cols="2"
   />
+  <hx-json-view :data="formData" />
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxForm as Form } from "@hx/ui"
+import { HxForm as Form, HxJsonView } from "@hx/ui"
 import type { FormField } from "@hx/ui"
 
 const formData = ref({

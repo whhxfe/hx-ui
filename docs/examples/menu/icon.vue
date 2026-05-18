@@ -2,7 +2,7 @@
   <div class="demo-section">
     <p class="demo-title">子菜单（sub）+ 图标</p>
     <div class="menu-demo-col">
-      <HxMenu :menu="menu" widht="200px"  :active="'/dashboard/overview'" />
+      <HxMenu :menu="menu" width="200px" :active="'/dashboard/overview'" />
     </div>
   </div>
 </template>

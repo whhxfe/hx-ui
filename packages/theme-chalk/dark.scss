@@ -54,4 +54,21 @@ html.dark {
   --hx-json-null: #6c71c4;
   --hx-json-comma: #abb2bf;
   --hx-json-brackets: #abb2bf;
+
+  // Transfer colors
+  --hx-transfer-selected-bg: #1e3a5c;
+  --hx-transfer-selected-hover-bg: #1a3250;
+  --hx-transfer-tag-bg: #252525;
+  --hx-transfer-tag-hover-bg: #303030;
+  --hx-transfer-tag-border-color: #404040;
+
+  // FilePreview viewer badge colors
+  --hx-eml-badge-bg: #1e2a3a;
+  --hx-eml-badge-color: #64b5f6;
+  --hx-eml-preview-btn-hover-bg: #1e3a5c;
+  --hx-eml-preview-btn-hover-border: #1976d2;
+  --hx-eml-preview-btn-hover-color: #64b5f6;
+  --hx-eml-download-btn-hover-bg: #1e3a2a;
+  --hx-eml-download-btn-hover-border: #388e3c;
+  --hx-eml-download-btn-hover-color: #81c784;
 }

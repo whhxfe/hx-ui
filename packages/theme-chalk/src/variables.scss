@@ -85,6 +85,23 @@ $shadow-color-light: rgba(0, 0, 0, 0.05);
   --hx-json-comma: #abb2bf;
   --hx-json-brackets: #abb2bf;
 
+  // Transfer 穿梭框
+  --hx-transfer-selected-bg: #e8eef8;
+  --hx-transfer-selected-hover-bg: #d8e0f0;
+  --hx-transfer-tag-bg: #f0f2f5;
+  --hx-transfer-tag-hover-bg: #e4e7ec;
+  --hx-transfer-tag-border-color: #dcdfe6;
+
+  // FilePreview viewer badge colors
+  --hx-eml-badge-bg: #e3f2fd;
+  --hx-eml-badge-color: #1976d2;
+  --hx-eml-preview-btn-hover-bg: #e3f2fd;
+  --hx-eml-preview-btn-hover-border: #2196f3;
+  --hx-eml-preview-btn-hover-color: #1976d2;
+  --hx-eml-download-btn-hover-bg: #e8f5e9;
+  --hx-eml-download-btn-hover-border: #4caf50;
+  --hx-eml-download-btn-hover-color: #388e3c;
+
   // Font size
   --hx-font-size-xs: 12px;
   --hx-font-size-sm: 13px;

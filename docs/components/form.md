@@ -88,12 +88,16 @@ form/upload
 
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| v-model | 表单数据对象 | `Record<string, any>` | `{}` |
+| v-model / modelValue | 表单数据对象 | `Record<string, any>` | `{}` |
 | fields | 表单字段配置数组 | `FormField[]` | - |
 | cols | 栅格列数 | `number` | `3` |
 | showAction | 是否显示操作按钮区域 | `boolean` | `true` |
+| labelWidth | 表单级别 label 宽度 | `string \| number` | - |
+| labelPosition | 表单级别 label 位置 | `'left' \| 'right' \| 'top'` | `'right'` |
 
 ### FormField 类型
+
+#### 通用属性
 
 | 属性 | 说明 | 类型 |
 | --- | --- | --- |
@@ -107,42 +111,100 @@ form/upload
 | disabled | 是否禁用 | `boolean` |
 | hidden | 是否隐藏 | `boolean` |
 | required | 是否必填（自动生成校验） | `boolean` |
-| options | 选项数据（select/radio/checkbox/cascader） | `OptionItem[] \| GroupOptionItem[]` |
-| multiple | 是否多选（select/checkbox） | `boolean` |
-| filterable | 是否可搜索（select/cascader） | `boolean` |
-| min / max / step | 数字输入范围 | `number` |
-| maxlength | 最大长度 | `number` |
+| labelWidth | 字段级别 label 宽度（优先级高于表单级别） | `string \| number` |
+| labelPosition | 字段级别 label 位置 | `'left' \| 'right' \| 'top'` |
+
+#### 文本输入类（input / textarea）
+
+| 属性 | 说明 | 类型 |
+| --- | --- | --- |
+| maxlength | 最大输入长度 | `number` |
 | showWordLimit | 是否显示字数统计 | `boolean` |
-| rows | 文本域行数 | `number` |
+| rows | 文本域行数（textarea） | `number` |
+| prefixIcon | 输入框前缀图标类名 | `string` |
+| suffixIcon | 输入框后缀图标类名 | `string` |
+| autocomplete | 自动补全 | `string` |
+
+#### 数字输入类（number）
+
+| 属性 | 说明 | 类型 |
+| --- | --- | --- |
+| min | 最小值 | `number` |
+| max | 最大值 | `number` |
+| step | 步进值 | `number` |
+| precision | 精度（小数位数） | `number` |
+| stepStrictly | 是否强制输入值为 step 的倍数 | `boolean` |
+
+#### 选择类组件（select）
+
+| 属性 | 说明 | 类型 |
+| --- | --- | --- |
+| options | 选项数据 | `OptionItem[] \| GroupOptionItem[]` |
+| remote | 远程数据配置 | `RemoteConfig` |
+| multiple | 是否多选 | `boolean` |
+| filterable | 是否可搜索 | `boolean` |
+| collapseTags | 多选时是否折叠 Tag | `boolean` |
+| collapseTagsTooltip | 多选时是否展示 Tag 的 tooltip | `boolean` |
+| modelValueType | 值类型：`'string'` 逗号拼接，`'array'` 数组 | `'string' \| 'array'` |
+
+#### 单选/多选类（radio / checkbox）
+
+| 属性 | 说明 | 类型 |
+| --- | --- | --- |
+| options | 选项数据 | `OptionItem[]` |
+| remote | 远程数据配置 | `RemoteConfig` |
+| variant | 按钮形态：`radio-btn` / `checkbox-btn` | `'radio' \| 'radio-btn'` / `'checkbox' \| 'checkbox-btn'` |
+| modelValueType | 值类型 | `'string' \| 'array'` |
+
+#### 日期时间类（date / daterange / datetime / datetimerange / time / timerange）
+
+| 属性 | 说明 | 类型 |
+| --- | --- | --- |
 | valueFormat | 值格式化字符串 | `string` |
-| action | 上传地址（upload） | `string` |
-| accept | 接受的文件类型（upload） | `string` |
-| limit | 最大上传数量（upload） | `number` |
-| headers | 请求头（upload） | `Record<string, string>` |
-| data | 附带的表单数据（upload） | `Record<string, string \| Blob>` |
-| name | 上传的文件字段名（upload） | `string` |
-| withCredentials | 携带 cookie（upload） | `boolean` |
-| listType | 列表展示类型（upload） | `'text' \| 'picture' \| 'picture-card' \| 'file-preview'` |
+| format | 显示格式化字符串 | `string` |
+| disableFutureTime | 是否禁用未来时间（datetime） | `boolean` |
+| disabledDate | 禁用日期函数 | `(date: Date) => boolean` |
+| disabledTime | 禁用时间函数（time / timerange） | `() => { hours?: number[]; minutes?: number[]; seconds?: number[] }` |
+
+#### 上传类（upload）
+
+| 属性 | 说明 | 类型 |
+| --- | --- | --- |
+| action | 上传地址 | `string` |
+| accept | 接受的文件类型 | `string` |
+| limit | 最大上传数量 | `number` |
+| headers | 请求头 | `Record<string, string>` |
+| data | 附带的表单数据 | `Record<string, string \| Blob>` |
+| name | 上传的文件字段名 | `string` |
+| withCredentials | 携带 cookie | `boolean` |
+| listType | 列表展示类型 | `'text' \| 'picture' \| 'picture-card' \| 'file-preview'` |
+| autoUpload | 是否自动上传 | `boolean` |
 | valueMapper | 上传文件值映射函数 | `(file: any) => any` |
 | responseMapper | 上传响应值映射函数 | `(response: any, file: any) => any` |
+| previewUrl | 文件预览接口地址 | `string` |
+| deleteUrl | 文件删除接口地址 | `string` |
+| showDownload | 是否显示下载按钮 | `boolean` |
 | fileRender | 自定义上传文件列表项渲染 | `(file: any, actions: { remove }) => VNode` |
 | filePreviewRender | 自定义上传文件预览渲染 | `(file: any, actions: { remove }) => VNode` |
-| previewUrl | 文件预览接口地址（upload） | `string` |
-| deleteFetchUrl | 文件删除接口地址（upload） | `string` |
+
+#### 其他属性
+
+| 属性 | 说明 | 类型 |
+| --- | --- | --- |
 | cascaderProps | 级联选择面板配置（cascader） | `CascaderPanelProps` |
-| variant | 按钮形态（radio / checkbox） | `'radio' \| 'radio-btn'` / `'checkbox' \| 'checkbox-btn'` |
 | rules | 自定义校验规则 | `any[]` |
 | componentProps | 透传给底层组件的属性 | `Record<string, any>` |
 | formItemProps | 透传给 el-form-item 的属性 | `Record<string, any>` |
 | onChange | 值变更回调 | `(value: any, formData: Record<string, any>) => void` |
 | richEditorParams | 富文本编辑器配置（richeditor） | `RichEditorParams` |
+| render | 自定义渲染函数（type='render'） | `(formData, field) => VNode` |
 
 ### FieldType 可选值
 
 ```
 input | textarea | number | select | radio | radio-btn | checkbox |
-switch | cascader | datetime | datetimerange | date | daterange |
-time | timerange | upload | slot | render
+checkbox-btn | switch | cascader | datetime | datetimerange | date |
+daterange | time | timerange | upload | richeditor | slot | render
 ```
 
 ### FormExpose
@@ -151,10 +213,10 @@ time | timerange | upload | slot | render
 
 | 方法 | 说明 | 返回值 |
 | --- | --- | --- |
-| validate | 校验表单 | `Promise<boolean>` |
+| validate | 校验表单，可传入回调函数 | `Promise<boolean>` |
 | reset | 重置表单 | `void` |
 | getFormData | 获取表单数据 | `Record<string, any>` |
-| setFormData | 设置表单数据 | `void` |
+| setFormData | 设置表单数据（用于回填） | `(data: Partial<Record<string, any>>) => void` |
 | getElFormRef | 获取 el-form 实例 | `any` |
 
 ### Slots
@@ -162,5 +224,6 @@ time | timerange | upload | slot | render
 | 插槽名 | 说明 | 作用域变量 |
 | --- | --- | --- |
 | default | 默认插槽，渲染自定义表单项 | - |
-| [prop] | 渲染指定字段的表单项 | `{ formData }` |
-| actions | 操作按钮区域 | `{ formData, validate, reset }` |
+| [prop] | 渲染指定字段的表单项 | `{ formData, field }` |
+| action-buttons | 操作按钮区域（showAction=false 时不显示） | `{ formData, validate, reset }` |
+| search | 查询按钮区域（位于操作按钮左侧） | `{ formData, validate, reset }` |

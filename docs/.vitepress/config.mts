@@ -103,7 +103,9 @@ export default defineConfig({
             { text: 'Cascader 级联选择', link: '/components/cascader' },
             { text: 'Radio 单选组', link: '/components/radio' },
             { text: 'Checkbox 多选组', link: '/components/checkbox' },
+            { text: 'Switch 开关', link: '/components/switch' },
             { text: 'Transfer 穿梭框', link: '/components/transfer' },
+            { text: 'Upload 上传', link: '/components/upload' },
             { text: 'RichEditor 富文本编辑器', link: '/components/rich-editor' },
           ],
         },
@@ -129,7 +131,7 @@ export default defineConfig({
           text: '文件预览',
           items: [
             { text: 'FilePreview 文件预览', link: '/components/file-preview' },
-            { text: 'Upload 上传', link: '/components/upload' },
+
           ],
         },
         {
