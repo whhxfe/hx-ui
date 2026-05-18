@@ -12,8 +12,9 @@
       <hx-map-markers
         :markers="markers"
         :marker-style="markerStyle"
-        :marker-content="renderPopup"
-      />
+      >
+        <hx-map-popup :render="renderPopup" />
+      </hx-map-markers>
     </hx-map>
   </div>
 </template>
@@ -21,7 +22,7 @@
 <script setup lang="ts">
 import { ref, computed, h } from "vue"
 import { ElRadioGroup, ElRadioButton } from "element-plus"
-import { HxMap, HxMapMarkers } from "@hx/ui"
+import { HxMap, HxMapMarkers, HxMapPopup } from "@hx/ui"
 import type { MapMarkerItem, MarkerStyleOptions } from "@hx/ui"
 
 const iconMode = ref<'circle' | 'url'>('circle')

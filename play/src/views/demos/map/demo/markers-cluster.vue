@@ -14,21 +14,34 @@
     </div>
 
     <hx-map :center="{ lon: 112.5, lat: 31.0 }" :zoom="6" :height="400">
-      <hx-map-markers
+      <!-- 聚合模式：Cluster 内部嵌套 Markers -->
+      <hx-map-cluster
+        v-if="enableCluster"
         :markers="markers"
-        :cluster="enableCluster"
-        :cluster-distance="50"
-        :cluster-content="clusterContent"
-        :marker-content="renderPopup"
-      />
+        :distance="50"
+        :cluster-content="currentClusterContent"
+        @cluster-click="handleClusterClick"
+      >
+        <!-- 嵌套的 Markers 负责单点渲染和点击 -->
+        <hx-map-markers :markers="markers">
+          <hx-map-popup :render="renderPopup" />
+        </hx-map-markers>
+      </hx-map-cluster>
+
+      <!-- 非聚合模式：独立使用 Markers -->
+      <template v-else>
+        <hx-map-markers :markers="markers">
+          <hx-map-popup :render="renderPopup" />
+        </hx-map-markers>
+      </template>
     </hx-map>
   </div>
 </template>
 
 <script setup lang="tsx">
 import { ref, computed } from "vue"
-import { ElSwitch, ElRadioGroup, ElRadioButton, ElText } from "element-plus"
-import { HxMap, HxMapMarkers } from "@hx/ui"
+import { ElSwitch, ElRadioGroup, ElRadioButton, ElText, ElMessage } from "element-plus"
+import { HxMap, HxMapMarkers, HxMapCluster, HxMapPopup } from "@hx/ui"
 import type { MapMarkerItem, ClusterContentInfo } from "@hx/ui"
 
 // 湖北区域范围
@@ -70,7 +83,7 @@ const markers = generateMarkers(100)
 // 自定义聚合弹窗（JSX 语法）
 const renderClusterPopup = (info: ClusterContentInfo) => (
   <div class="cluster-custom-wrap">
-    <div class="cluster-custom-title">📍 {info.count} 个点位</div>
+    <div class="cluster-custom-title">{info.count} 个点位</div>
     <div class="cluster-custom-body">
       {Object.entries(info.typeCount).map(([type, count]) => (
         <div class="cluster-custom-row">
@@ -82,7 +95,7 @@ const renderClusterPopup = (info: ClusterContentInfo) => (
   </div>
 )
 
-const clusterContent = computed(() =>
+const currentClusterContent = computed(() =>
   popupMode.value === 'custom' ? renderClusterPopup : undefined
 )
 
@@ -92,6 +105,10 @@ const renderPopup = (item: MapMarkerItem) => (
     <div class="marker-popup__desc">{item.address}</div>
   </div>
 )
+
+const handleClusterClick = (info: ClusterContentInfo) => {
+  ElMessage.info(`点击了聚合点，包含 ${info.count} 个点位`)
+}
 </script>
 
 <style scoped>

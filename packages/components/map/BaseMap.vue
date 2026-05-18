@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, provide, shallowRef, nextTick, computed } from 'vue'
 import { useMap, MapKey } from './composables/useMap'
+import { provideMapContext, MapContextKey } from './composables/useMapContext'
 import { useConfig } from '../../hooks/useConfig'
 import type { BaseMapProps, BaseMapEmits, BaseMapExposed, MapCenter } from './types'
 
@@ -46,8 +47,11 @@ const mapRef = shallowRef<any>(null)
 const projUtils = shallowRef<{ fromLonLat: Function; toLonLat: Function } | null>(null)
 let syncControlsFn: ((config: any) => void) | null = null
 
-// 提前 provide，让子组件可以同步 inject
+// 提前 provide MapKey，让子组件可以同步 inject（即使 map 还未就绪）
 provide(MapKey, mapRef)
+
+// 提前 provide MapContext（在 setup 阶段完成，确保子组件能获取到）
+const mapContext = provideMapContext(mapRef)
 
 /* =====================
  * 生命周期
@@ -66,7 +70,7 @@ onMounted(async () => {
   syncControlsFn = mapInstance.syncControls
   // 等待 DOM 更新后初始化地图
   await nextTick()
-  mapInstance.initMap()
+  await mapInstance.initMap()
 })
 
 /* =====================
@@ -92,10 +96,10 @@ watch(
   (newControls) => {
     const sig = JSON.stringify(newControls)
     if (sig === prevControlsSignature) return
+    // 先更新签名，防止重复触发
     prevControlsSignature = sig
-    if (syncControlsFn && mapRef.value) {
-      syncControlsFn(newControls)
-    }
+    // 不等待完成，直接触发
+    syncControlsFn?.(newControls)
   },
   { deep: true, immediate: false },
 )

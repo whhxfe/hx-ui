@@ -1,57 +1,27 @@
 <template>
   <div>
-    <div class="demo-toolbar">
-      <span>点位自带图标演示（混合模式）：</span>
-      <el-button-group>
-        <el-button
-          v-for="rule in groupConfig.rules"
-          :key="rule.value"
-          size="small"
-          :type="groupVisibility[rule.value] ? 'primary' : 'info'"
-          @click="toggleGroup(rule.value)"
-        >
-          {{ rule.value }}
-        </el-button>
-      </el-button-group>
-      <el-button size="small" @click="showAll">显示全部</el-button>
-      <el-button size="small" @click="hideAll">隐藏全部</el-button>
-    </div>
-
-    <hx-map :center="{ lon: 116.4, lat: 39.9 }" :zoom="4" :height="400">
-      <hx-map-markers
-        ref="markersRef"
-        :markers="markers"
-        :group-config="groupConfig"
-        :marker-content="renderPopup"
-        @group-ready="onGroupReady"
-      />
-    </hx-map>
-
     <div class="demo-tips">
       <p><strong>说明：</strong></p>
       <ul>
-        <li>武汉、北京、上海：使用点位自带的 iconUrl，仅需指定 iconSize 渲染尺寸即可</li>
-        <li>武汉的 iconSize 为 [24, 24]，北京、上海的 iconSize 为 [32, 32]</li>
-        <li>其他城市：使用 rules 中的圆形样式作为兜底</li>
-        <li>无需配置 iconOriginalSize，OpenLayers 直接按 iconSize 显示</li>
+        <li>武汉、北京、上海：使用点位自带的 iconUrl 和 iconSize</li>
+        <li>其他城市：使用默认圆形样式</li>
       </ul>
     </div>
+
+    <hx-map :center="{ lon: 116.4, lat: 39.9 }" :zoom="4" :height="400">
+      <hx-map-markers :markers="markers">
+        <hx-map-popup :render="renderPopup" />
+      </hx-map-markers>
+    </hx-map>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, h } from "vue"
-import { ElButton, ElButtonGroup } from "element-plus"
-import { HxMap, HxMapMarkers } from "@hx/ui"
-import type { MapMarkerItem, MarkerGroupConfig } from "@hx/ui"
-
-const markersRef = ref<InstanceType<typeof HxMapMarkers> | null>(null)
-
-// 响应式分组可见性状态
-const groupVisibility = ref<Record<string, boolean>>({})
+import { h } from "vue"
+import { HxMap, HxMapMarkers, HxMapPopup } from "@hx/ui"
+import type { MapMarkerItem } from "@hx/ui"
 
 // 武汉、北京、上海使用点位自带的 iconUrl
-// 其他城市没有 iconUrl，使用 rules 兜底
 const markers: MapMarkerItem[] = [
   {
     id: 1,
@@ -104,55 +74,6 @@ const markers: MapMarkerItem[] = [
   { id: 7, lon: 108.94, lat: 34.34, name: '西安', address: '陕西省西安市', type: '省会' },
 ]
 
-const groupConfig: MarkerGroupConfig = {
-  groupKey: 'type',
-  rules: [
-    {
-      value: '省会',
-      style: { type: 'circle', color: '#409eff', radius: 8 },
-    },
-    {
-      value: '首都',
-      style: { type: 'circle', color: '#f56c6c', radius: 10 },
-    },
-    {
-      value: '直辖市',
-      style: { type: 'circle', color: '#67c23a', radius: 9 },
-    },
-  ],
-  defaultStyle: { type: 'circle', color: '#909399', radius: 6 },
-}
-
-// 分组初始化完成回调
-const onGroupReady = (api: any) => {
-  groupVisibility.value = api.getGroupVisibility()
-}
-
-// 切换分组
-const toggleGroup = (type: string) => {
-  markersRef.value?.toggleGroup(type)
-  groupVisibility.value = {
-    ...groupVisibility.value,
-    [type]: !groupVisibility.value[type],
-  }
-}
-
-// 显示全部
-const showAll = () => {
-  markersRef.value?.showAll()
-  const visibility = markersRef.value?.getGroupVisibility() ?? {}
-  groupVisibility.value = visibility
-}
-
-// 隐藏全部
-const hideAll = () => {
-  markersRef.value?.hideAll()
-  const visibility = markersRef.value?.getGroupVisibility() ?? {}
-  groupVisibility.value = visibility
-}
-
-// docs 示例中不允许使用 JSX，统一使用 h() 函数
-// 如需使用 JSX 语法，请参考 play 中的示例
 const renderPopup = (item: MapMarkerItem) => {
   const content: any[] = [
     h('div', { class: 'marker-popup__header' }, [
@@ -186,16 +107,8 @@ const renderPopup = (item: MapMarkerItem) => {
 </script>
 
 <style scoped>
-.demo-toolbar {
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
 .demo-tips {
-  margin-top: 12px;
+  margin-bottom: 12px;
   padding: 12px;
   background: #f5f7fa;
   border-radius: 4px;

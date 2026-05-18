@@ -3,17 +3,16 @@
     <p class="demo-desc">点击标记点查看 popup 信息</p>
 
     <hx-map :center="{ lon: 112.5, lat: 31.0 }" :zoom="7" :height="400">
-      <hx-map-markers
-        :markers="markers"
-        :marker-content="renderPopup"
-      />
+      <hx-map-markers :markers="markers">
+        <hx-map-popup :render="renderPopup" />
+      </hx-map-markers>
     </hx-map>
   </div>
 </template>
 
 <script setup lang="ts">
 import { h } from "vue"
-import { HxMap, HxMapMarkers } from "@hx/ui"
+import { HxMap, HxMapMarkers, HxMapPopup } from "@hx/ui"
 import type { MapMarkerItem } from "@hx/ui"
 
 const markers: MapMarkerItem[] = [

@@ -8,12 +8,23 @@
     </div>
 
     <hx-map :center="{ lon: 112.5, lat: 31.0 }" :zoom="6" :height="400">
-      <hx-map-markers
+      <!-- 聚合模式：Cluster 内部嵌套 Markers -->
+      <hx-map-cluster
+        v-if="enableCluster"
         :markers="markers"
-        :cluster="enableCluster"
-        :cluster-distance="50"
-        :marker-content="renderPopup"
-      />
+        :distance="50"
+      >
+        <hx-map-markers :markers="markers">
+          <hx-map-popup :render="renderPopup" />
+        </hx-map-markers>
+      </hx-map-cluster>
+
+      <!-- 非聚合模式：独立使用 Markers -->
+      <template v-else>
+        <hx-map-markers :markers="markers">
+          <hx-map-popup :render="renderPopup" />
+        </hx-map-markers>
+      </template>
     </hx-map>
   </div>
 </template>
@@ -21,7 +32,7 @@
 <script setup lang="ts">
 import { ref, h } from "vue"
 import { ElSwitch, ElText } from "element-plus"
-import { HxMap, HxMapMarkers } from "@hx/ui"
+import { HxMap, HxMapMarkers, HxMapCluster, HxMapPopup } from "@hx/ui"
 import type { MapMarkerItem } from "@hx/ui"
 
 // 湖北区域范围

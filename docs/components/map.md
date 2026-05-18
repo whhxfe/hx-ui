@@ -16,17 +16,17 @@ map/controls
 
 ### 控件列表
 
-|| 控件 | 说明 | 默认开启 |
-|| --- | --- | --- |
-|| zoom | 缩放按钮（+/-） | ✅ |
-|| attribution | 版权信息 | ✅ |
-|| scaleLine | 比例尺 | ❌ |
-|| mousePosition | 鼠标位置坐标 | ❌ |
-|| zoomSlider | 滑块式缩放 | ❌ |
-|| zoomToExtent | 缩放到指定范围 | ❌ |
-|| rotate | 重置地图旋转 | ❌ |
-|| overviewMap | 鹰眼图/小地图 | ❌ |
-|| fullScreen | 全屏切换 | ❌ |
+| 控件 | 说明 | 默认开启 |
+| --- | --- | --- |
+| zoom | 缩放按钮（+/-） | ✅ |
+| attribution | 版权信息 | ✅ |
+| scaleLine | 比例尺 | ❌ |
+| mousePosition | 鼠标位置坐标 | ❌ |
+| zoomSlider | 滑块式缩放 | ❌ |
+| zoomToExtent | 缩放到指定范围 | ❌ |
+| rotate | 重置地图旋转 | ❌ |
+| overviewMap | 鹰眼图/小地图 | ❌ |
+| fullScreen | 全屏切换 | ❌ |
 
 ### 使用方式
 
@@ -60,49 +60,57 @@ map/controls
 
 使用布尔值 `true` 启用，或传入配置对象：
 
-|| 属性 | 说明 | 类型 | 默认值 |
-|| --- | --- | --- | --- |
-|| className | CSS 类名 | `string` | OL 默认 |
-|| duration | 动画时长（毫秒） | `number` | `250` |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| className | CSS 类名 | `string` | OL 默认 |
+| duration | 动画时长（毫秒） | `number` | `250` |
 
 #### attribution
 
-|| 属性 | 说明 | 类型 | 默认值 |
-|| --- | --- | --- | --- |
-|| collapsible | 是否可折叠 | `boolean` | `true` |
-|| collapsed | 默认折叠状态 | `boolean` | `true` |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| collapsible | 是否可折叠 | `boolean` | `true` |
+| collapsed | 默认折叠状态 | `boolean` | `true` |
 
 #### scaleLine
 
-|| 属性 | 说明 | 类型 | 默认值 |
-|| --- | --- | --- | --- |
-|| units | 计量单位 | `'metric' \| 'imperial' \| 'nautical' \| 'degrees'` | `'metric'` |
-|| minWidth | 最小宽度（像素） | `number` | `64` |
-|| bar | 显示为比例条 | `boolean` | `false` |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| units | 计量单位 | `'metric' \| 'imperial' \| 'nautical' \| 'degrees'` | `'metric'` |
+| minWidth | 最小宽度（像素） | `number` | `64` |
+| bar | 显示为比例条 | `boolean` | `false` |
 
 #### mousePosition
 
-|| 属性 | 说明 | 类型 | 默认值 |
-|| --- | --- | --- | --- |
-|| projection | 坐标系 | `string` | `'EPSG:3857'` |
-|| placeholder | 鼠标离开时的占位文本 | `string` | `'no position'` |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| projection | 坐标系 | `string` | `'EPSG:3857'` |
+| placeholder | 鼠标离开时的占位文本 | `string` | `'no position'` |
 
 #### zoomToExtent
 
-|| 属性 | 说明 | 类型 | 默认值 |
-|| --- | --- | --- | --- |
-|| tipLabel | 按钮提示文本 | `string` | `'Fit to extent'` |
-|| extent | 目标范围 `[minX, minY, maxX, maxY]`（经纬度） | `[number, number, number, number]` | 地图初始中心附近区域 |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| tipLabel | 按钮提示文本 | `string` | `'Fit to extent'` |
+| extent | 目标范围 `[minX, minY, maxX, maxY]`（经纬度） | `[number, number, number, number]` | 地图初始中心附近区域 |
 
 #### overviewMap
 
-|| 属性 | 说明 | 类型 | 默认值 |
-|| --- | --- | --- | --- |
-|| collapsed | 默认折叠状态 | `boolean` | `true` |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| collapsed | 默认折叠状态 | `boolean` | `true` |
 
 ## 标记点
 
-通过 `HxMapMarkers` 组件在地图上添加标记点，支持自定义 popup 内容和聚合模式。
+通过组合 `HxMapMarkers`、`HxMapPopup`、`HxMapCluster` 组件实现标记点、弹窗和聚合功能。
+
+### 组件组合
+
+| 组件 | 说明 |
+| --- | --- |
+| `HxMapMarkers` | 基础点位渲染层 |
+| `HxMapPopup` | 弹窗组件，作为 Markers 的子组件 |
+| `HxMapCluster` | 聚合组件，内部嵌套 Markers |
 
 :::demo 基础标记点
 map/markers-basic
@@ -191,11 +199,23 @@ map/markers-icon-url
 | markers | 标记点数据 | `MapMarkerItem[]` | `[]` |
 | markerRadius | 标记点半径（像素） | `number` | `6` |
 | markerColor | 标记点填充颜色 | `string` | `'#ff0000'` |
-| markerContent | 点击标记的 popup 内容渲染函数 | `(item: MapMarkerItem) => VNode \| string` | - |
-| cluster | 是否启用聚合模式 | `boolean` | `false` |
-| clusterDistance | 聚合距离（像素） | `number` | `40` |
-| clusterContent | 自定义聚合弹窗内容渲染函数（未传时使用默认统计列表） | `(info: ClusterContentInfo) => VNode \| string` | - |
-| groupConfig | 分组配置，设置后启用分组渲染（优先级最高） | `MarkerGroupConfig` | - |
+| markerStyle | 自定义样式选项 | `MarkerStyleOptions` | - |
+
+## HxMapPopup 属性
+
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| render | 自定义弹窗内容渲染函数 | `(item: MapMarkerItem) => VNode \| string` | - |
+| offset | 弹窗偏移量 | `[number, number]` | `[0, -10]` |
+| showClose | 是否显示关闭按钮 | `boolean` | `true` |
+
+## HxMapCluster 属性
+
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| markers | 标记点数据 | `MapMarkerItem[]` | `[]` |
+| distance | 聚合距离（像素） | `number` | `40` |
+| clusterContent | 自定义聚合弹窗内容 | `(info: ClusterContentInfo) => VNode \| string` | - |
 
 ## MapMarkerItem 类型
 
@@ -228,33 +248,16 @@ map/markers-icon-url
 
 ### 示例
 
-```tsx
-import type { ClusterContentInfo } from '@hx/ui'
-
-const renderClusterPopup = (info: ClusterContentInfo) => (
-  <div style={{ padding: '8px 14px', minWidth: '140px' }}>
-    <div style={{ fontWeight: 600, marginBottom: 6 }}>
-      📍 {info.count} 个点位
-    </div>
-    <div>
-      {Object.entries(info.typeCount).map(([type, count]) => (
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
-          <span>{type}</span>
-          <span style={{ fontWeight: 600, color: '#409eff' }}>{count} 个</span>
-        </div>
-      ))}
-    </div>
-  </div>
-)
-```
-
 ```vue
-<hx-map-markers
-  :markers="markers"
-  :cluster="true"
-  :cluster-content="renderClusterPopup"
-  :marker-content="renderPopup"
-/>
+<template>
+  <hx-map :center="{ lon: 112.5, lat: 31.0 }" :zoom="6" :height="400">
+    <hx-map-cluster :markers="markers" :distance="50">
+      <hx-map-markers :markers="markers">
+        <hx-map-popup :render="renderPopup" />
+      </hx-map-markers>
+    </hx-map-cluster>
+  </hx-map>
+</template>
 ```
 
 不传 `clusterContent` 时，使用默认的统计列表弹窗（显示类型名称和数量）。
@@ -275,105 +278,3 @@ const renderClusterPopup = (info: ClusterContentInfo) => (
 { iconUrl: '...', iconOriginalSize: [128, 128], iconSize: [5, 5] }
 ```
 :::
-
----
-
-## 分组渲染
-
-通过 `groupConfig` 配置实现按字段分组渲染，每个分组可设置独立的渲染样式，并支持分组显隐控制。
-
-### MarkerGroupConfig 类型
-
-| 属性 | 说明 | 类型 |
-| --- | --- | --- |
-| groupKey | 分组依据的字段名（对应 MapMarkerItem 的属性） | `string` |
-| rules | 分组规则列表 | `MarkerGroupRule[]` |
-| defaultStyle | 未匹配规则时的默认样式 | `MarkerGroupStyle` |
-
-### MarkerGroupRule 类型
-
-| 属性 | 说明 | 类型 |
-| --- | --- | --- |
-| value | 分组值（匹配 MapMarkerItem[groupKey]） | `string` |
-| style | 该分组的渲染样式 | `MarkerGroupStyle` |
-
-### MarkerGroupStyle 类型
-
-| 属性 | 说明 | 类型 | 适用类型 |
-| --- | --- | --- | --- |
-| type | 渲染类型 | `'circle' \| 'url' \| 'custom'` | 必填 |
-| iconUrl | 图标 URL | `string` | `url` |
-| iconSize | 图标渲染尺寸 `[width, height]` | `[number, number]` | `url` |
-| iconOriginalSize | 图标原始尺寸 `[width, height]` | `[number, number]` | `url` |
-| iconAnchor | 图标锚点（比例） | `[number, number]` | `url` |
-| radius | 圆形半径 | `number` | `circle` |
-| color | 填充颜色 | `string` | `circle` |
-| render | 自定义渲染函数 | `(item) => string \| VNode` | `custom` |
-
-### 示例
-
-```vue
-<template>
-  <hx-map :center="{ lon: 116.4, lat: 35.0 }" :zoom="5" :height="400">
-    <hx-map-markers
-      ref="markersRef"
-      :markers="markers"
-      :group-config="groupConfig"
-    />
-  </hx-map>
-</template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-import type { MapMarkerItem, MarkerGroupConfig } from '@hx/ui'
-
-const markers = ref<MapMarkerItem[]>([
-  { id: 1, lon: 116.4, lat: 39.9, name: '北京', type: '首都' },
-  { id: 2, lon: 121.47, lat: 31.23, name: '上海', type: '直辖市' },
-  { id: 3, lon: 113.26, lat: 23.13, name: '广州', type: '省会' },
-  { id: 4, lon: 114.06, lat: 22.54, name: '深圳', type: '经济特区' },
-])
-
-const groupConfig = ref<MarkerGroupConfig>({
-  groupKey: 'type',
-  rules: [
-    {
-      value: '首都',
-      style: {
-        type: 'url',
-        iconUrl: 'https://cdn-icons-png.flaticon.com/128/4479/4479931.png',
-        iconSize: [32, 32],
-        iconAnchor: [0.5, 1],
-      },
-    },
-    { value: '直辖市', style: { type: 'circle', color: '#409eff', radius: 8 } },
-    { value: '省会', style: { type: 'circle', color: '#67c23a', radius: 6 } },
-    { value: '经济特区', style: { type: 'custom', render: (item) => item.name + ' 🏙️' } },
-  ],
-  defaultStyle: { type: 'circle', color: '#909399', radius: 5 },
-})
-
-const markersRef = ref()
-
-// 分组显隐控制
-markersRef.value?.showGroup('省会')    // 显示省会
-markersRef.value?.hideGroup('直辖市')  // 隐藏直辖市
-markersRef.value?.toggleGroup('首都')  // 切换首都显隐
-markersRef.value?.showAll()            // 显示所有分组
-markersRef.value?.hideAll()            // 隐藏所有分组
-markersRef.value?.getGroupVisibility() // 获取所有分组可见性状态
-</script>
-```
-
-### HxMapMarkers 分组暴露方法
-
-通过 `ref` 获取组件实例后调用：
-
-| 方法名 | 说明 | 参数 |
-| --- | --- | --- |
-| showGroup | 显示指定分组 | `(groupValue: string) => void` |
-| hideGroup | 隐藏指定分组 | `(groupValue: string) => void` |
-| toggleGroup | 切换分组显隐状态 | `(groupValue: string) => void` |
-| showAll | 显示所有分组 | `() => void` |
-| hideAll | 隐藏所有分组 | `() => void` |
-| getGroupVisibility | 获取所有分组的可见性状态 | `() => Record<string, boolean>` |

@@ -90,8 +90,13 @@ async function createControl(type: MapControlType, options: any, mapConfig: type
 }
 
 /** 根据配置添加控件到地图 */
-async function addControls(map: any, controlsConfig: MapControlsConfig, mapConfig: typeof MAP_CONFIG) {
-  const defaultControls = ['zoom', 'attribution'] // 默认开启的控件
+async function addControls(
+  map: any,
+  controlsConfig: MapControlsConfig,
+  mapConfig: typeof MAP_CONFIG,
+  addedControls: Map<string, any>
+) {
+  const defaultControls = ['zoom', 'attribution']
 
   for (const [type, config] of Object.entries(controlsConfig)) {
     // 如果是 false，显式禁用
@@ -105,6 +110,7 @@ async function addControls(map: any, controlsConfig: MapControlsConfig, mapConfi
 
     const control = await createControl(type as MapControlType, options, mapConfig)
     map.addControl(control)
+    addedControls.set(type, control) // 记录到 addedControls
   }
 }
 
@@ -117,6 +123,12 @@ export async function syncControls(
 ) {
   const defaultControls = ['zoom', 'attribution']
   const shouldAddKeys = new Set<string>()
+
+  // 确保 currentControls 是 Map 类型
+  if (!(currentControls instanceof Map)) {
+    console.warn('[useMap] currentControls is not a Map, skipping syncControls')
+    return
+  }
 
   // 确定需要启用的控件
   for (const key of [...Object.keys(newConfig ?? {}), ...defaultControls]) {
@@ -222,7 +234,7 @@ export async function useMap(options: UseMapOptions) {
   let clickKey: any = null
   let layerSwitcher: any = null
 
-  const initMap = () => {
+  const initMap = async () => {
     if (!mapEl.value) return
 
     const view = new View({
@@ -264,7 +276,7 @@ export async function useMap(options: UseMapOptions) {
 
     // 添加控件
     if (props.controls) {
-      addControls(map, props.controls, MAP_CONFIG)
+      await addControls(map, props.controls, MAP_CONFIG, addedControls)
     }
 
     layerSwitcher = new LayerSwitcher({
@@ -322,8 +334,12 @@ export async function useMap(options: UseMapOptions) {
     addedControls,
     syncControls: (config: MapControlsConfig | undefined) => {
       const map = mapRef.value
-      if (map) {
+      // 确保 map 和 addedControls 都已正确初始化
+      if (map && addedControls instanceof Map) {
+        console.log('[useMap] syncControls called with:', config, 'addedControls:', addedControls)
         syncControls(map, config, MAP_CONFIG, addedControls)
+      } else {
+        console.log('[useMap] syncControls skipped - map:', !!map, 'addedControls:', addedControls)
       }
     },
   }

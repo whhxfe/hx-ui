@@ -56,6 +56,11 @@ export function useOlModules() {
   return _modules
 }
 
+/** 同步获取已缓存的模块（内部使用，返回 null 表示未加载） */
+export function getOlModulesSync() {
+  return _modules
+}
+
 /** 异步确保模块已加载 */
 export async function ensureOlModules() {
   if (_modules) return _modules

@@ -1,106 +1,101 @@
 <template>
   <div>
     <div class="demo-toolbar">
-      <span>分组控制：</span>
-      <el-button-group>
-        <el-button
-          v-for="rule in groupConfig.rules"
-          :key="rule.value"
-          size="small"
-          :type="groupVisibility[rule.value] ? 'primary' : 'info'"
-          @click="toggleGroup(rule.value)"
-        >
-          {{ rule.value }}
-        </el-button>
-      </el-button-group>
-      <el-button size="small" @click="showAll">显示全部</el-button>
-      <el-button size="small" @click="hideAll">隐藏全部</el-button>
+      <el-text type="info" size="small">按类型分组显示不同样式的标记点</el-text>
     </div>
 
     <hx-map :center="{ lon: 112.5, lat: 31.0 }" :zoom="7" :height="400">
+      <!-- 省会标记 -->
       <hx-map-markers
-        ref="markersRef"
-        :markers="markers"
-        :group-config="groupConfig"
-        :marker-content="renderPopup"
-        @group-ready="onGroupReady"
-      />
+        :markers="provincialMarkers"
+        :marker-radius="10"
+        marker-color="#f56c6c"
+      >
+        <hx-map-popup :render="renderProvincialPopup" />
+      </hx-map-markers>
+
+      <!-- 地级市标记 -->
+      <hx-map-markers
+        :markers="prefectureMarkers"
+        :marker-radius="8"
+        marker-color="#409eff"
+      >
+        <hx-map-popup :render="renderPrefecturePopup" />
+      </hx-map-markers>
+
+      <!-- 区县标记 -->
+      <hx-map-markers
+        :markers="districtMarkers"
+        :marker-radius="6"
+        marker-color="#67c23a"
+      >
+        <hx-map-popup :render="renderDistrictPopup" />
+      </hx-map-markers>
     </hx-map>
+
+    <div class="demo-legend">
+      <div class="legend-item">
+        <span class="legend-dot provincial"></span>
+        <span>省会</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot prefecture"></span>
+        <span>地级市</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot district"></span>
+        <span>区县</span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, h } from "vue"
-import { ElButton, ElButtonGroup } from "element-plus"
-import { HxMap, HxMapMarkers } from "@hx/ui"
-import type { MapMarkerItem, MarkerGroupConfig } from "@hx/ui"
+import { computed, h } from "vue"
+import { ElText } from "element-plus"
+import { HxMap, HxMapMarkers, HxMapPopup } from "@hx/ui"
+import type { MapMarkerItem } from "@hx/ui"
 
-const markersRef = ref<InstanceType<typeof HxMapMarkers> | null>(null)
-const groupReady = ref(false)
-
-// 响应式分组可见性状态
-const groupVisibility = ref<Record<string, boolean>>({})
-
-const markers: MapMarkerItem[] = [
+// 模拟数据
+const allMarkers: MapMarkerItem[] = [
   { id: 1, lon: 114.31, lat: 30.52, name: '武汉', address: '湖北省武汉市', type: '省会' },
   { id: 2, lon: 115.03, lat: 29.99, name: '黄石', address: '湖北省黄石市', type: '地级市' },
   { id: 3, lon: 111.47, lat: 32.65, name: '十堰', address: '湖北省十堰市', type: '地级市' },
   { id: 4, lon: 111.29, lat: 30.69, name: '宜昌', address: '湖北省宜昌市', type: '地级市' },
   { id: 5, lon: 112.14, lat: 32.01, name: '襄阳', address: '湖北省襄阳市', type: '地级市' },
-  { id: 6, lon: 113.09, lat: 31.04, name: '荆州', address: '湖北省荆州市', type: '地级市' },
-  { id: 7, lon: 114.89, lat: 30.58, name: '鄂州', address: '湖北省鄂州市', type: '地级市' },
-  { id: 8, lon: 112.20, lat: 31.02, name: '荆门', address: '湖北省荆门市', type: '地级市' },
-  { id: 9, lon: 113.91, lat: 30.93, name: '孝感', address: '湖北省孝感市', type: '地级市' },
-  { id: 10, lon: 115.03, lat: 30.45, name: '黄冈', address: '湖北省黄冈市', type: '地级市' },
-  { id: 11, lon: 114.32, lat: 29.85, name: '咸宁', address: '湖北省咸宁市', type: '地级市' },
-  { id: 12, lon: 113.37, lat: 31.69, name: '随州', address: '湖北省随州市', type: '地级市' },
-  { id: 13, lon: 109.48, lat: 30.27, name: '恩施', address: '湖北省恩施市', type: '地级市' },
+  { id: 6, lon: 115.98, lat: 30.20, name: '黄冈', address: '湖北省黄冈市', type: '地级市' },
+  { id: 7, lon: 112.19, lat: 30.35, name: '荆州市', address: '湖北省荆州市', type: '地级市' },
+  { id: 8, lon: 113.91, lat: 30.93, name: '孝感', address: '湖北省孝感市', type: '地级市' },
+  { id: 9, lon: 114.87, lat: 30.46, name: '鄂州', address: '湖北省鄂州市', type: '区县' },
+  { id: 10, lon: 112.24, lat: 31.02, name: '荆门', address: '湖北省荆门市', type: '地级市' },
+  { id: 11, lon: 109.47, lat: 30.27, name: '恩施', address: '湖北省恩施市', type: '地级市' },
+  { id: 12, lon: 113.36, lat: 31.73, name: '随州', address: '湖北省随州市', type: '地级市' },
+  { id: 13, lon: 113.47, lat: 29.88, name: '咸宁', address: '湖北省咸宁市', type: '地级市' },
 ]
 
-const groupConfig: MarkerGroupConfig = {
-  groupKey: 'type',
-  rules: [
-    { value: '省会', style: { type: 'circle', color: '#f56c6c', radius: 10 } },
-    { value: '地级市', style: { type: 'circle', color: '#409eff', radius: 7 } },
-  ],
-  defaultStyle: { type: 'circle', color: '#909399', radius: 5 },
-}
+// 按类型分组
+const provincialMarkers = computed(() =>
+  allMarkers.filter(m => m.type === '省会')
+)
+const prefectureMarkers = computed(() =>
+  allMarkers.filter(m => m.type === '地级市')
+)
+const districtMarkers = computed(() =>
+  allMarkers.filter(m => m.type === '区县')
+)
 
-// 分组初始化完成回调
-const onGroupReady = (api: any) => {
-  groupReady.value = true
-  groupVisibility.value = api.getGroupVisibility()
-}
-
-// 切换分组
-const toggleGroup = (type: string) => {
-  markersRef.value?.toggleGroup(type)
-  groupVisibility.value = {
-    ...groupVisibility.value,
-    [type]: !groupVisibility.value[type],
-  }
-}
-
-// 显示全部
-const showAll = () => {
-  markersRef.value?.showAll()
-  const visibility = markersRef.value?.getGroupVisibility() ?? {}
-  groupVisibility.value = visibility
-}
-
-// 隐藏全部
-const hideAll = () => {
-  markersRef.value?.hideAll()
-  const visibility = markersRef.value?.getGroupVisibility() ?? {}
-  groupVisibility.value = visibility
-}
-
-const renderPopup = (item: MapMarkerItem) => {
+// Popup 渲染函数
+const createPopupRender = (badgeClass: string) => (item: MapMarkerItem) => {
   return h('div', { class: 'marker-popup' }, [
     h('div', { class: 'marker-popup__title' }, item.name),
     h('div', { class: 'marker-popup__desc' }, item.address),
+    h('span', { class: ['marker-popup__badge', badgeClass] }, item.type),
   ])
 }
+
+const renderProvincialPopup = createPopupRender('provincial')
+const renderPrefecturePopup = createPopupRender('prefecture')
+const renderDistrictPopup = createPopupRender('district')
 </script>
 
 <style scoped>
@@ -109,7 +104,39 @@ const renderPopup = (item: MapMarkerItem) => {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
+}
+
+.demo-legend {
+  margin-top: 12px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #606266;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-dot.provincial {
+  background: #f56c6c;
+}
+
+.legend-dot.prefecture {
+  background: #409eff;
+}
+
+.legend-dot.district {
+  background: #67c23a;
 }
 
 .marker-popup {
@@ -125,5 +152,26 @@ const renderPopup = (item: MapMarkerItem) => {
 .marker-popup__desc {
   font-size: 12px;
   color: #666;
+  margin-bottom: 6px;
+}
+
+.marker-popup__badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  color: #fff;
+}
+
+.marker-popup__badge.provincial {
+  background: #f56c6c;
+}
+
+.marker-popup__badge.prefecture {
+  background: #409eff;
+}
+
+.marker-popup__badge.district {
+  background: #67c23a;
 }
 </style>
