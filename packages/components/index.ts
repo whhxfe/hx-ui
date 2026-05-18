@@ -85,5 +85,13 @@ export type {
   PopupProps,
   ClusterProps,
 } from './map'
+export { HxRelationGraph } from './relation-graph'
+export type {
+  RelationGraphProps,
+  RelationNode,
+  RelationEdge,
+  RelationGraphIconConfig,
+  RelationNodeClickEvent,
+} from './relation-graph'
 
 export { useRemoteOptions, useFilterRemoteOptions, useClickOutside, useZIndex, useTeleport } from '../hooks'

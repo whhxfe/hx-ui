@@ -6,9 +6,10 @@
     "resolveJsonModule": true,
     "strict": true,
     "skipLibCheck": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "types": ["node", "vite/client"],
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve"
   },
-  "include": ["vite.config.ts", "packages/**/*.ts", "packages/**/*.vue", "packages/**/*.d.ts"],
+  "include": ["vite.config.ts", "packages/**/*.ts", "packages/**/*.vue", "packages/**/*.d.ts"]
 }

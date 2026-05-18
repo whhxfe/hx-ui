@@ -57,6 +57,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<FormProps>(), {
 	modelValue: () => ({}),
+	fields: () => [],
 	cols: 3,
 	showAction: true,
 	inline: true,
@@ -91,9 +92,14 @@ const formAttrs = computed(() => {
 const formData = ref<Record<string, unknown>>({})
 
 /**
+ * 安全获取 fields 列表，防御性地处理 null/undefined 导致的报错
+ */
+const safeFields = computed(() => props.fields ?? [])
+
+/**
  * 可见字段
  */
-const visibleFields = computed(() => props.fields.filter(field => !field.hidden))
+const visibleFields = computed(() => safeFields.value.filter(field => !field.hidden))
 
 /**
  * 校验规则合并
@@ -103,7 +109,7 @@ const SELECT_TYPES = new Set(["select", "radio", "radio-btn", "checkbox", "casca
 const mergedRules = computed(() => {
 	const autoRules: Record<string, unknown[]> = {}
 
-	for (const field of props.fields) {
+	for (const field of safeFields.value) {
 		const fieldRules: unknown[] = []
 
 		if (field.required) {
@@ -154,7 +160,7 @@ function scheduleEmit() {
 
 function handleFieldUpdate(prop: string, val: unknown) {
 	formData.value[prop] = val
-	const field = props.fields.find(f => f.prop === prop)
+	const field = safeFields.value.find(f => f.prop === prop)
 	field?.onChange?.(val, formData.value as Record<string, unknown>)
 	scheduleEmit()
 }
@@ -176,7 +182,7 @@ function initFormData() {
 	const data: Record<string, unknown> = {}
 	const initial = props.modelValue ?? {}
 
-	for (const field of props.fields) {
+	for (const field of safeFields.value) {
 		if (field.prop in initial) {
 			data[field.prop] = initial[field.prop]
 		} else if (field.prop in formData.value) {
@@ -209,7 +215,7 @@ async function validateField(callback?: (data: Record<string, unknown>) => void)
  */
 function resetField() {
 	const resetData: Record<string, unknown> = {}
-	for (const field of props.fields) {
+	for (const field of safeFields.value) {
 		resetData[field.prop] = getDefaultValue(field)
 	}
 	formData.value = resetData
@@ -254,7 +260,7 @@ function handleReset() {
 
 watch(
 	() => props.fields,
-	() => { if (props.fields?.length) initFormData() },
+	() => { if (safeFields.value.length) initFormData() },
 	{ immediate: true }
 )
 

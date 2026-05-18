@@ -1,3 +1,5 @@
+import type { Component } from 'vue'
+
 export type QrCodeRenderMode = 'svg' | 'canvas'
 
 export type QrCodeErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H'

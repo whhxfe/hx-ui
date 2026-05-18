@@ -9,6 +9,9 @@ import { MAP_CONFIG } from '../types'
 /** Map 实例注入 key */
 export const MapKey = Symbol('ol-map') as InjectionKey<ShallowRef<any>>
 
+/** 导出 ShallowRef 类型供其他模块使用 */
+export type { ShallowRef }
+
 export interface UseMapOptions {
   props: BaseMapProps
   mapEl: Ref<HTMLDivElement | null>
@@ -174,11 +177,11 @@ export async function syncControls(
       if (typeof newCfg === 'object' && newCfg !== null) {
         const existingControl = currentControls.get(type)
         // overviewMap 的 overviewUrl 变化时重建
-        if (type === 'overviewMap' && newCfg.overviewUrl) {
+        if (type === 'overviewMap' && (newCfg as any).overviewUrl) {
           const currentLayer = existingControl?.getLayer?.()
           if (currentLayer) {
             const currentUrl = currentLayer.getSource?.()?.getUrls?.()?.[0]
-            if (currentUrl !== newCfg.overviewUrl) {
+            if (currentUrl !== (newCfg as any).overviewUrl) {
               // 配置变化，移除旧控件后重新创建
               map.removeControl(existingControl)
               currentControls.delete(type)

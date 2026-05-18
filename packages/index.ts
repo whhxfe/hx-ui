@@ -35,7 +35,7 @@ import {
   HxForm, HxSelect, HxRadio, HxCheckbox, HxRichEditor,
   HxTransfer, HxQrCode, HxInput, HxCascader, HxUpload,
   HxFilterPanel, HxFilterItem, HxFilterDateRange, HxContentText, HxMenu, HxLink, HxText,
-  HxUploadFilePreviewList,
+  HxUploadFilePreviewList, HxRelationGraph,
 } from './components'
 import _HxConfigProviderFile from './components/config-provider/index.vue'
 import { withInstall } from './utils/install'
@@ -66,6 +66,7 @@ const components = [
   HxLink,
   HxText,
   HxUploadFilePreviewList,
+  HxRelationGraph,
 ]
 
 const HxUI = {

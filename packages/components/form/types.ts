@@ -296,7 +296,7 @@ export interface FormProps {
 	/** 表单数据对象（v-model） */
 	modelValue?: Record<string, unknown>
 	/** 字段配置 */
-	fields: FormField[]
+	fields?: FormField[]
 	/** 栅格列数 */
 	cols?: number
 	/** 是否显示底部的查询/重置操作区 */

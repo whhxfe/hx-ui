@@ -96,15 +96,15 @@
 		v-bind="componentProps"
 	>
 		<!-- 自定义文件列表项 -->
-		<template v-if="$slots.file || fileRender" #file="{ file }">
+		<template #file="{ file }">
 			<slot
 				v-if="$slots.file"
-				:file="file"
+				:file="(file as any)"
 				:remove="() => uploadRef?.handleRemove(file)"
 			/>
 			<component
 				v-else-if="fileRender"
-				:is="() => fileRender?.(file, { remove: () => uploadRef?.handleRemove(file) })"
+				:is="() => fileRender?.((file as any), { remove: () => uploadRef?.handleRemove(file) })"
 			/>
 		</template>
 

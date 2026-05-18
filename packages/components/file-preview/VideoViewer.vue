@@ -23,7 +23,7 @@
       v-if="canCaptureFrame"
       ref="captureVideoRef"
       class="hx-video-viewer__hidden"
-      :src="url"
+      :src="url ?? undefined"
       preload="auto"
       crossorigin="anonymous"
       @loadeddata="handleCaptureLoaded"

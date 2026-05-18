@@ -1,6 +1,6 @@
 <!--
   HxUploadFilePreviewList - 文件预览列表组件（纯展示版）
-  根据文件 ID 列表，通过 previewFetchUrl 获取文件信息并渲染预览。
+  根据文件 ID 列表，通过 previewUrl 获取文件信息并渲染预览。
   不包含上传逻辑，仅负责展示。
 -->
 <template>
@@ -149,7 +149,7 @@ async function fetchPreviewUrl(fileId: string) {
 
 	try {
 		const res = await request.get<{ code?: number; data?: { url?: string; name?: string; size?: number } }>(
-			`${props.previewFetchUrl}/${fileId}`,
+			`${props.previewUrl}/${fileId}`,
 		)
 
 		if (res.data) {

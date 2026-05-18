@@ -7,7 +7,9 @@
   "author": "hx-admin",
   "packageManager": "pnpm@10.18.3",
   "scripts": {
-    "build:ui": "vite build",
+    "build:ui": "pnpm --filter @hx/ui run build",
+    "version:pkg": "pnpm --filter @hx/ui run version",
+    "publish:ui": "pnpm --filter @hx/ui run publish-pkg",
     "docs:dev": "vitepress dev docs --host --port 4001",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs --host --port 4001",

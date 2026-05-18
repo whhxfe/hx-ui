@@ -4,10 +4,10 @@ export interface UploadFilePreviewListProps {
 	 */
 	modelValue?: string | string[]
 	/**
-	 * 获取文件预览信息的接口地址，组件会请求 `${previewFetchUrl}/${fileId}` 获取文件详情
+	 * 获取文件预览信息的接口地址，组件会请求 `${previewUrl}/${fileId}` 获取文件详情
 	 * 响应格式：{ data: { url?: string, name?: string, size?: number } }
 	 */
-	previewFetchUrl: string
+	previewUrl: string
 	/**
 	 * v-model 发送的值类型
 	 * - `"array"`: 发送字符串数组

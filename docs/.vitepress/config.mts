@@ -67,6 +67,7 @@ export default defineConfig({
       { text: '组件', link: '/components/file-preview' },
       { text: '表单', link: '/components/form' },
       { text: '地图', link: '/components/map' },
+      { text: '关系图', link: '/components/relation-graph' },
       { text: '二次封装流程', link: '/guide/wrapper-flow' },
     ],
     sidebar: {
@@ -146,6 +147,7 @@ export default defineConfig({
           text: 'Others 其他',
           items: [
             { text: 'QrCode 二维码', link: '/components/qrcode' },
+            { text: 'RelationGraph 关系图', link: '/components/relation-graph' },
           ],
         },
       ],
