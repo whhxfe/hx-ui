@@ -113,6 +113,10 @@ export interface FormFieldBase {
 	componentProps?: Record<string, any>
 	/** 透传给 el-form-item 的 props */
 	formItemProps?: Record<string, any>
+	/** 单字段级别的 label 宽度 */
+	labelWidth?: string | number
+	/** 单字段级别的 label 位置 */
+	labelPosition?: "left" | "right" | "top"
 	/** 自定义渲染函数（type='render' 时使用） */
 	render?: (formData: Record<string, any>, field: any) => VNode
 	/** change 事件回调 */
@@ -162,7 +166,12 @@ export type FormField_Upload = Pick<
 export type FormField_Select = Pick<
 	SelectProps,
 	"options" | "remote" | "multiple" | "clearable" | "disabled" | "filterable" | "placeholder" | "modelValueType" | "onChange"
->
+> & {
+	/** 多选时是否折叠 Tag */
+	collapseTags?: boolean
+	/** 多选时是否展示 Tag 的 tooltip */
+	collapseTagsTooltip?: boolean
+}
 
 // ——— Cascader：从 CascaderProps Pick（排除 modelValue）———————————————————
 
@@ -207,6 +216,10 @@ export interface FormField_DateTime {
 	disableFutureTime?: boolean
 	/** 日期范围限制（天数） */
 	dateRangeLimit?: number
+	/** 禁用日期函数（适用于 date/daterange/datetime/datetimerange） */
+	disabledDate?: (date: Date) => boolean
+	/** 禁用时间函数（适用于 time/timerange），返回 { hours, minutes, seconds } */
+	disabledTime?: () => { hours?: number[]; minutes?: number[]; seconds?: number[] }
 }
 
 // ——— TextInput ————————————————————————————————————————————————————————————
@@ -218,6 +231,12 @@ export interface FormField_TextInput {
 	showWordLimit?: boolean
 	/** 文本域行数（textarea） */
 	rows?: number
+	/** 输入框前缀图标类名 */
+	prefixIcon?: string
+	/** 输入框后缀图标类名 */
+	suffixIcon?: string
+	/** 自动补全 */
+	autocomplete?: string
 }
 
 // ——— NumberInput ——————————————————————————————————————————————————————————
@@ -231,6 +250,8 @@ export interface FormField_NumberInput {
 	step?: number
 	/** 精度（小数位数） */
 	precision?: number
+	/** 是否强制输入值为 step 的倍数 */
+	stepStrictly?: boolean
 }
 
 /**
@@ -282,6 +303,10 @@ export interface FormProps {
 	showAction?: boolean
 	/** 是否使用行内布局（配合 cols 实现 grid 栅格，默认 true） */
 	inline?: boolean
+	/** 表单级别 label 宽度 */
+	labelWidth?: string | number
+	/** 表单级别 label 位置 */
+	labelPosition?: "left" | "right" | "top"
 }
 
 /** HxForm Emits */

@@ -337,24 +337,38 @@ watch(
     parsed.value = null
     error.value = null
     if (props.url) loadContent()
-  }
+  },
+  { immediate: true }
 )
 </script>
 
 <style lang="scss" scoped>
 @use './transitions.scss' as *;
-$primary-color: #667eea;
+$primary-color: var(--hx-primary-color);
+$bg: var(--hx-bg-color);
+$bg-page: var(--hx-bg-color-page);
+$bg-hover: var(--hx-bg-color-hover);
+$border-color: var(--hx-border-color-base);
+$border-light: var(--hx-border-color-light);
+$text-primary: var(--hx-text-color-primary);
+$text-regular: var(--hx-text-color-regular);
+$text-secondary: var(--hx-text-color-secondary);
+$text-muted: var(--hx-text-color-secondary);
+$shadow: var(--hx-shadow-color);
+$danger-bg: var(--hx-danger-color-bg, #fff5f5);
+$danger-border: var(--hx-danger-color-border, #ffcdd2);
+$danger-color: var(--hx-danger-color, #e57373);
 
 .hx-eml-viewer {
   &__thumb {
     width: 100%;
     height: 100%;
-    border: 1px solid #e0e0e0;
+    border: 1px solid $border-color;
     padding: 8px;
     cursor: pointer;
     border-radius: 6px;
-    background: #fff;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    background: $bg;
+    box-shadow: 0 2px 6px $shadow;
     transition: all 0.2s ease;
     display: flex;
     flex-direction: column;
@@ -364,7 +378,7 @@ $primary-color: #667eea;
     overflow: hidden;
 
     &:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 12px $shadow;
       transform: translateY(-2px);
       border-color: $primary-color;
     }
@@ -386,12 +400,12 @@ $primary-color: #667eea;
     white-space: nowrap;
     width: 100%;
     line-height: 1.3;
-    color: #1a1a1a;
+    color: $text-primary;
   }
 
   &__meta {
     font-size: 10px;
-    color: #666;
+    color: $text-secondary;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -405,7 +419,7 @@ $primary-color: #667eea;
       width: 100%;
       text-align: center;
 
-      &:last-child { color: #999; }
+      &:last-child { color: $text-muted; }
     }
   }
 
@@ -414,9 +428,9 @@ $primary-color: #667eea;
   &__error {
     width: 100%;
     height: 100%;
-    border: 1px solid #e0e0e0;
+    border: 1px solid $border-color;
     border-radius: 6px;
-    background: #f5f5f5;
+    background: $bg-page;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -427,25 +441,25 @@ $primary-color: #667eea;
 
     span {
       font-size: 11px;
-      color: #999;
+      color: $text-muted;
       text-align: center;
     }
   }
 
-  &__empty-icon { color: #bdbdbd; }
-  &__loading-icon { color: #90a4ae; }
+  &__empty-icon { color: $text-muted; }
+  &__loading-icon { color: $text-secondary; }
 
   &__loading {
-    svg { color: #90a4ae; }
-    span { color: #90a4ae; }
+    svg { color: $text-secondary; }
+    span { color: $text-secondary; }
   }
 
   &__error {
-    background: #fff5f5;
-    border-color: #ffcdd2;
+    background: $danger-bg;
+    border-color: $danger-border;
 
-    svg { color: #e57373; }
-    span { color: #e57373; }
+    svg { color: $danger-color; }
+    span { color: $danger-color; }
   }
 
   &__modal {
@@ -462,7 +476,7 @@ $primary-color: #667eea;
   }
 
   &__content {
-    background: #fff;
+    background: $bg;
     max-width: 1000px;
     width: 100%;
     border-radius: 12px;
@@ -471,7 +485,7 @@ $primary-color: #667eea;
     display: flex;
     flex-direction: column;
     max-height: calc(100vh - 80px);
-    min-height: 600px;
+    min-height: 300px;
   }
 
   &__toolbar {
@@ -535,8 +549,8 @@ $primary-color: #667eea;
 
   &__header {
     padding: 72px 24px 16px;
-    background: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
+    background: $bg-page;
+    border-bottom: 1px solid $border-light;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -550,20 +564,20 @@ $primary-color: #667eea;
 
     &-item.hx-eml-viewer__subject-item {
       padding-bottom: 8px;
-      border-bottom: 1px solid #e9ecef;
+      border-bottom: 1px solid $border-light;
       margin-bottom: 2px;
     }
   }
 
   &__label {
     font-weight: 600;
-    color: #495057;
+    color: $text-regular;
     min-width: 60px;
     font-size: 13px;
   }
 
   &__value {
-    color: #212529;
+    color: $text-primary;
     flex: 1;
     word-break: break-all;
     font-size: 13px;
@@ -580,7 +594,7 @@ $primary-color: #667eea;
     max-width: 100%;
     word-break: break-word;
     line-height: 1.6;
-    color: #212529;
+    color: $text-primary;
 
     :deep(img) {
       max-width: 100%;
@@ -600,17 +614,17 @@ $primary-color: #667eea;
     font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
     font-size: 14px;
     white-space: pre-wrap;
-    background: #f8f9fa;
+    background: $bg-page;
     padding: 16px;
     border-radius: 6px;
-    border: 1px solid #e9ecef;
+    border: 1px solid $border-light;
     word-break: break-word;
     line-height: 1.6;
-    color: #212529;
+    color: $text-primary;
   }
 
   &__no-body {
-    color: #999;
+    color: $text-muted;
     font-size: 14px;
     text-align: center;
     padding: 40px;
@@ -618,8 +632,8 @@ $primary-color: #667eea;
 
   &__attachments {
     padding: 16px 24px;
-    background: #f8f9fa;
-    border-top: 1px solid #e9ecef;
+    background: $bg-page;
+    border-top: 1px solid $border-light;
     max-height: calc((100vh - 80px) * 0.45);
     min-height: 120px;
     overflow-y: auto;
@@ -639,9 +653,9 @@ $primary-color: #667eea;
       transition: background-color 0.2s ease;
       border-radius: 4px;
 
-      &:hover { background-color: rgba(0, 0, 0, 0.02); }
+      &:hover { background-color: $bg-hover; }
 
-      h4 { margin: 0; font-size: 15px; font-weight: 600; color: #212529; }
+      h4 { margin: 0; font-size: 15px; font-weight: 600; color: $text-primary; }
     }
 
     &-list {
@@ -673,8 +687,8 @@ $primary-color: #667eea;
     align-items: center;
     justify-content: space-between;
     padding: 10px 14px;
-    background: #fff;
-    border: 1px solid #e9ecef;
+    background: $bg;
+    border: 1px solid $border-light;
     border-radius: 6px;
     transition: all 0.2s ease;
     flex-shrink: 0;
@@ -702,15 +716,15 @@ $primary-color: #667eea;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      color: #212529;
+      color: $text-primary;
       font-size: 13px;
     }
   }
 
   &__inline-badge {
     padding: 2px 8px;
-    background: #e3f2fd;
-    color: #1976d2;
+    background: var(--hx-eml-badge-bg);
+    color: var(--hx-eml-badge-color);
     border-radius: 4px;
     font-size: 12px;
     font-weight: 500;
@@ -729,16 +743,16 @@ $primary-color: #667eea;
     align-items: center;
     gap: 5px;
     padding: 5px 10px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid $border-color;
     border-radius: 5px;
-    background: #fff;
-    color: #495057;
+    background: $bg;
+    color: $text-regular;
     font-size: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
-      background: #f8f9fa;
+      background: $bg-hover;
       border-color: $primary-color;
       color: $primary-color;
     }
@@ -747,15 +761,15 @@ $primary-color: #667eea;
   }
 
   &__preview-btn:hover {
-    background: #e3f2fd;
-    border-color: #2196f3;
-    color: #1976d2;
+    background: var(--hx-eml-preview-btn-hover-bg);
+    border-color: var(--hx-eml-preview-btn-hover-border);
+    color: var(--hx-eml-preview-btn-hover-color);
   }
 
   &__download-btn:hover {
-    background: #e8f5e9;
-    border-color: #4caf50;
-    color: #388e3c;
+    background: var(--hx-eml-download-btn-hover-bg);
+    border-color: var(--hx-eml-download-btn-hover-border);
+    color: var(--hx-eml-download-btn-hover-color);
   }
 
   &__image-preview {
@@ -809,15 +823,25 @@ $primary-color: #667eea;
 
 @media (max-width: 768px) {
   .hx-eml-viewer {
-    &__modal { padding: 20px 12px; }
-    &__content { max-height: calc(100vh - 40px); border-radius: 8px; }
-    &__header { padding: 60px 16px 16px; }
-    &__body-wrapper { padding: 16px; }
-    &__attachments { padding: 16px; }
+    &__modal { padding: 0; }
+    &__content {
+      max-height: 100vh;
+      border-radius: 0;
+      min-height: 100vh;
+    }
+    &__header {
+      padding: 60px 12px 12px;
+    }
+    &__header-item {
+      flex-direction: column;
+      gap: 4px;
+    }
+    &__body-wrapper { padding: 12px; }
+    &__attachments { padding: 12px; }
     &__attachment-item { flex-direction: column; align-items: flex-start; gap: 12px; }
     &__attachment-actions { width: 100%; justify-content: flex-end; }
     &__action-btn span { display: none; }
-    &__image-preview { padding: 20px; }
+    &__image-preview { padding: 0; }
   }
 }
 </style>

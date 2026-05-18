@@ -22,6 +22,12 @@ const props = withDefaults(defineProps<ImgViewerProps>(), {
 </script>
 
 <style lang="scss" scoped>
+$primary-color: var(--hx-primary-color);
+$bg: var(--hx-bg-color);
+$border-color: var(--hx-border-color-base);
+$hover-bg: var(--hx-bg-color-hover);
+$shadow: var(--hx-shadow-color);
+
 .hx-img-viewer {
   position: relative;
   display: flex;
@@ -30,15 +36,15 @@ const props = withDefaults(defineProps<ImgViewerProps>(), {
   cursor: pointer;
   overflow: hidden;
   border-radius: 6px;
-  background: #f5f5f5;
-  border: 1px solid #e0e0e0;
+  background: $bg;
+  border: 1px solid $border-color;
   transition: all 0.2s ease;
 
   &:hover {
-    background: #eeeeee;
-    border-color: #667eea;
+    background: $hover-bg;
+    border-color: $primary-color;
     transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px $shadow;
   }
 
   &__content {

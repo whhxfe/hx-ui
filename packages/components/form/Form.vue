@@ -78,7 +78,11 @@ provide(FORM_SLOTS_KEY, slots)
  */
 const formAttrs = computed(() => {
 	const { rules, ...rest } = attrs
-	return rest
+	return {
+		labelWidth: props.labelWidth,
+		labelPosition: props.labelPosition,
+		...rest,
+	}
 })
 
 /**

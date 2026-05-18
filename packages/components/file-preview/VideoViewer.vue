@@ -163,6 +163,12 @@ onUnmounted(closeViewer)
 </script>
 
 <style lang="scss" scoped>
+$primary-color: var(--hx-primary-color);
+$border-color: var(--hx-border-color-base);
+$bg: var(--hx-bg-color-page);
+$bg-hover: var(--hx-bg-color-hover);
+$shadow: var(--hx-shadow-color);
+
 .hx-video-viewer {
   display: inline-block;
 
@@ -176,7 +182,7 @@ onUnmounted(closeViewer)
     border-radius: 6px;
     cursor: pointer;
     position: relative;
-    border: 1px solid #e0e0e0;
+    border: 1px solid $border-color;
     overflow: hidden;
     transition: all 0.2s ease;
     display: flex;
@@ -184,9 +190,9 @@ onUnmounted(closeViewer)
     justify-content: center;
 
     &:hover {
-      border-color: #667eea;
+      border-color: $primary-color;
       transform: translateY(-2px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px $shadow;
 
       .hx-video-viewer__play {
         transform: scale(1.2);
@@ -209,13 +215,13 @@ onUnmounted(closeViewer)
   &__loading {
     width: 100%;
     height: 100%;
-    background: #f5f5f5;
-    border: 1px solid #e0e0e0;
+    background: $bg;
+    border: 1px solid $border-color;
     border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #666;
+    color: var(--hx-text-color-secondary);
     font-size: 14px;
   }
 

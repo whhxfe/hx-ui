@@ -1,7 +1,9 @@
 import { withInstall } from "../../utils/install"
 import _Form from "./Form.vue"
+import _FormField from "./FormField.vue"
 
 export const HxForm = withInstall(_Form, "hx-form")
+export const HxFormField = withInstall(_FormField, "hx-form-field")
 export default HxForm
 
 export { HxSelect } from "../select"

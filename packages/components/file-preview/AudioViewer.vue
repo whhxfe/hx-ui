@@ -121,6 +121,15 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 @use './transitions.scss' as *;
+
+$primary-color: var(--hx-primary-color);
+$border-color: var(--hx-border-color-base);
+$bg: var(--hx-bg-color-page);
+$bg-hover: var(--hx-bg-color-hover);
+$shadow: var(--hx-shadow-color);
+$text-color: var(--hx-text-color-regular);
+$text-secondary: var(--hx-text-color-secondary);
+
 .hx-audio-viewer {
   width: 100%;
   height: 100%;
@@ -133,8 +142,8 @@ onUnmounted(() => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: #f5f5f5;
-    border: 1px solid #e0e0e0;
+    background: $bg;
+    border: 1px solid $border-color;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -142,22 +151,22 @@ onUnmounted(() => {
     box-sizing: border-box;
 
     &:hover {
-      background: #eeeeee;
-      border-color: #667eea;
+      background: $bg-hover;
+      border-color: $primary-color;
       transform: translateY(-2px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px $shadow;
     }
   }
 
   &__icon {
-    color: #667eea;
+    color: $primary-color;
     margin-bottom: 4px;
     flex-shrink: 0;
   }
 
   &__label {
     font-size: 11px;
-    color: #616161;
+    color: $text-secondary;
     font-weight: 500;
   }
 

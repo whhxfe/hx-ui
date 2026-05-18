@@ -3,8 +3,12 @@
 		:label="field.label"
 		:prop="field.prop"
 		:required="field.required"
+		:label-width="field.labelWidth"
+		:label-position="field.labelPosition"
 		v-bind="field.formItemProps"
 		v-show="!field.hidden"
+		:style="{ '--col-span': field.colSpan ?? 1 }"
+		:data-prop="field.prop"
 	>
 		<!-- input -->
 		<template v-if="field.type === 'input'">
@@ -16,6 +20,9 @@
 				:disabled="field.disabled"
 				:maxlength="field.maxlength"
 				:showWordLimit="field.showWordLimit"
+				:prefix-icon="field.prefixIcon"
+				:suffix-icon="field.suffixIcon"
+				:autocomplete="field.autocomplete"
 				v-bind="field?.componentProps"
 			/>
 		</template>
@@ -31,6 +38,7 @@
 				:maxlength="field.maxlength"
 				:showWordLimit="field.showWordLimit"
 				:rows="field.rows || 3"
+				:autocomplete="field.autocomplete"
 				v-bind="field?.componentProps"
 			/>
 		</template>
@@ -44,6 +52,7 @@
 				:max="field.max"
 				:step="field.step ?? 1"
 				:precision="field.precision"
+				:step-strictly="field.stepStrictly"
 				:placeholder="field.placeholder || `请输入${field.label}`"
 				:disabled="field.disabled"
 				v-bind="field?.componentProps"
@@ -63,6 +72,8 @@
 				:filterable="field.filterable ?? true"
 				:placeholder="field.placeholder || `请选择${field.label}`"
 				:modelValueType="field.modelValueType"
+				:collapse-tags="field.collapseTags"
+				:collapse-tags-tooltip="field.collapseTagsTooltip"
 				@change="field.onChange?.($event, formData)"
 				v-bind="field?.componentProps"
 			/>
@@ -89,7 +100,7 @@
 				:options="field.options as any"
 				:remote="field.remote"
 				:disabled="field.disabled"
-				variant="button"
+				variant="radio-btn"
 				@change="field.onChange?.($event, formData)"
 				v-bind="field?.componentProps"
 			/>
@@ -117,7 +128,7 @@
 				:options="field.options as any"
 				:remote="field.remote"
 				:disabled="field.disabled"
-				variant="button"
+				variant="checkbox-btn"
 				:modelValueType="field.modelValueType"
 				@change="field.onChange?.($event, formData)"
 				v-bind="field?.componentProps"
@@ -182,7 +193,7 @@
 				:format="field.format ?? 'YYYY-MM-DD HH:mm:ss'"
 				:disabled="field.disabled"
 				:clearable="field.clearable ?? true"
-				:disabledDate="field.disableFutureTime ? (time: Date) => time.getTime() > Date.now() : undefined"
+				:disabledDate="field.disableFutureTime ? (time: Date) => time.getTime() > Date.now() : field.disabledDate"
 				v-bind="field?.componentProps"
 			/>
 		</template>
@@ -198,6 +209,7 @@
 				:format="field.format ?? 'YYYY-MM-DD HH:mm:ss'"
 				:disabled="field.disabled"
 				:clearable="field.clearable ?? true"
+				:disabledDate="field.disabledDate"
 				v-bind="field?.componentProps"
 			/>
 		</template>
@@ -213,6 +225,7 @@
 				:format="field.format ?? 'YYYY-MM-DD'"
 				:disabled="field.disabled"
 				:clearable="field.clearable ?? true"
+				:disabledDate="field.disabledDate"
 				v-bind="field?.componentProps"
 			/>
 		</template>
@@ -228,6 +241,7 @@
 				:format="field.format ?? 'YYYY-MM-DD'"
 				:disabled="field.disabled"
 				:clearable="field.clearable ?? true"
+				:disabledDate="field.disabledDate"
 				v-bind="field?.componentProps"
 			/>
 		</template>
@@ -242,6 +256,9 @@
 				:format="field.format ?? 'HH:mm:ss'"
 				:disabled="field.disabled"
 				:clearable="field.clearable ?? true"
+				:disabledHours="field.disabledTime"
+				:disabledMinutes="field.disabledTime"
+				:disabledSeconds="field.disabledTime"
 				v-bind="field?.componentProps"
 			/>
 		</template>
@@ -257,6 +274,9 @@
 				:format="field.format ?? 'HH:mm:ss'"
 				:disabled="field.disabled"
 				:clearable="field.clearable ?? true"
+				:disabledHours="field.disabledTime"
+				:disabledMinutes="field.disabledTime"
+				:disabledSeconds="field.disabledTime"
 				v-bind="field?.componentProps"
 			/>
 		</template>
@@ -310,6 +330,14 @@
 
 <script setup lang="ts">
 import { computed } from "vue"
+import { HxSelect } from "../select"
+import { HxRadio } from "../radio"
+import { HxCheckbox } from "../checkbox"
+import { HxSwitch } from "../switch"
+import { HxCascader } from "../cascader"
+import { HxTransfer } from "../transfer"
+import { HxUpload } from "../upload"
+import { HxRichEditor } from "../rich-editor"
 import type { FormField, FormFieldProps, FormFieldEmits } from "./types"
 
 const props = defineProps<FormFieldProps>()

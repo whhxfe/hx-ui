@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { ElMenu } from 'element-plus'
 import MenuItem from './MenuItem.vue'
 import type { MenuItem as MenuItemType, MenuProps } from './types'
@@ -26,7 +26,7 @@ defineOptions({ name: 'HxMenu', inheritAttrs: false })
 const props = withDefaults(defineProps<MenuProps>(), {
   menu: () => [],
   mode: 'vertical',
-  defaultActive: '',
+  active: '',
   router: false,
   ellipsis: true,
   collapseTransition: true,
@@ -39,14 +39,29 @@ const props = withDefaults(defineProps<MenuProps>(), {
 })
 
 const emit = defineEmits<{
+  'update:openeds': [value: string[]]
   select: [index: string, indexPath: string[], item: unknown, routerResult?: unknown]
   open: [index: string, indexPath: string[]]
   close: [index: string, indexPath: string[]]
 }>()
 
+const internalOpeneds = ref<string[]>(props.openeds ?? props.defaultOpeneds ?? [])
+
+watch(
+  () => props.openeds,
+  (val) => {
+    if (val !== undefined) {
+      internalOpeneds.value = val
+    }
+  }
+)
+
 const elMenuProps = computed(() => {
-  const { width, iconWidth, ...rest } = props
-  return rest
+  const { width, iconWidth, openeds, ...rest } = props
+  return {
+    ...rest,
+    'model-value': internalOpeneds.value,
+  }
 })
 
 const popperStyle = computed(() => {
@@ -79,10 +94,14 @@ function onSelect(index: string, indexPath: string[], item: unknown, routerResul
 }
 
 function onOpen(index: string, indexPath: string[]) {
+  internalOpeneds.value = [...internalOpeneds.value, index]
+  emit('update:openeds', internalOpeneds.value)
   emit('open', index, indexPath)
 }
 
 function onClose(index: string, indexPath: string[]) {
+  internalOpeneds.value = internalOpeneds.value.filter((i) => i !== index)
+  emit('update:openeds', internalOpeneds.value)
   emit('close', index, indexPath)
 }
 </script>

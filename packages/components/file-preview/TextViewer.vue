@@ -149,7 +149,15 @@ watch(
 
 <style lang="scss" scoped>
 @use './transitions.scss' as *;
-$primary-color: #667eea;
+$primary-color: var(--hx-primary-color);
+$bg: var(--hx-bg-color);
+$bg-page: var(--hx-bg-color-page);
+$bg-hover: var(--hx-bg-color-hover);
+$border-color: var(--hx-border-color-base);
+$text-primary: var(--hx-text-color-primary);
+$text-regular: var(--hx-text-color-regular);
+$text-secondary: var(--hx-text-color-secondary);
+$shadow: var(--hx-shadow-color);
 
 .hx-text-viewer {
   width: 100%;
@@ -162,8 +170,8 @@ $primary-color: #667eea;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: #f5f5f5;
-    border: 1px solid #e0e0e0;
+    background: $bg-page;
+    border: 1px solid $border-color;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -171,10 +179,10 @@ $primary-color: #667eea;
     box-sizing: border-box;
 
     &:hover {
-      background: #eeeeee;
+      background: $bg-hover;
       border-color: $primary-color;
       transform: translateY(-2px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px $shadow;
     }
   }
 
@@ -186,7 +194,7 @@ $primary-color: #667eea;
 
   &__label {
     font-size: 11px;
-    color: #616161;
+    color: $text-secondary;
     font-weight: 500;
   }
 
@@ -204,7 +212,7 @@ $primary-color: #667eea;
   }
 
   &__content {
-    background: #fff;
+    background: $bg;
     max-width: 1000px;
     width: 100%;
     border-radius: 12px;
@@ -290,19 +298,19 @@ $primary-color: #667eea;
     flex: 1;
     overflow: auto;
     padding: 80px 24px 24px;
-    background: #f8f9fa;
+    background: $bg-page;
   }
 
   &__text-content {
     margin: 0;
     padding: 16px;
-    background: #fff;
-    border: 1px solid #e9ecef;
+    background: $bg;
+    border: 1px solid $border-color;
     border-radius: 6px;
     font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
     font-size: 14px;
     line-height: 1.6;
-    color: #212529;
+    color: $text-primary;
     white-space: pre-wrap;
     word-wrap: break-word;
     overflow-x: auto;

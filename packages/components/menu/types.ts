@@ -12,10 +12,18 @@ export interface MenuItem {
   title: string
   /** 路由路径（item 类型必填，作为菜单唯一标识） */
   path?: string
+  /** 外部链接地址，点击后在新窗口打开（优先级高于 path） */
+  url?: string
   /** 图标配置 */
   icon?: MenuIconProps
   /** 子菜单 */
   children?: MenuItem[]
+  /** 是否禁用 */
+  disabled?: boolean
+  /** 徽章文本 */
+  badge?: string | number
+  /** 分割线 */
+  divider?: boolean
 }
 
 export interface MenuProps {
@@ -24,9 +32,11 @@ export interface MenuProps {
   /** 布局模式 */
   mode?: 'horizontal' | 'vertical'
   /** 当前激活的菜单项 index */
-  defaultActive?: string
+  active?: string
   /** 初始展开的 SubMenu index 数组 */
   defaultOpeneds?: string[]
+  /** 展开的 SubMenu index 数组（v-model） */
+  openeds?: string[]
   /** 是否只保持展开一个子菜单 */
   uniqueOpened?: boolean
   /** 是否启用 ElMenu 的 router 模式（需已安装 vue-router） */

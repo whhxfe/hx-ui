@@ -37,7 +37,14 @@ const displayName = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-$primary-color: #667eea;
+$primary-color: var(--hx-primary-color);
+$bg: var(--hx-bg-color-page);
+$border-color: var(--hx-border-color-base);
+$bg-hover: var(--hx-bg-color-hover);
+$text-primary: var(--hx-text-color-primary);
+$text-secondary: var(--hx-text-color-regular);
+$text-muted: var(--hx-text-color-secondary);
+$shadow: var(--hx-shadow-color);
 
 .hx-default-viewer {
   width: 100%;
@@ -46,8 +53,8 @@ $primary-color: #667eea;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f5f5f5;
-  border: 1px solid #e0e0e0;
+  background: $bg;
+  border: 1px solid $border-color;
   border-radius: 6px;
   cursor: default;
   transition: all 0.2s ease;
@@ -55,10 +62,10 @@ $primary-color: #667eea;
   box-sizing: border-box;
 
   &:hover {
-    background: #eeeeee;
+    background: $bg-hover;
     border-color: $primary-color;
     transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px $shadow;
 
     .hx-default-viewer__icon {
       color: $primary-color;
@@ -66,7 +73,7 @@ $primary-color: #667eea;
   }
 
   &__icon {
-    color: #9e9e9e;
+    color: $text-muted;
     margin-bottom: 4px;
     flex-shrink: 0;
     transition: color 0.2s ease;
@@ -75,7 +82,7 @@ $primary-color: #667eea;
   &__extension {
     font-size: 10px;
     font-weight: 600;
-    color: #757575;
+    color: $text-secondary;
     margin-bottom: 2px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -83,7 +90,7 @@ $primary-color: #667eea;
 
   &__name {
     font-size: 11px;
-    color: #616161;
+    color: $text-primary;
     text-align: center;
     word-break: break-all;
     overflow: hidden;

@@ -162,7 +162,15 @@ watch(
 
 <style lang="scss" scoped>
 @use './transitions.scss' as *;
-$primary-color: #667eea;
+$primary-color: var(--hx-primary-color);
+$bg: var(--hx-bg-color);
+$bg-page: var(--hx-bg-color-page);
+$border-color: var(--hx-border-color-base);
+$border-light: var(--hx-border-color-light);
+$text-primary: var(--hx-text-color-primary);
+$text-secondary: var(--hx-text-color-secondary);
+$text-muted: var(--hx-text-color-secondary);
+$shadow: var(--hx-shadow-color);
 
 .hx-markdown-viewer {
   width: 100%;
@@ -175,8 +183,8 @@ $primary-color: #667eea;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: #f5f5f5;
-    border: 1px solid #e0e0e0;
+    background: $bg-page;
+    border: 1px solid $border-color;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -184,10 +192,10 @@ $primary-color: #667eea;
     box-sizing: border-box;
 
     &:hover {
-      background: #eeeeee;
+      background: var(--hx-bg-color-hover);
       border-color: $primary-color;
       transform: translateY(-2px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px $shadow;
     }
   }
 
@@ -199,7 +207,7 @@ $primary-color: #667eea;
 
   &__label {
     font-size: 11px;
-    color: #616161;
+    color: $text-secondary;
     font-weight: 500;
   }
 
@@ -217,7 +225,7 @@ $primary-color: #667eea;
   }
 
   &__content {
-    background: #fff;
+    background: $bg;
     max-width: 1000px;
     width: 100%;
     border-radius: 12px;
@@ -303,13 +311,13 @@ $primary-color: #667eea;
     flex: 1;
     overflow-y: auto;
     padding: 80px 24px 24px;
-    background: #fff;
+    background: $bg;
   }
 
   &__md-content {
     max-width: 100%;
     line-height: 1.6;
-    color: #212529;
+    color: $text-primary;
 
     :deep(h1),
     :deep(h2),
@@ -325,13 +333,13 @@ $primary-color: #667eea;
 
     :deep(h1) {
       font-size: 2em;
-      border-bottom: 1px solid #eaecef;
+      border-bottom: 1px solid $border-light;
       padding-bottom: 0.3em;
     }
 
     :deep(h2) {
       font-size: 1.5em;
-      border-bottom: 1px solid #eaecef;
+      border-bottom: 1px solid $border-light;
       padding-bottom: 0.3em;
     }
 
@@ -354,7 +362,7 @@ $primary-color: #667eea;
     }
 
     :deep(code) {
-      background: #f6f8fa;
+      background: $bg-page;
       border-radius: 3px;
       padding: 2px 6px;
       font-family: 'Courier New', monospace;
@@ -363,7 +371,7 @@ $primary-color: #667eea;
     }
 
     :deep(pre) {
-      background: #f6f8fa;
+      background: $bg-page;
       border-radius: 6px;
       padding: 16px;
       overflow-x: auto;
@@ -373,12 +381,12 @@ $primary-color: #667eea;
       code {
         background: transparent;
         padding: 0;
-        color: #24292e;
+        color: $text-primary;
       }
     }
 
     :deep(a) {
-      color: #0366d6;
+      color: var(--hx-link-color, #0366d6);
       text-decoration: none;
 
       &:hover {
@@ -394,9 +402,9 @@ $primary-color: #667eea;
     }
 
     :deep(blockquote) {
-      border-left: 4px solid #dfe2e5;
+      border-left: 4px solid $border-color;
       padding-left: 16px;
-      color: #6a737d;
+      color: $text-muted;
       margin: 16px 0;
     }
 
@@ -408,13 +416,13 @@ $primary-color: #667eea;
 
     :deep(th),
     :deep(td) {
-      border: 1px solid #dfe2e5;
+      border: 1px solid $border-color;
       padding: 8px 12px;
       text-align: left;
     }
 
     :deep(th) {
-      background: #f6f8fa;
+      background: $bg-page;
       font-weight: 600;
     }
   }
