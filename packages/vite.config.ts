@@ -50,7 +50,6 @@ export default defineConfig({
         /^geotiff/,
         /^rbush/,
         /^qrcode$/,
-        /^axios$/,
         /^dayjs$/,
         /^vue-json-pretty$/,
         /^web-worker/,
