@@ -1,7 +1,7 @@
 {
   "framework": null,
   "installCommand": "corepack enable pnpm && pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm --filter play build",
+  "buildCommand": "pnpm --filter @hx/ui build && pnpm --filter play build",
   "outputDirectory": "play/dist",
   "headers": [
     {
