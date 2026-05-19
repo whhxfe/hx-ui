@@ -38,7 +38,7 @@ export default defineConfig({
         /^vue/,
         /^element-plus/,
         /^@element-plus/,
-        /^@iconify\/vue/,
+        /^@iconify\//,
         /^@wangeditor\/editor/,
         /^@wangeditor\/editor-for-vue/,
         /^pdfjs-dist/,
@@ -58,7 +58,7 @@ export default defineConfig({
       ],
       output: {
         preserveModules: true,
-        preserveModulesRoot: __dirname,
+        preserveModulesRoot: resolve(__dirname, '.'),
         entryFileNames: '[name].js',
         chunkFileNames: '[name].js',
         assetFileNames: (chunkInfo) => {

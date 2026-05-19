@@ -201,14 +201,14 @@ export function useGraph(options: UseGraphOptions): {
 
     // 基础样式
     const baseStyle = {
-      size: [size, size],
+      size: [size, size] as [number, number],
       fill: '#fff',
       stroke: nodeStyle?.stroke ?? (nodeType === 'account' ? '#5AD8A6' : '#5B8FF9'),
       lineWidth: 1,
       labelText: String(d.data?.name ?? d.data?.label ?? ''),
       labelFill: '#262626',
       labelFontSize: size > 40 ? 12 : 9,
-      labelPlacement: 'bottom',
+      labelPlacement: 'bottom' as const,
     }
 
     // 如果有图片，使用图片
@@ -263,7 +263,7 @@ export function useGraph(options: UseGraphOptions): {
       labelFill: '#262626',
       labelFontSize: 10,
       labelOffsetY: -4,
-      labelPlacement: 'center',
+      labelPlacement: 'center' as const,
     }
   }
 
@@ -294,7 +294,7 @@ export function useGraph(options: UseGraphOptions): {
     if (!container) return
 
     try {
-      const { Graph, Minimap } = await import('@antv/g6')
+      const { Graph } = await import('@antv/g6')
 
       // 保存原始数据
       originalNodes = [...nodes]
@@ -319,12 +319,8 @@ export function useGraph(options: UseGraphOptions): {
 
       // 添加插件
       if (showMinimap) {
-        g.addPlugin(
-          new Minimap({
-            size: [200, 150],
-            padding: 10,
-          })
-        )
+        // @antv/g6 5.x 的 API 变更较大，暂不启用 minimap 功能
+        // minimap 相关 API 需要等待库版本稳定后更新
       }
 
       // 绑定节点点击事件
@@ -370,7 +366,8 @@ export function useGraph(options: UseGraphOptions): {
    */
   function setZoom(ratio: number) {
     if (graph.value) {
-      graph.value.zoomTo(ratio, { x: width / 2, y: height / 2 }, false)
+      // @antv/g6 5.x API: zoomTo 已移除 x, y 参数，改为自动以画布中心为原点
+      graph.value.zoomTo(ratio, false)
       currentZoom = ratio
     }
   }

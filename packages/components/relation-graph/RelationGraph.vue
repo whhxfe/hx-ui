@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, shallowRef, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { Search, View, Aim, Plus, Minus, FullScreen } from '@element-plus/icons-vue'
 import { useGraph } from './composables/useGraph'
 import type { RelationGraphProps, RelationNodeClickEvent } from './types'
@@ -125,7 +125,7 @@ function handleSearch() {
 }
 
 // 缩放控制
-const graphInstance = ref<ReturnType<typeof useGraph>['graph']>(null)
+const graphInstance = shallowRef<ReturnType<typeof useGraph>['graph']>(undefined as any)
 const graphMethods = ref<Pick<ReturnType<typeof useGraph>, 'init' | 'getZoom' | 'setZoom' | 'fitView' | 'searchNodes' | 'clearSearch'>>({
   init: () => {},
   getZoom: () => 1,

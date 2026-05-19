@@ -97,7 +97,7 @@ async function addControls(
   map: any,
   controlsConfig: MapControlsConfig,
   mapConfig: typeof MAP_CONFIG,
-  addedControls: Map<string, any>
+  addedControls: globalThis.Map<string, any>
 ) {
   const defaultControls = ['zoom', 'attribution']
 
@@ -122,7 +122,7 @@ export async function syncControls(
   map: any,
   newConfig: MapControlsConfig | undefined,
   mapConfig: typeof MAP_CONFIG,
-  currentControls: Map<string, any>
+  currentControls: globalThis.Map<string, any>
 ) {
   const defaultControls = ['zoom', 'attribution']
   const shouldAddKeys = new Set<string>()
@@ -232,7 +232,7 @@ export async function useMap(options: UseMapOptions) {
 
   const mapRef = shallowRef<any>(null)
   // 记录已添加的控件实例
-  const addedControls = new Map<string, any>()
+  const addedControls = new globalThis.Map<string, any>()
 
   let clickKey: any = null
   let layerSwitcher: any = null
