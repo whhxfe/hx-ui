@@ -36,13 +36,11 @@
     "@element-plus/icons-vue": ">=2.3.1",
     "@iconify/vue": ">=4.3.0",
     "element-plus": ">=2.9.0",
+    "qrcode": ">=1.5.4",
     "vue": ">=3.5.0"
   },
   "peerDependenciesMeta": {
     "@antv/g6": {
-      "optional": true
-    },
-    "qrcode": {
       "optional": true
     },
     "pdfjs-dist": {
@@ -56,9 +54,16 @@
     }
   },
   "dependencies": {
-    "ol-layerswitcher": "^4.1.2"
+    "axios": "^1.7.9",
+    "dayjs": "^1.11.13",
+    "flv.js": "^1.6.2",
+    "hls.js": "^1.5.19",
+    "ol-layerswitcher": "^4.1.2",
+    "vue-json-pretty": "^2.4.0"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/flv.js": "^0.0.4",
     "@types/qrcode": "^1.5.5"
   }
 }
