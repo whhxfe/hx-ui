@@ -43,6 +43,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build @hx/ui package
+        run: pnpm --filter @hx/ui build
+
       - name: Build VitePress
         run: pnpm docs:build
         env:
