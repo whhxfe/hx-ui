@@ -17,7 +17,6 @@ export default defineConfig({
   base: '/hx-ui/',
   cleanUrls: true,
   ignoreDeadLinks: true,
-  srcExclude: ['**/*.md'],
   ssr: false,
   markdown: {
     config(md) {
