@@ -14,6 +14,7 @@ export default defineConfig({
   title: 'Hx UI',
   description: '基于 Element Plus 的业务组件二次封装库',
   lang: 'zh-CN',
+  base: '/hx-ui/',
   cleanUrls: true,
   ignoreDeadLinks: true,
   srcExclude: ['**/*.md'],
