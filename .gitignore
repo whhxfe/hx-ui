@@ -45,4 +45,7 @@ Thumbs.db
 
 server/registry.json
 
+_vercel
+.vercel
+
 _temp/

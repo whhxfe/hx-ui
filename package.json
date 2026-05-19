@@ -18,7 +18,11 @@
     "play:preview": "pnpm --filter play preview",
     "server:dev": "pnpm --filter @hx/ui-server dev",
     "server:build": "pnpm --filter @hx/ui-server build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "node scripts/deploy.js",
+    "deploy:vercel": "node scripts/deploy.js vercel",
+    "deploy:github": "node scripts/deploy.js github",
+    "deploy:all": "node scripts/deploy.js all"
   },
   "devDependencies": {
     "@element-plus/icons-vue": "^2.3.2",
