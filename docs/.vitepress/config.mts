@@ -16,6 +16,8 @@ export default defineConfig({
   lang: 'zh-CN',
   cleanUrls: true,
   ignoreDeadLinks: true,
+  srcExclude: ['**/*.md'],
+  ssr: false,
   markdown: {
     config(md) {
       md.use(markdownItContainer, 'demo', {
@@ -202,6 +204,9 @@ export default defineConfig({
     },
     resolve: {
       alias: [
+        // 浏览器专用库 SSR polyfill
+        { find: /^flv\.js$/, replacement: resolve(__dirname, 'flv-ssr.cjs') },
+        { find: /^hls\.js$/, replacement: resolve(__dirname, 'hls-ssr.cjs') },
         { find: '@', replacement: resolve(__dirname, '../../play/src') },
         // CSS 别名必须在 @hx/ui 之前，防止被更宽泛的别名覆盖
         { find: '@hx/ui/dist/index.css', replacement: resolve(__dirname, '../../packages/dist/index.css') },

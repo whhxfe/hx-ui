@@ -35,8 +35,10 @@
 <script setup lang="ts">
 import { ref, watch, nextTick, onUnmounted, computed } from 'vue'
 import type { VideoViewerProps } from './types'
-import Hls from 'hls.js'
-import flvjs from 'flv.js'
+
+// 动态导入浏览器专用库，避免 SSR 问题
+let Hls: any = null
+let flvjs: any = null
 
 const props = withDefaults(defineProps<VideoViewerProps>(), {
   width: '400px',
@@ -51,7 +53,7 @@ const emit = defineEmits<{
 const loading = ref(true)
 const showModal = ref(false)
 const thumbnailUrl = ref('')
-const captureVideoRef = ref<HTMLVideoElement | null>(null)
+const captureVideoRef = ref<HTMLvideoElement | null>(null)
 const playVideoRef = ref<HTMLVideoElement | null>(null)
 
 let hls: any = null
@@ -100,6 +102,7 @@ const openViewer = async () => {
   const url = props.url
 
   if (String(url).endsWith('.m3u8')) {
+    if (!Hls) Hls = (await import('hls.js')).default
     if (Hls.isSupported()) {
       hls = new Hls()
       hls.loadSource(url)
@@ -108,6 +111,7 @@ const openViewer = async () => {
       video.src = url
     }
   } else if (String(url).endsWith('.flv')) {
+    if (!flvjs) flvjs = (await import('flv.js')).default
     if (flvjs.isSupported()) {
       flvPlayer = flvjs.createPlayer({ type: 'flv', url })
       flvPlayer.attachMediaElement(video)
