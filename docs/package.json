@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "packageManager": "pnpm@10.18.3",
+  "scripts": {
+    "postbuild": "node .vitepress/scripts/post-build.cjs"
+  },
   "dependencies": {
     "@antv/g6": "^5.1.1",
     "@hx/ui": "workspace:*",
