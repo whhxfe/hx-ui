@@ -111,8 +111,7 @@ watch(
         checkTruncated()
       })
     })
-  },
-  { immediate: true }
+  }
 )
 
 onMounted(() => {
