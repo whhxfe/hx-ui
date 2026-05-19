@@ -32,12 +32,7 @@ export interface IconifyIconSourceConfig {
   cdnUrl?: string
 }
 
-/** 内置支持的离线图标集名称 */
-export type IconifyCollectionName = string
-
 export interface IconifyIconConfig {
-  /** 离线图标集名称列表 */
-  offlineCollections?: string[]
   /** 图标源配置 */
   source: IconifyIconSourceConfig
 }
@@ -68,8 +63,6 @@ export interface IconifyProps {
   source?: 'offline' | 'cdn'
   /** CDN 服务地址（当 source 为 'cdn' 时使用） */
   cdnUrl?: string
-  /** 离线图标集名称列表（当 source 为 'offline' 时使用） */
-  collections?: string[]
 }
 
 export interface IconConfig {
@@ -151,8 +144,6 @@ export interface HxConfigProviderProps {
   iconifySource?: 'offline' | 'cdn'
   /** Iconify CDN 服务地址（当 iconifySource 为 'cdn' 时使用） */
   iconifyCdnUrl?: string
-  /** Iconify 离线图标集名称列表 */
-  iconifyCollections?: IconifyCollectionName[]
 }
 
 export interface HxConfig {

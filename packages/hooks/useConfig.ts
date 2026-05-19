@@ -30,7 +30,6 @@ function getDefaultConfig(): HxConfig {
     },
     iconifyIcon: {
       source: { source: 'offline', cdnUrl: undefined },
-      offlineCollections: [],
     },
     qrCode: {
       renderMode: 'svg',

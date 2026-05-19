@@ -5,23 +5,24 @@
     <div class="demo-row">
       <image-icon
         name="alipay"
-        group="payment"
+        group="app"
         source="cdn"
-        cdn-base-url="https://cdn.example.com/icons"
+        cdn-base-url="/icons"
         :size="32"
       />
       <image-icon
         name="wechat"
-        group="payment"
+        group="app"
         source="cdn"
-        cdn-base-url="https://cdn.example.com/icons"
+        cdn-base-url="/icons"
         :size="32"
       />
       <image-icon
-        name="unionpay"
-        group="payment"
+        name="qq"
+        group="app"
+        ext="webp"
         source="cdn"
-        cdn-base-url="https://cdn.example.com/icons"
+        cdn-base-url="icons"
         :size="32"
       />
     </div>

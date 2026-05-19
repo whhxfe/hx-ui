@@ -7,9 +7,9 @@ export * from './components'
 export { default as HxConfigProvider } from './components/config-provider/index.vue'
 export { useConfig } from './hooks/useConfig'
 export { useComponentConfig } from './hooks/useComponentConfig'
-export { registerOfflineCollections } from './utils/offline-icons'
+export { addIconSet } from './utils/offline-icons'
+export { registerIconCollection } from './utils/offline-icons'
 export { buildImageSourceMap, registerImageIcon } from './utils/image-icon'
-export type { IconifyCollectionName } from './types/config'
 export type {
   HxConfig,
   HxConfigProviderProps,

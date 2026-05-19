@@ -1,5 +1,20 @@
 <script setup lang="ts">
-import { HxConfigProvider } from '@hx/ui'
+import { HxConfigProvider, addIconSet } from '@hx/ui'
+
+// ============================================================
+// 注册离线图标集（支持懒加载，推荐）
+// ============================================================
+// 图标集会自动去重加载，无需其他配置
+// addIconSet(() => import('@iconify/json/json/ep.json'))
+// addIconSet(() => import('@iconify/json/json/mdi.json'))
+// addIconSet(() => import('@iconify/json/json/tabler.json'))
+// addIconSet(() => import('@iconify/json/json/logos.json'))
+// addIconSet(() => import('@iconify/json/json/mingcute.json'))
+// addIconSet(() => import('@iconify/json/json/lucide.json'))
+// addIconSet(() => import('@iconify/json/json/carbon.json'))
+
+
+// 更多图标集请查看 @iconify/json 包中的 json 目录
 
 /** 本地 glob 资源 */
 const imageIconModules = import.meta.glob<{ default: string }>(
@@ -7,10 +22,17 @@ const imageIconModules = import.meta.glob<{ default: string }>(
   { eager: true },
 )
 
-/** 图标全局配置 - 使用顶层快捷配置 */
+/** 图标全局配置 */
 const iconConfig = {
+  svg: {
+    symbolPrefix: 'icon',
+  },
+  iconify: {
+    source: 'cdn' as const,
+    cdnUrl:"http://localhost:3333"
+  },
   image: {
-    source: "local" as const,
+    source: 'local' as const,
     imageIconModules: [imageIconModules],
   },
 };
@@ -27,8 +49,6 @@ const requestConfig = {
 <template>
   <HxConfigProvider
     :icon="iconConfig"
-    iconify-source="cdn"
-    iconify-cdn-url="http://localhost:3333"
     :request="requestConfig"
   >
     <router-view />
