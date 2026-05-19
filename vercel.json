@@ -1,8 +1,8 @@
 {
   "framework": null,
-  "buildCommand": "pnpm install --frozen-lockfile && pnpm play:build",
+  "installCommand": "corepack enable pnpm && pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm play:build",
   "outputDirectory": "play/dist",
-  "installCommand": "pnpm install --frozen-lockfile",
   "headers": [
     {
       "source": "/api/(.*)",
