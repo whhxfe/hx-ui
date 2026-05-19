@@ -42,11 +42,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, nextTick, watch, onMounted } from 'vue'
+import { computed, ref, nextTick, onMounted } from 'vue'
 import { HxIcon } from '../icon'
 import type { ContentTextProps } from './index'
 
 defineOptions({ name: 'HxContentText' })
+
+const isSSR = import.meta.env.SSR
 
 const props = withDefaults(defineProps<ContentTextProps>(), {
   line: 0,
@@ -103,24 +105,16 @@ function checkTruncated() {
   isTruncated.value = fullHeight > maxVisibleHeight + 1
 }
 
-watch(
-  () => [props.content, props.line],
-  () => {
-    nextTick(() => {
-      requestAnimationFrame(() => {
-        checkTruncated()
-      })
-    })
-  }
-)
-
-onMounted(() => {
+const safeCheckTruncated = () => {
+  if (isSSR) return
   nextTick(() => {
     requestAnimationFrame(() => {
       checkTruncated()
     })
   })
-})
+}
+
+onMounted(safeCheckTruncated)
 
 const canExpand = computed(() => props.line > 0 && isTruncated.value)
 
