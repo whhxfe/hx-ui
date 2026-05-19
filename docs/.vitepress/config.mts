@@ -15,6 +15,7 @@ export default defineConfig({
   description: '基于 Element Plus 的业务组件二次封装库',
   lang: 'zh-CN',
   cleanUrls: true,
+  ignoreDeadLinks: true,
   markdown: {
     config(md) {
       md.use(markdownItContainer, 'demo', {
