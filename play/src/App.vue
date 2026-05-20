@@ -37,8 +37,10 @@ const iconConfig = {
   },
 };
 
-/** Request 全局配置，所有请求都会带上这些 headers */
+/** Request 全局配置 */
 const requestConfig = {
+  baseUrl: 'http://localhost:4003',
+  prefix: '/api',
   headers: {
     lang: 'zh-CN',
     'xxx-xxx': 'xxxx',

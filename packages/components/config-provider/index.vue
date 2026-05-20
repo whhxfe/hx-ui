@@ -114,8 +114,12 @@ watchEffect(() => {
 
 // ========== Request 初始化 ==========
 
-if (props.request?.headers) {
-  setRequestOptions({ headers: props.request.headers })
+if (props.request) {
+	setRequestOptions({
+		headers: props.request.headers,
+		baseUrl: props.request.baseUrl,
+		prefix: props.request.prefix,
+	})
 }
 
 // ========== Provide 配置 ==========

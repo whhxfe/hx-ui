@@ -4,6 +4,10 @@ export interface RouteMeta {
 }
 
 export const componentRoutes: Record<string, RouteMeta> = {
+  select: {
+    title: '选择器 Select',
+    icon: 'ep-select',
+  },
   button: {
     title: '按钮 Button',
     icon: 'ep-document',

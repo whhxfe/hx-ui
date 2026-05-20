@@ -34,11 +34,17 @@
           >
             <span class="hx-filter-item__option-text">{{ getLabel(option) }}</span>
             <svg
-              v-if="multiple && isActive(option)"
+              v-if="isActive(option)"
               class="hx-filter-item__option-check"
+              :class="{ 'is-multiple': multiple }"
               width="12" height="12" viewBox="0 0 12 12" fill="none"
             >
-              <path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <template v-if="multiple">
+                <path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </template>
+              <template v-else>
+                <circle cx="6" cy="6" r="2.5" fill="currentColor"/>
+              </template>
             </svg>
           </div>
         </template>
@@ -118,12 +124,14 @@ const currentValue = computed({
     const v = props.modelValue
     const useArray = props.multiple && modelValueTypeResolved.value === "array"
     if (!useArray) {
-      // multiple + string: 从逗号字符串转数组（仅内部用于 isActive 判断）
-      if (typeof v === "string" && v) return v.split(MODEL_VALUE_SEPARATOR).map(x => x.trim()).filter(Boolean)
-      if (props.multiple) return []
-      return v ?? ""
+      if (!props.multiple) {
+        return v ?? ""
+      }
+      // multiple + string: 返回逗号分隔的原始字符串
+      if (typeof v === "string") return v
+      return ""
     }
-    // multiple + array
+    // multiple + array: 返回数组
     return Array.isArray(v) ? [...v] : []
   },
   set: (val) => {
@@ -158,6 +166,9 @@ watch(
 const isActive = (option: FilterOption): boolean => {
   const value = getValue(option)
   if (props.multiple) {
+    if (modelValueTypeResolved.value === "string" && typeof currentValue.value === "string") {
+      return currentValue.value.split(MODEL_VALUE_SEPARATOR).map(x => x.trim()).filter(Boolean).includes(String(value))
+    }
     return Array.isArray(currentValue.value) ? currentValue.value.includes(value) : false
   }
   return currentValue.value === value

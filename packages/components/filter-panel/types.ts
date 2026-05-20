@@ -85,6 +85,8 @@ export interface FilterPanelProps {
   filters: FilterConfig[]
   /** 是否折叠筛选条件区域 */
   collapse?: boolean
+  /** 折叠面板内容区最大高度，默认 '400px' */
+  height?: string
 }
 
 /** HxFilterPanel 组件 Emits */

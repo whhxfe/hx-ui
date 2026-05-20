@@ -8,6 +8,12 @@
 filter-panel/basic
 :::
 
+## 折叠与高度
+
+:::demo 通过 `collapse` 属性控制折叠状态，通过 `height` 属性限制面板内容区最大高度，超出内容自动显示滚动条
+filter-panel/many-items
+:::
+
 ## 远程联动
 
 :::demo 省 → 市 → 区三级级联，通过 `FilterRemoteConfig.dependsOn` 实现联动
@@ -24,6 +30,7 @@ filter-panel/cascaded-linkage
 | title | 面板标题 | `string` | `'筛选条件'` |
 | filters | 筛选条件配置数组 | `FilterConfig[]` | `[]` |
 | collapse | 是否默认收起筛选条件区域 | `boolean` | `false` |
+| height | 折叠面板内容区最大高度（控制展开时的最大高度） | `string` | `'400px'` |
 
 ### HxFilterPanel Emits
 

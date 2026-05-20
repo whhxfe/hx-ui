@@ -46,9 +46,9 @@
         </button>
       </div>
     </div>
-    <div class="hx-filter-panel__body">
+    <div class="hx-filter-panel__body" :style="{ maxHeight: collapseState ? '0px' : height }">
       <transition name="collapse">
-        <div class="hx-filter-panel__items" :class="{ 'is-collapsed': collapseState }">
+        <div class="hx-filter-panel__items">
           <template v-for="filter in filters" :key="filter.prop">
             <FilterItem
               v-if="filter.type === 'filter-item'"
@@ -102,6 +102,7 @@ const emit = defineEmits<FilterPanelEmits>()
 const props = withDefaults(defineProps<FilterPanelProps>(), {
   title: '筛选条件',
   collapse: false,
+  height: '400px',
 })
 
 /**
@@ -352,16 +353,30 @@ $border-light: var(--hx-border-color-light);
   }
 
   &__body {
-    padding: 12px 20px 16px;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
   }
 
   &__items {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding: 12px 20px 16px;
+    max-height: v-bind('props.height');
+    overflow-y: auto;
+    overscroll-behavior: contain;
 
-    &.is-collapsed {
-      display: none;
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--hx-border-color-light, #e4e7ed);
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
     }
   }
 }
@@ -453,18 +468,10 @@ $border-light: var(--hx-border-color-light);
 // ── 折叠动画 ──────────────────────────────────────────────────────
 .collapse-enter-active,
 .collapse-leave-active {
-  transition: opacity 0.25s ease, max-height 0.25s ease;
-  overflow: hidden;
+  transition: opacity 0.2s ease;
 }
 .collapse-enter-from,
 .collapse-leave-to {
   opacity: 0;
-  max-height: 0;
-  padding-bottom: 0;
-}
-.collapse-enter-to,
-.collapse-leave-from {
-  opacity: 1;
-  max-height: 400px;
 }
 </style>

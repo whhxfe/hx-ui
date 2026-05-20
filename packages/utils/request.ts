@@ -18,6 +18,10 @@ export interface RequestConfig extends AxiosRequestConfig {
 /** 全局请求配置 */
 export interface RequestOptions {
 	headers?: Record<string, string>
+	/** 基础 URL（域名部分），如 'https://api.example.com' */
+	baseUrl?: string
+	/** 请求路径前缀，如 '/api/v1'，会拼接到所有请求 URL 前面 */
+	prefix?: string
 }
 
 let _instance: AxiosInstance | null = null
@@ -25,7 +29,7 @@ let _options: RequestOptions = {}
 
 function buildInstance(): AxiosInstance {
 	const inst = axios.create({
-		baseURL: "",
+		baseURL: _options.baseUrl ?? "",
 		timeout: 30000,
 		headers: { "Content-Type": "application/json" },
 	})
@@ -35,6 +39,14 @@ function buildInstance(): AxiosInstance {
 		const merged = { ..._options.headers, ...rc.headers }
 		for (const [k, v] of Object.entries(merged)) {
 			config.headers.set(k, v)
+		}
+		// 处理 prefix：拼接 URL 前缀
+		if (_options.prefix && config.url) {
+			const prefix = _options.prefix.endsWith("/")
+				? _options.prefix.slice(0, -1)
+				: _options.prefix
+			const url = config.url.startsWith("/") ? config.url : "/" + config.url
+			config.url = prefix + url
 		}
 		return config
 	})

@@ -73,8 +73,12 @@ export interface IconConfig {
 
 /** Request Provider Props，与 utils/request.ts 中的 RequestOptions 对应 */
 export interface RequestProviderProps {
-  /** 全局默认请求头，会被请求级别的 headers 合并覆盖 */
-  headers?: Record<string, string>
+	/** 全局默认请求头，会被请求级别的 headers 合并覆盖 */
+	headers?: Record<string, string>
+	/** 基础 URL（域名部分），如 'https://api.example.com' */
+	baseUrl?: string
+	/** 请求路径前缀，如 '/api/v1'，会拼接到所有请求 URL 前面 */
+	prefix?: string
 }
 
 /** 组件通用默认值 */
