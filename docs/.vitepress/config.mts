@@ -144,6 +144,7 @@ export default defineConfig({
             { text: 'FilterPanel 筛选面板', link: '/components/filter-panel' },
             { text: 'FilterItem 筛选选项', link: '/components/filter-item' },
             { text: 'FilterDateRange 日期范围选择', link: '/components/filter-date-range' },
+            { text: 'ImporterExporter 导入导出', link: '/components/importer-exporter' },
           ],
         },
         {
