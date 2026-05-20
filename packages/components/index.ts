@@ -93,5 +93,9 @@ export type {
   RelationGraphIconConfig,
   RelationNodeClickEvent,
 } from './relation-graph'
+export { HxImporter } from './importer'
+export type { ImporterProps } from './importer'
+export { HxExporter } from './exporter'
+export type { ExporterProps, ExportType, ExportProgressType } from './exporter'
 
 export { useRemoteOptions, useFilterRemoteOptions, useClickOutside, useZIndex, useTeleport } from '../hooks'

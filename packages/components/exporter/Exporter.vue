@@ -19,19 +19,19 @@
 		<div class="exporter-mode">
 			<div class="exporter-mode-title">请选择导出方式：</div>
 			<el-radio-group v-model="exportType" class="exporter-mode-options">
-				<el-radio value="page" class="exporter-radio-item">
+				<el-radio v-if="visibleOptions.includes('page')" value="page" class="exporter-radio-item">
 					<span class="exporter-radio-label">按页导出</span>
 					<span class="exporter-mode-hint">
 						（第 {{ currentPage || 1 }} 页，共 {{ effectivePageSize }} 条）
 					</span>
 				</el-radio>
-				<el-radio value="all" class="exporter-radio-item">
+				<el-radio v-if="visibleOptions.includes('all')" value="all" class="exporter-radio-item">
 					<span class="exporter-radio-label">全部导出</span>
 					<span class="exporter-mode-hint">
 						（{{ totalCount || 0 }} / {{ maxExportCount }} 条）
 					</span>
 				</el-radio>
-				<el-radio value="count" class="exporter-radio-item">
+				<el-radio v-if="visibleOptions.includes('count')" value="count" class="exporter-radio-item">
 					<span class="exporter-radio-label">按数量导出</span>
 					<el-input-number
 						v-model="exportCount"
@@ -42,7 +42,7 @@
 						@click.stop
 					/>
 				</el-radio>
-				<el-radio value="selected" class="exporter-radio-item" :disabled="!hasSelectedRows">
+				<el-radio v-if="visibleOptions.includes('selected')" value="selected" class="exporter-radio-item" :disabled="!hasSelectedRows">
 					<span class="exporter-radio-label">选中导出</span>
 					<span class="exporter-mode-hint">
 						（{{ selectedRows?.length || 0 }} 条）
@@ -90,7 +90,7 @@
 import { computed, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getRequest } from '../../utils/request'
-import type { ExporterProps, ExportType, ExportProgressType } from './types'
+import type { ExporterProps, ExportType, ExportProgressType, ExportOption } from './types'
 
 defineOptions({
 	name: 'HxExporter',
@@ -111,11 +111,12 @@ const props = withDefaults(defineProps<ExporterProps>(), {
 	extraParams: () => ({}),
 	fileNamePrefix: 'export',
 	autoCloseAfterExport: true,
+	exportOptions: () => ['page', 'all', 'count', 'selected'] as ExportOption[],
 })
 
 const emit = defineEmits<{
-	(e: 'success'): void
-	(e: 'error', error: any): void
+	(e: 'on-success'): void
+	(e: 'on-error', error: any): void
 }>()
 
 const visible = ref(false)
@@ -160,10 +161,22 @@ const progressText = computed(() => {
 	}
 })
 
+const visibleOptions = computed(() => {
+	const options = (props.exportOptions as ExportOption[]) ?? ['page', 'all', 'count', 'selected']
+	return options
+})
+
 const progressStatus = computed(() => {
 	if (exportStatus.value === 'complete') return 'success'
 	return undefined
 })
+
+// 当可见选项变化时，若当前选中项不可见，切换到第一个可见选项
+watch(visibleOptions, (options) => {
+	if (options.length > 0 && !options.includes(exportType.value)) {
+		exportType.value = options[0]
+	}
+}, { immediate: true })
 
 // 监听导出类型切换，必要时重置数量
 watch(exportType, (type) => {
@@ -322,7 +335,7 @@ async function handleExport() {
 		exportStatus.value = 'complete'
 
 		ElMessage.success('导出成功')
-		emit('success')
+		emit('on-success')
 		props.onSuccess?.()
 
 		// 自动关闭
@@ -336,7 +349,7 @@ async function handleExport() {
 		progress.value = 0
 		const errMsg = await extractErrorFromBlob(error)
 		ElMessage.error(errMsg)
-		emit('error', error)
+		emit('on-error', error)
 		props.onError?.(error)
 	}
 }

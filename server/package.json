@@ -9,7 +9,8 @@
     "build": "tsc"
   },
   "dependencies": {
-    "hono": "^4.12.12"
+    "hono": "^4.12.12",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@hono/node-server": "^1.19.13",

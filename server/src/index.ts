@@ -5,6 +5,7 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import { serve } from "@hono/node-server";
 import optionsRouter from "./routes/options";
 import uploadRouter from "./routes/upload";
+import importerExporterRouter from "./routes/importer-exporter";
 
 const app = new Hono();
 
@@ -23,6 +24,7 @@ app.get("/uploads/*", serveStatic({ root: "./public" }));
 // API 路由
 app.route("/api", optionsRouter);
 app.route("/api", uploadRouter);
+app.route("/api", importerExporterRouter);
 
 // 健康检查
 app.get("/health", (c) => c.json({ code: 0, message: "ok" }));
