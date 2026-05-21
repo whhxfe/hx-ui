@@ -120,7 +120,7 @@ const copyCode = async () => {
 
 <style scoped>
 .hx-demo-block {
-  border: 1px solid var(--hx-border-color, #e8e8e8);
+  border: 1px solid var(--hx-border-color-light, #e4e7ed);
   border-radius: 8px;
   margin-bottom: 24px;
   background: var(--hx-bg-color, #fff);
@@ -130,7 +130,7 @@ const copyCode = async () => {
 .hx-demo-block__preview {
   padding: 24px;
   min-height: 80px;
-  border-bottom: 1px dashed var(--hx-border-color, #e8e8e8);
+  border-bottom: 1px dashed var(--hx-border-color-light, #e4e7ed);
 }
 
 .hx-demo-block__missing {
@@ -146,7 +146,7 @@ const copyCode = async () => {
   justify-content: flex-end;
   gap: 8px;
   padding: 8px 12px;
-  border-bottom: 1px solid var(--hx-border-color, #e8e8e8);
+  border-bottom: 1px solid var(--hx-border-color-light, #e4e7ed);
   background: var(--hx-bg-color-page, #fafafa);
 }
 
@@ -196,7 +196,7 @@ const copyCode = async () => {
 
 .hx-demo-block__code-header {
   padding: 10px 16px;
-  border-bottom: 1px solid var(--hx-border-color, #e8e8e8);
+  border-bottom: 1px solid var(--hx-border-color-light, #e4e7ed);
 }
 
 .hx-demo-block__filename {
