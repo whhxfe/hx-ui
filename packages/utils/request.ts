@@ -53,6 +53,10 @@ function buildInstance(): AxiosInstance {
 
 	inst.interceptors.response.use(
 		(response) => {
+			// 如果是 blob 类型，返回完整响应以便访问 headers（如 content-disposition）
+			if (response.config?.responseType === 'blob') {
+				return response
+			}
 			return response.data
 		},
 		(error) => {
