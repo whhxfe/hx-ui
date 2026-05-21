@@ -13,3 +13,25 @@ body {
   height: 100%;
   overflow: hidden;
 }
+
+/* Dark mode overrides */
+.dark {
+  --hx-bg-color: #1a1a1a;
+  --hx-bg-color-page: #121212;
+  --hx-bg-color-hover: #2a2a2a;
+  --hx-bg-color-active: #1a3a5c;
+
+  --hx-text-color-primary: #e8e8e8;
+  --hx-text-color-regular: #b0b0b0;
+  --hx-text-color-secondary: #808080;
+  --hx-text-color-placeholder: #606060;
+  --hx-text-color-disabled: #606060;
+
+  --hx-border-color-base: #3a3a3a;
+  --hx-border-color-light: #2e2e2e;
+  --hx-border-color-lighter: #252525;
+  --hx-border-color-extra-light: #1e1e1e;
+
+  --hx-shadow-color: rgba(0, 0, 0, 0.3);
+  --hx-shadow-color-light: rgba(0, 0, 0, 0.2);
+}
