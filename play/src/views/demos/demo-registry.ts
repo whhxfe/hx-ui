@@ -32,4 +32,8 @@ export const componentRoutes: Record<string, RouteMeta> = {
     title: '地图 Map',
     icon: 'ep-location-information',
   },
+  table: {
+    title: '表格 Table',
+    icon: 'ep-grid',
+  },
 }
