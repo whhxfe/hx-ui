@@ -1,20 +1,9 @@
 <template>
   <div class="hx-table">
-    <el-table ref="tableRef" v-bind="tableAttrs" :data="displayData">
+    <el-table ref="tableRef" v-bind="tableAttrs" :data="displayData" :height="elTableHeight" :max-height="elTableMaxHeight">
       <template v-for="(col, idx) in visibleColumns" :key="col.prop || col.type || idx">
         <TableColumnItem :column="col" :col-index="idx" />
       </template>
-
-      <el-table-column
-        v-if="$slots.action"
-        align="center"
-        label="操作"
-        v-bind="resolvedActionColumnProps"
-      >
-        <template #default="{ row, $index }">
-          <slot name="action" :row="row" :index="$index" />
-        </template>
-      </el-table-column>
 
       <template v-if="$slots.append" #append>
         <slot name="append" />
@@ -55,7 +44,6 @@ const props = withDefaults(
   defineProps<{
     columns?: TableColumn[]
     data?: any[]
-    actionColumnProps?: Record<string, any>
     showPagination?: boolean
     currentPage?: number
     pageSize?: number
@@ -63,11 +51,14 @@ const props = withDefaults(
     total?: number
     paginationLayout?: string
     frontPagination?: boolean
+    /** 表格容器高度，支持 number（像素）或 string（如 '400px'，不含分页高度） */
+    height?: number | string
+    /** 表格最大高度，超出后可滚动 */
+    maxHeight?: number | string
   }>(),
   {
     columns: () => [],
     data: () => [],
-    actionColumnProps: () => ({ width: 180, fixed: 'right' as const }),
     showPagination: false,
     currentPage: 1,
     pageSize: 10,
@@ -75,6 +66,8 @@ const props = withDefaults(
     total: 0,
     paginationLayout: 'total, sizes, prev, pager, next, jumper',
     frontPagination: false,
+    height: undefined,
+    maxHeight: undefined,
   }
 )
 
@@ -97,9 +90,30 @@ const tableAttrs = computed(() => {
 
 const visibleColumns = computed(() => props.columns.filter((col) => !col.hidden))
 
-const resolvedActionColumnProps = computed(() => ({
-  ...props.actionColumnProps,
-}))
+// 分页区域高度常量：上下 padding 12px * 2 + 分页内容约 32px
+const PAGINATION_HEIGHT = 56
+
+// 计算传递给 el-table 的实际高度
+// 优先使用 props.height，否则使用 attrs 中的 height
+const elTableHeight = computed(() => {
+  const height = props.height ?? (tableAttrs.value.height as number | string | undefined)
+
+  if (height === undefined) return undefined
+
+  const numHeight = typeof height === 'number' ? height : parseFloat(String(height))
+
+  // 如果设置了分页，减去分页区域高度
+  if (props.showPagination && !isNaN(numHeight)) {
+    return numHeight - PAGINATION_HEIGHT
+  }
+
+  return numHeight
+})
+
+// 计算传递给 el-table 的实际 maxHeight
+const elTableMaxHeight = computed(() => {
+  return props.maxHeight ?? (tableAttrs.value.maxHeight as number | string | undefined)
+})
 
 // 当 props 从外部控制时（非前端分页模式），使用 props 中的值
 const externalCurrentPage = computed(() =>
@@ -195,9 +209,12 @@ defineExpose({
 .hx-table {
   width: 100%;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .hx-table__pagination {
+  flex-shrink: 0;
   display: flex;
   justify-content: flex-end;
   padding: 12px 0;
