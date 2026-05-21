@@ -1,13 +1,16 @@
 <template>
-  <hx-table
-    :data="data"
-    :columns="columns"
-    show-pagination
-    front-pagination
-    v-model:current-page="currentPage"
-    v-model:page-size="pageSize"
-    border
-  />
+  <div style="height: 500px; display: flex; flex-direction: column;">
+    <hx-table
+      :data="data"
+      :columns="columns"
+      show-pagination
+      front-pagination
+      v-model:current-page="currentPage"
+      v-model:page-size="pageSize"
+      border
+      height="400px"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
