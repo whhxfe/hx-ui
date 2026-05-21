@@ -42,7 +42,7 @@ import { SvgIcon } from '@hx/ui'
 .demo-title {
   margin: 0 0 8px;
   font-size: 13px;
-  color: #1a1a1a;
+  color: var(--el-text-color-primary);
   font-weight: 500;
 }
 .demo-desc {
