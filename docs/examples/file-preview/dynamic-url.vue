@@ -161,48 +161,48 @@ const currentUrl = computed(() => {
 
 <style lang="scss" scoped>
 .demo-dynamic {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
 
-  &__controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+	&__controls {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
 
-  &__label {
-    font-size: 14px;
-    color: #333;
-    font-weight: 500;
-    flex-shrink: 0;
-  }
+	&__label {
+		font-size: 14px;
+		color: var(--el-text-color-primary);
+		font-weight: 500;
+		flex-shrink: 0;
+	}
 
-  &__preview {
-    display: flex;
-    align-items: flex-start;
-  }
+	&__preview {
+		display: flex;
+		align-items: flex-start;
+	}
 
-  &__info {
-    font-size: 13px;
-    color: #666;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+	&__info {
+		font-size: 13px;
+		color: var(--el-text-color-regular);
+		display: flex;
+		align-items: center;
+		gap: 6px;
 
-    code {
-      background: #f5f5f5;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      color: #d63384;
-      word-break: break-all;
-    }
+		code {
+			background: var(--el-fill-color-light);
+			padding: 2px 8px;
+			border-radius: 4px;
+			font-size: 12px;
+			color: var(--el-color-danger);
+			word-break: break-all;
+		}
 
-    &--null code {
-      color: #e57373;
-      background: #fff5f5;
-    }
-  }
+		&--null code {
+			color: var(--el-color-danger);
+			background: var(--el-color-danger-light-9);
+		}
+	}
 }
 </style>

@@ -83,6 +83,6 @@ watch(qrValue, (newValue) => {
 .qrcode-item h4 {
   margin: 0;
   font-weight: 500;
-  color: #303133;
+  color: var(--el-text-color-primary);
 }
 </style>

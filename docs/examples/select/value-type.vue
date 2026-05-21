@@ -52,12 +52,12 @@ const staticOptions: OptionItem[] = [
 .demo-hint {
   margin-top: 6px;
   font-size: 12px;
-  color: #909399;
+  color: var(--el-text-color-placeholder);
   line-height: 1.5;
 }
 .demo-hint code {
   padding: 0 4px;
-  background: #f4f4f5;
+  background: var(--el-fill-color-light);
   border-radius: 3px;
   font-size: 12px;
 }

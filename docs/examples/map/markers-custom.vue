@@ -74,6 +74,6 @@ const renderPopup = (item: MapMarkerItem) => {
 
 .marker-popup__desc {
   font-size: 12px;
-  color: #666;
+  color: var(--el-text-color-regular);
 }
 </style>

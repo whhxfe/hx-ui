@@ -425,8 +425,8 @@ defineExpose({
 	align-items: center;
 	gap: 10px;
 	padding: 8px 12px;
-	background: #f5f7fa;
-	border: 1px solid #ebeef5;
+	background: var(--el-fill-color-light);
+	border: 1px solid var(--el-border-color);
 	border-radius: 6px;
 	transition: all 0.2s;
 
@@ -471,7 +471,7 @@ defineExpose({
 
 .hx-upload-file-preview-name {
 	font-size: 14px;
-	color: #303133;
+	color: var(--el-text-color-regular);
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -479,7 +479,7 @@ defineExpose({
 
 .hx-upload-file-preview-size {
 	font-size: 12px;
-	color: #909399;
+	color: var(--el-text-color-placeholder);
 }
 
 .hx-upload-file-preview-action-btn {
@@ -508,6 +508,6 @@ defineExpose({
 
 .hx-upload-file-preview-tip {
 	font-size: 12px;
-	color: #909399;
+	color: var(--el-text-color-placeholder);
 }
 </style>

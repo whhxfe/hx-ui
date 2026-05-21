@@ -285,11 +285,11 @@ defineExpose({
 	align-items: center;
 	margin-bottom: 20px;
 	padding: 12px 16px;
-	background: #f5f7fa;
+	background: var(--el-fill-color-light);
 	border-radius: 4px;
 
 	.importer-template-label {
-		color: #909399;
+		color: var(--el-text-color-regular);
 		font-size: 14px;
 	}
 }
@@ -303,6 +303,12 @@ defineExpose({
 		.el-upload-dragger {
 			padding: 40px 20px;
 			width: 100%;
+			background-color: var(--el-fill-color-lighter);
+			border-color: var(--el-border-color);
+
+			&:hover {
+				border-color: var(--el-color-primary);
+			}
 		}
 	}
 }
@@ -312,7 +318,7 @@ defineExpose({
 
 	.importer-progress-text {
 		margin-bottom: 8px;
-		color: #606266;
+		color: var(--el-text-color-regular);
 		font-size: 13px;
 		text-align: center;
 	}

@@ -34,7 +34,7 @@ const renderPopup = (item: MapMarkerItem) => {
 <style scoped>
 .demo-desc {
   margin: 0 0 12px;
-  color: #909399;
+  color: var(--el-text-color-placeholder);
   font-size: 14px;
 }
 
@@ -50,6 +50,6 @@ const renderPopup = (item: MapMarkerItem) => {
 
 .marker-popup__desc {
   font-size: 12px;
-  color: #666;
+  color: var(--el-text-color-secondary);
 }
 </style>

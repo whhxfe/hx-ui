@@ -101,22 +101,22 @@ function onMultiChange(val: any) {
 
 <style scoped>
 .demo-section {
-  padding: 4px 0;
+	padding: 4px 0;
 }
 .demo-title {
-  margin: 0 0 10px;
-  font-size: 13px;
-  color: #8a92a6;
-  font-weight: 500;
+	margin: 0 0 10px;
+	font-size: 13px;
+	color: var(--el-text-color-secondary);
+	font-weight: 500;
 }
 .demo-pre {
-  margin: 8px 0 0;
-  padding: 8px 12px;
-  font-size: 13px;
-  line-height: 1.5;
-  background: #f5f7fa;
-  border-radius: 4px;
-  color: #303133;
-  font-family: 'Menlo', 'Monaco', monospace;
+	margin: 8px 0 0;
+	padding: 8px 12px;
+	font-size: 13px;
+	line-height: 1.5;
+	background: var(--el-fill-color-lightest);
+	border-radius: 4px;
+	color: var(--el-text-color-primary);
+	font-family: 'Menlo', 'Monaco', monospace;
 }
 </style>

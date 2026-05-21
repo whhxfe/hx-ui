@@ -71,4 +71,29 @@ html.dark {
   --hx-eml-download-btn-hover-bg: #1e3a2a;
   --hx-eml-download-btn-hover-border: #388e3c;
   --hx-eml-download-btn-hover-color: #81c784;
+
+  // RichEditor (wangeditor) colors
+  --hx-rich-editor-border: #404040;
+  --hx-rich-editor-toolbar-border: #333333;
+  --hx-rich-editor-text-color: #e8e8e8;
+  --hx-rich-editor-bg: #1a1a1a;
+  --hx-rich-editor-placeholder: #606060;
+
+  // wangeditor CSS variables override (need !important due to :root specificity)
+  --w-e-textarea-bg-color: #1a1a1a !important;
+  --w-e-textarea-color: #e8e8e8 !important;
+  --w-e-textarea-border-color: #404040 !important;
+  --w-e-textarea-slight-border-color: #333333 !important;
+  --w-e-textarea-slight-color: #606060 !important;
+  --w-e-textarea-slight-bg-color: #2a2a2a !important;
+  --w-e-textarea-selected-border-color: #409eff !important;
+  --w-e-textarea-handler-bg-color: #409eff !important;
+  --w-e-toolbar-color: #b0b0b0 !important;
+  --w-e-toolbar-bg-color: #1a1a1a !important;
+  --w-e-toolbar-active-color: #e8e8e8 !important;
+  --w-e-toolbar-active-bg-color: #2a2a2a !important;
+  --w-e-toolbar-disabled-color: #505050 !important;
+  --w-e-toolbar-border-color: #333333 !important;
+  --w-e-modal-button-bg-color: #2a2a2a !important;
+  --w-e-modal-button-border-color: #404040 !important;
 }

@@ -28,6 +28,6 @@ import { HxIcon as Icon } from "@hx/ui"
 .desc {
   margin: 0 0 8px;
   font-size: 13px;
-  color: #333;
+  color: var(--el-text-color-primary);
 }
 </style>

@@ -48,7 +48,7 @@ import { SvgIcon } from '@hx/ui'
 .demo-desc {
   margin: 0 0 12px;
   font-size: 12px;
-  color: #8a92a6;
+  color: var(--el-text-color-secondary);
 }
 .demo-row {
   display: flex;

@@ -44,13 +44,13 @@ import { HxIcon as Icon } from "@hx/ui"
 h4 {
   margin: 16px 0 8px;
   font-size: 14px;
-  color: #333;
+  color: var(--el-text-color-primary);
 }
 
 .desc {
   margin: 0 0 12px;
   font-size: 12px;
-  color: #666;
+  color: var(--el-text-color-regular);
 }
 
 .icon-list {

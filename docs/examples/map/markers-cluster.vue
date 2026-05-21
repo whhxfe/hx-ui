@@ -90,7 +90,7 @@ const renderPopup = (item: MapMarkerItem) => {
 .toolbar-divider {
   width: 1px;
   height: 20px;
-  background: #dcdfe6;
+  background: var(--el-border-color);
   margin: 0 4px;
 }
 
@@ -106,14 +106,14 @@ const renderPopup = (item: MapMarkerItem) => {
 
 .marker-popup__desc {
   font-size: 12px;
-  color: #666;
+  color: var(--el-text-color-regular);
 }
 </style>
 
 <style>
 /* 聚合详情 popup */
 .cluster-popup {
-  background: #fff;
+  background: var(--el-bg-color);
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   min-width: 140px;
@@ -123,8 +123,8 @@ const renderPopup = (item: MapMarkerItem) => {
   padding: 10px 12px;
   font-weight: 600;
   font-size: 14px;
-  color: #303133;
-  border-bottom: 1px solid #ebeef5;
+  color: var(--el-text-color-primary);
+  border-bottom: 1px solid var(--el-border-color-light);
 }
 
 .cluster-popup__list {
@@ -139,20 +139,20 @@ const renderPopup = (item: MapMarkerItem) => {
 }
 
 .cluster-popup__item .type {
-  color: #606266;
+  color: var(--el-text-color-regular);
 }
 
 .cluster-popup__item .count {
   font-weight: 600;
-  color: #409eff;
+  color: var(--el-color-primary);
 }
 
 .cluster-popup__footer {
   padding: 8px 12px;
   font-size: 11px;
-  color: #909399;
+  color: var(--el-text-color-placeholder);
   text-align: center;
-  background: #f5f7fa;
-  border-top: 1px solid #ebeef5;
+  background: var(--el-fill-color-lightest);
+  border-top: 1px solid var(--el-border-color-light);
 }
 </style>

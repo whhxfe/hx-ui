@@ -110,7 +110,7 @@ const renderPopup = (item: MapMarkerItem) => {
 .demo-tips {
   margin-bottom: 12px;
   padding: 12px;
-  background: #f5f7fa;
+  background: var(--el-fill-color-lightest);
   border-radius: 4px;
   font-size: 13px;
 }
@@ -136,8 +136,8 @@ const renderPopup = (item: MapMarkerItem) => {
 .marker-popup__type {
   display: inline-block;
   padding: 2px 8px;
-  background: #409eff;
-  color: #fff;
+  background: var(--el-color-primary);
+  color: var(--el-bg-color);
   border-radius: 10px;
   font-size: 11px;
 }
@@ -150,12 +150,12 @@ const renderPopup = (item: MapMarkerItem) => {
 
 .marker-popup__desc {
   font-size: 12px;
-  color: #666;
+  color: var(--el-text-color-regular);
   margin-bottom: 8px;
 }
 
 .marker-popup__extra {
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--el-border-color);
   padding-top: 8px;
 }
 
@@ -167,10 +167,10 @@ const renderPopup = (item: MapMarkerItem) => {
 }
 
 .marker-popup__label {
-  color: #999;
+  color: var(--el-text-color-secondary);
 }
 
 .marker-popup__value {
-  color: #333;
+  color: var(--el-text-color-primary);
 }
 </style>

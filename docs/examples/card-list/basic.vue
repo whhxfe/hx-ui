@@ -46,7 +46,7 @@ const cardList = Array.from({ length: 6 }, (_, i) => ({
 .card-desc {
   margin: 0;
   font-size: 13px;
-  color: #909399;
+  color: var(--el-text-color-placeholder);
   line-height: 1.5;
 }
 </style>

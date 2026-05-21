@@ -79,28 +79,28 @@ const onReset = () => {
 
 <style scoped>
 .filter-panel-demo {
-  width: 100%;
+	width: 100%;
 }
 
 .filter-panel-demo__output {
-  margin-top: 16px;
-  padding: 12px 16px;
-  background: #f5f7fa;
-  border-radius: 8px;
+	margin-top: 16px;
+	padding: 12px 16px;
+	background: var(--el-fill-color-lightest);
+	border-radius: 8px;
 }
 
 .filter-panel-demo__output-title {
-  margin: 0 0 8px;
-  font-size: 13px;
-  color: #606266;
+	margin: 0 0 8px;
+	font-size: 13px;
+	color: var(--el-text-color-regular);
 }
 
 .filter-panel-demo__pre {
-  margin: 0;
-  font-size: 12px;
-  line-height: 1.5;
-  color: #303133;
-  white-space: pre-wrap;
-  word-break: break-all;
+	margin: 0;
+	font-size: 12px;
+	line-height: 1.5;
+	color: var(--el-text-color-primary);
+	white-space: pre-wrap;
+	word-break: break-all;
 }
 </style>

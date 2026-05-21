@@ -52,33 +52,33 @@ const accept = '.jpg,.png,.gif,.pdf,.doc,.docx,.mp4'
 
 <style scoped>
 .demo-block {
-  background: #fff;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 16px;
+	background: var(--el-bg-color);
+	border: 1px solid var(--el-border-color);
+	border-radius: 8px;
+	padding: 20px;
+	margin-bottom: 16px;
 }
 
 .demo-sub-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: #333;
-  margin: 0 0 8px;
+	font-size: 15px;
+	font-weight: 600;
+	color: var(--el-text-color-primary);
+	margin: 0 0 8px;
 }
 
 .demo-desc {
-  font-size: 13px;
-  color: #666;
-  margin: 0 0 12px;
+	font-size: 13px;
+	color: var(--el-text-color-regular);
+	margin: 0 0 12px;
 }
 
 .demo-code {
-  background: #f7f8fa;
-  padding: 12px 16px;
-  border-radius: 6px;
-  font-size: 13px;
-  color: #666;
-  word-break: break-all;
-  margin-top: 12px;
+	background: var(--el-fill-color-lightest);
+	padding: 12px 16px;
+	border-radius: 6px;
+	font-size: 13px;
+	color: var(--el-text-color-regular);
+	word-break: break-all;
+	margin-top: 12px;
 }
 </style>

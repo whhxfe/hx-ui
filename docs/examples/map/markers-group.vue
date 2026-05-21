@@ -118,7 +118,7 @@ const renderDistrictPopup = createPopupRender('district')
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: #606266;
+  color: var(--el-text-color-regular);
 }
 
 .legend-dot {
@@ -151,7 +151,7 @@ const renderDistrictPopup = createPopupRender('district')
 
 .marker-popup__desc {
   font-size: 12px;
-  color: #666;
+  color: var(--el-text-color-regular);
   margin-bottom: 6px;
 }
 
@@ -160,7 +160,7 @@ const renderDistrictPopup = createPopupRender('district')
   padding: 2px 8px;
   border-radius: 4px;
   font-size: 11px;
-  color: #fff;
+  color: var(--el-bg-color);
 }
 
 .marker-popup__badge.provincial {

@@ -26,15 +26,15 @@ const uploadUrl = "/api/upload"
 
 <style scoped>
 .demo-hint {
-  margin-top: 6px;
-  font-size: 12px;
-  color: #909399;
-  line-height: 1.5;
+	margin-top: 6px;
+	font-size: 12px;
+	color: var(--el-text-color-placeholder);
+	line-height: 1.5;
 }
 .demo-hint code {
-  padding: 0 4px;
-  background: #f4f4f5;
-  border-radius: 3px;
-  font-size: 12px;
+	padding: 0 4px;
+	background: var(--el-fill-color-light);
+	border-radius: 3px;
+	font-size: 12px;
 }
 </style>

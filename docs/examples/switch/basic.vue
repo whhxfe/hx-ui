@@ -52,7 +52,7 @@ const switchValue5 = ref(1)
 .demo-title {
 	margin: 0 0 10px;
 	font-size: 13px;
-	color: #8a92a6;
+  color: var(--el-text-color-secondary);
 	font-weight: 500;
 }
 </style>

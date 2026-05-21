@@ -70,7 +70,7 @@ const currentControls = computed(() => {
   gap: 12px;
   margin-bottom: 12px;
   padding: 12px;
-  background: #f5f7fa;
+  background: var(--el-fill-color-lightest);
   border-radius: 4px;
 }
 .control-switches label {
@@ -90,7 +90,7 @@ const currentControls = computed(() => {
 .overview-select select {
   margin-left: 4px;
   padding: 2px 6px;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--el-border-color);
   border-radius: 4px;
 }
 </style>

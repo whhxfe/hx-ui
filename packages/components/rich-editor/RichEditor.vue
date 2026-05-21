@@ -292,7 +292,7 @@ loadWangEditor()
 <style lang="scss" scoped>
 .hx-rich-editor {
 	width: 100%;
-	border: 1px solid #dcdfe6;
+	border: 1px solid var(--el-border-color);
 	border-radius: 6px;
 
 	&--loading,
@@ -301,12 +301,12 @@ loadWangEditor()
 		align-items: center;
 		justify-content: center;
 		min-height: 200px;
-		color: #909399;
+		color: var(--el-text-color-placeholder);
 	}
 }
 
 .hx-rich-editor__toolbar {
-	border-bottom: 1px solid #eee;
+	border-bottom: 1px solid var(--el-border-color-lighter);
 }
 
 .hx-rich-editor__content {

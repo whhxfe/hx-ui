@@ -64,12 +64,12 @@ function onChange3(val: unknown) { console.log('日期变化3:', val) }
 .demo-title {
   margin: 0 0 10px;
   font-size: 13px;
-  color: #8a92a6;
+  color: var(--el-text-color-secondary);
   font-weight: 500;
 }
 .demo-value {
   margin: 8px 0 0;
   font-size: 13px;
-  color: #606266;
+  color: var(--el-text-color-regular);
 }
 </style>

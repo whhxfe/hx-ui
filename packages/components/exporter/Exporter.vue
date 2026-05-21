@@ -366,7 +366,7 @@ defineExpose({
 
 	.exporter-mode-title {
 		margin-bottom: 12px;
-		color: #303133;
+		color: var(--el-text-color-primary);
 		font-size: 14px;
 		font-weight: 500;
 	}
@@ -380,7 +380,7 @@ defineExpose({
 			width: 100%;
 			min-height: 48px;
 			padding: 12px 16px;
-			border: 1px solid #dcdfe6;
+			border: 1px solid var(--el-border-color);
 			border-radius: 4px;
 			margin-right: 0;
 			transition: all 0.2s;
@@ -392,12 +392,12 @@ defineExpose({
 			}
 
 			&:hover:not(.is-disabled) {
-				border-color: #409eff;
+				border-color: var(--el-color-primary);
 			}
 
 			&.is-checked {
-				border-color: #409eff;
-				background: #ecf5ff;
+				border-color: var(--el-color-primary);
+				background: var(--el-color-primary-light-9);
 			}
 
 			&.is-disabled {
@@ -425,7 +425,7 @@ defineExpose({
 		}
 
 		.exporter-mode-hint {
-			color: #909399;
+			color: var(--el-text-color-secondary);
 			font-size: 12px;
 			line-height: 24px;
 		}
@@ -462,7 +462,7 @@ defineExpose({
 	.exporter-progress-text {
 		margin-top: 8px;
 		text-align: center;
-		color: #606266;
+		color: var(--el-text-color-regular);
 		font-size: 14px;
 	}
 }

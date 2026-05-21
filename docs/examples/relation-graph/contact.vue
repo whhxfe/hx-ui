@@ -121,7 +121,7 @@ const edges: RelationEdge[] = [
 <style scoped>
 .contact-demo {
   width: 100%;
-  border: 1px solid #e8e8e8;
+  border: 1px solid var(--el-border-color);
   border-radius: 8px;
   overflow: hidden;
 }
