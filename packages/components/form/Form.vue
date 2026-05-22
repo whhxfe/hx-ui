@@ -18,7 +18,11 @@
     </hx-form>
 -->
 <template>
-	<div class="hx-form" :style="{ '--cols': cols }">
+	<div class="hx-form" :style="{
+		'--cols': mergedCols,
+		'--gap': mergedGap + 'px',
+		'--min-col-width': mergedMinColWidth + 'px'
+	}">
 		<el-form ref="formRef" :model="formData" :rules="mergedRules" :inline="inline" v-bind="formAttrs">
 			<template v-for="field in visibleFields" :key="field.prop">
 				<FormField
@@ -47,6 +51,7 @@
 import { computed, nextTick, provide, ref, useAttrs, useSlots, watch } from "vue"
 import FormField from "./FormField.vue"
 import { FORM_SLOTS_KEY } from "../../constants"
+import { useConfig } from "../../hooks/useConfig"
 import { isEqual } from "../../utils"
 import type { FormField as FormFieldType, FormExpose, FormProps } from "./types"
 
@@ -59,6 +64,7 @@ const props = withDefaults(defineProps<FormProps>(), {
 	modelValue: () => ({}),
 	fields: () => [],
 	cols: 3,
+	gap: 16,
 	showAction: true,
 	inline: true,
 })
@@ -73,6 +79,14 @@ const attrs = useAttrs()
 const slots = useSlots()
 const formRef = ref()
 provide(FORM_SLOTS_KEY, slots)
+
+// 全局配置注入
+const globalConfig = useConfig()
+
+// 配置合并：Props > ConfigProvider > 默认值
+const mergedCols = computed(() => props.cols ?? globalConfig.form?.cols ?? 3)
+const mergedGap = computed(() => props.gap ?? globalConfig.form?.gap ?? 16)
+const mergedMinColWidth = computed(() => props.minColWidth ?? globalConfig.form?.minColWidth ?? 0)
 
 /**
  * 透传给 el-form 的属性（rules 需合并，不透传）
@@ -295,12 +309,16 @@ defineExpose<FormExpose>({
 
 	:deep(.el-form--inline) {
 		display: grid;
-		grid-template-columns: repeat(var(--cols, 3), 1fr);
-		gap: 16px;
+		grid-template-columns: repeat(
+			var(--cols, 3),
+			minmax(var(--min-col-width, 0), 1fr)
+		);
+		gap: var(--gap, 16px);
 
 		.el-form-item {
 			grid-column: span var(--col-span, 1);
-
+			margin-right: 0;
+			margin-bottom: 0;
 			&.actions {
 				grid-column: -2 / -1;
 				justify-content: flex-end;

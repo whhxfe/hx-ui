@@ -116,6 +116,16 @@ export interface MapConfig {
   minZoom?: number
 }
 
+/** Form 组件全局配置 */
+export interface FormConfig {
+  /** 默认栅格列数 */
+  cols?: number
+  /** 默认间距（px）*/
+  gap?: number
+  /** 默认最小列宽（px）*/
+  minColWidth?: number
+}
+
 /** 二维码 Provider Props */
 export interface QrCodeProviderProps {
   /** 二维码组件全局配置 */
@@ -139,6 +149,8 @@ export interface HxConfigProviderProps {
   qrCode?: QrCodeConfig
   /** 地图组件全局配置 */
   map?: MapConfig
+  /** Form 组件全局配置 */
+  form?: FormConfig
 
   // ========== 顶层快捷配置（优先级高于 icon 对象）==========
 
@@ -161,4 +173,6 @@ export interface HxConfig {
   qrCode?: QrCodeConfig
   /** 地图全局配置 */
   map?: MapConfig
+  /** Form 组件全局配置 */
+  form?: FormConfig
 }

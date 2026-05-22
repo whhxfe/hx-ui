@@ -1,6 +1,6 @@
 # Map 地图
 
-基于 OpenLayers 的地图组件，支持底图切换、标记点聚合、坐标转换等功能。
+基于 OpenLayers 的地图组件，支持底图切换、滚轮缩放、控件配置等功能。
 
 :::demo 基础地图用法
 map/basic
@@ -36,10 +36,8 @@ map/controls
     :center="{ lon: 116.4, lat: 39.9 }"
     :zoom="10"
     :controls="{
-      // 显式启用默认控件
       zoom: true,
       attribution: { collapsible: true, collapsed: true },
-      // 可选控件
       scaleLine: { units: 'metric' },
       mousePosition: { projection: 'EPSG:4326' },
       fullScreen: true,
@@ -54,91 +52,13 @@ map/controls
 - `false`：禁用控件（仅对默认开启的 `zoom` 和 `attribution` 有效）
 - 配置对象：自定义控件选项
 
-### 控件配置选项
-
-#### zoom / scaleLine / zoomSlider / rotate / fullScreen
-
-使用布尔值 `true` 启用，或传入配置对象：
-
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| className | CSS 类名 | `string` | OL 默认 |
-| duration | 动画时长（毫秒） | `number` | `250` |
-
-#### attribution
-
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| collapsible | 是否可折叠 | `boolean` | `true` |
-| collapsed | 默认折叠状态 | `boolean` | `true` |
-
-#### scaleLine
-
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| units | 计量单位 | `'metric' \| 'imperial' \| 'nautical' \| 'degrees'` | `'metric'` |
-| minWidth | 最小宽度（像素） | `number` | `64` |
-| bar | 显示为比例条 | `boolean` | `false` |
-
-#### mousePosition
-
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| projection | 坐标系 | `string` | `'EPSG:3857'` |
-| placeholder | 鼠标离开时的占位文本 | `string` | `'no position'` |
-
-#### zoomToExtent
-
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| tipLabel | 按钮提示文本 | `string` | `'Fit to extent'` |
-| extent | 目标范围 `[minX, minY, maxX, maxY]`（经纬度） | `[number, number, number, number]` | 地图初始中心附近区域 |
-
-#### overviewMap
-
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| collapsed | 默认折叠状态 | `boolean` | `true` |
-
-## 标记点
-
-通过组合 `HxMapMarkers`、`HxMapPopup`、`HxMapCluster` 组件实现标记点、弹窗和聚合功能。
-
-### 组件组合
-
-| 组件 | 说明 |
-| --- | --- |
-| `HxMapMarkers` | 基础点位渲染层 |
-| `HxMapPopup` | 弹窗组件，作为 Markers 的子组件 |
-| `HxMapCluster` | 聚合组件，内部嵌套 Markers |
-
-:::demo 基础标记点
-map/markers-basic
-:::
-
-:::demo 聚合模式
-map/markers-cluster
-:::
-
-:::demo 分组渲染
-map/markers-group
-:::
-
-:::demo 自定义样式
-map/markers-custom
-:::
-
-:::demo 点位图标（混合模式）
-map/markers-icon-url
-:::
-
 ---
 
 ## 全局配置
 
 可以通过 `HxConfigProvider` 的 `map` 属性配置全局默认地图参数：
 
-```typescript
+```vue
 <HxConfigProvider :map="{
   normalUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
   center: { lon: 116.4, lat: 39.9 },
@@ -150,9 +70,9 @@ map/markers-icon-url
 
 | 服务 | 标准地图 URL | 说明 |
 | --- | --- | --- |
-| **ArcGIS** | `https://server.arcgisonline.com/arcgis/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}` | 完全免费可用，**全球覆盖**（**默认**） |
+| **ArcGIS** | `https://server.arcgisonline.com/arcgis/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}` | 完全免费，**全球覆盖**（**默认**） |
 | **ArcGIS 卫星** | `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}` | 卫星影像 |
-| **OpenStreetMap** | `https://a.tile.openstreetmap.org/{z}/{x}/{y}.png` | 完全免费开源，无需 API Key |
+| **OpenStreetMap** | `https://a.tile.openstreetmap.org/{z}/{x}/{y}.png` | 开源免费，无需 API Key |
 | **天地图** | `https://t0.tianditu.gov.cn/vec_w/wmts?...` | 国内访问快，需申请 Key |
 
 ---
@@ -189,92 +109,3 @@ map/markers-icon-url
 | getZoom | 获取当前缩放级别 | `() => number \| null` |
 | getMap | 获取原始 ol/Map 实例 | `() => Map \| null` |
 | fitExtent | 视野适应范围 | `(extent: [minX, minY, maxX, maxY], padding?: number[]) => void` |
-
----
-
-## HxMapMarkers 属性
-
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| markers | 标记点数据 | `MapMarkerItem[]` | `[]` |
-| markerRadius | 标记点半径（像素） | `number` | `6` |
-| markerColor | 标记点填充颜色 | `string` | `'#ff0000'` |
-| markerStyle | 自定义样式选项 | `MarkerStyleOptions` | - |
-
-## HxMapPopup 属性
-
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| render | 自定义弹窗内容渲染函数 | `(item: MapMarkerItem) => VNode \| string` | - |
-| offset | 弹窗偏移量 | `[number, number]` | `[0, -10]` |
-| showClose | 是否显示关闭按钮 | `boolean` | `true` |
-
-## HxMapCluster 属性
-
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| markers | 标记点数据 | `MapMarkerItem[]` | `[]` |
-| distance | 聚合距离（像素） | `number` | `40` |
-| clusterContent | 自定义聚合弹窗内容 | `(info: ClusterContentInfo) => VNode \| string` | - |
-
-## MapMarkerItem 类型
-
-| 属性 | 说明 | 类型 |
-| --- | --- | --- |
-| id | 唯一标识 | `string \| number` |
-| lon | 经度 | `number` |
-| lat | 纬度 | `number` |
-| name | 点位名称（可选） | `string` |
-| iconUrl | 点位图标 URL（分组渲染时优先使用，rules 配置兜底） | `string` |
-| iconSize | 图标渲染尺寸 `[width, height]`（像素） | `[number, number]` |
-| iconOriginalSize | 图标原始尺寸 `[width, height]`，用于配合 iconSize 计算缩放比例 | `[number, number]` |
-| iconAnchor | 图标锚点（比例） | `[number, number]` |
-| [key: string] | 其他自定义字段（可用于分组） | `any` |
-
----
-
-## 自定义聚合弹窗
-
-通过 `clusterContent` 属性自定义聚合点的弹窗内容。回调接收 `ClusterContentInfo` 上下文：
-
-### ClusterContentInfo 类型
-
-| 属性 | 说明 | 类型 |
-| --- | --- | --- |
-| features | 聚合点包含的所有标记 Feature | `any[]` |
-| count | 聚合数量 | `number` |
-| coordinate | 聚合中心投影坐标 | `[number, number]` |
-| typeCount | 按 type 字段统计的类型分布 | `Record<string, number>` |
-
-### 示例
-
-```vue
-<template>
-  <hx-map :center="{ lon: 112.5, lat: 31.0 }" :zoom="6" :height="400">
-    <hx-map-cluster :markers="markers" :distance="50">
-      <hx-map-markers :markers="markers">
-        <hx-map-popup :render="renderPopup" />
-      </hx-map-markers>
-    </hx-map-cluster>
-  </hx-map>
-</template>
-```
-
-不传 `clusterContent` 时，使用默认的统计列表弹窗（显示类型名称和数量）。
-
----
-
-::: tip 图标大小控制
-当使用 `iconUrl` 设置图标时，可以通过以下方式控制渲染大小：
-
-1. **仅设置 `iconSize`**：假设原始图片尺寸就是 `iconSize`，图标会按该尺寸渲染
-2. **同时设置 `iconSize` + `iconOriginalSize`**：`iconOriginalSize` 指定图片真实尺寸，`iconSize` 指定目标渲染尺寸，组件会自动计算缩放比例
-
-```typescript
-// 方式1：直接指定渲染尺寸（假设原始图片就是 32x32）
-{ iconUrl: '...', iconSize: [32, 32] }
-
-// 方式2：指定原始尺寸 + 目标尺寸（推荐，精确控制）
-{ iconUrl: '...', iconOriginalSize: [128, 128], iconSize: [5, 5] }
-```
-:::

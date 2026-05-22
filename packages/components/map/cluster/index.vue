@@ -3,21 +3,13 @@
  * 地图聚合组件
  * 只负责聚合逻辑，提供 ClusterContext 给嵌套的 Markers 组件使用
  */
-import { ref, watch, watchEffect, onUnmounted, type VNode } from 'vue'
+import { ref, shallowRef, watch, watchEffect, onUnmounted, type VNode } from 'vue'
 import { render } from 'vue'
-import { useMapRef, useMapReady } from './composables/useMap'
-import { provideClusterContext } from './composables/useClusterContext'
-import { ensureOlModules } from './composables/useOlModules'
-import type { MapMarkerItem, ClusterContentInfo } from './types'
-
-export interface ClusterProps {
-  /** 标记点列表 */
-  markers: MapMarkerItem[]
-  /** 聚合距离（像素） */
-  distance?: number
-  /** 自定义聚合弹窗内容 */
-  clusterContent?: (info: ClusterContentInfo) => VNode | string
-}
+import { useMapRef, useMapReady } from '../composables/useMap'
+import { provideClusterContext } from '../composables/useClusterContext'
+import { ensureOlModules } from '../composables/useOlModules'
+import { calcTypeCount } from '../utils'
+import type { ClusterContentInfo, ClusterProps } from './types'
 
 const props = withDefaults(defineProps<ClusterProps>(), {
   distance: 40,
@@ -35,32 +27,27 @@ const clusterContext = provideClusterContext()
 
 const initialized = ref(false)
 
-let clusterSource: any = null
-let clusterLayer: any = null
-let clusterPopup: any = null
-let clickKey: any = null
+// 使用 shallowRef 管理 OL 对象，避免不必要的响应式追踪
+const clusterSource = shallowRef<any>(null)
+const clusterLayer = shallowRef<any>(null)
+const clusterPopup = shallowRef<any>(null)
+const clickKey = shallowRef<any>(null)
 
 /**
  * 创建聚合弹窗
  */
-async function createClusterPopup(coord: [number, number], features: any[]) {
+async function createClusterPopup(coord: [number, number], features: any[]): Promise<Record<string, number>> {
   const modules = await ensureOlModules()
-  const map = mapRef.value
-  if (!map) return
-
   const { Overlay } = modules
+  const map = mapRef.value
+  if (!map) return {}
 
   // 移除旧的弹窗
-  if (clusterPopup) {
-    map.removeOverlay(clusterPopup)
+  if (clusterPopup.value) {
+    map.removeOverlay(clusterPopup.value)
   }
 
-  const typeCount: Record<string, number> = {}
-  features.forEach((f: any) => {
-    const item = f.get('data')
-    const type = item.type || '其他'
-    typeCount[type] = (typeCount[type] || 0) + 1
-  })
+  const typeCount = calcTypeCount(features)
 
   const root = document.createElement('div')
   root.className = 'cluster-popup'
@@ -101,27 +88,29 @@ async function createClusterPopup(coord: [number, number], features: any[]) {
     root.appendChild(footer)
   }
 
-  clusterPopup = new Overlay({
+  clusterPopup.value = new Overlay({
     element: root,
     positioning: 'bottom-center',
     offset: [0, -20],
     stopEvent: false,
   })
 
-  map.addOverlay(clusterPopup)
-  clusterPopup.setPosition(coord)
+  map.addOverlay(clusterPopup.value)
+  clusterPopup.value.setPosition(coord)
 
   // 通过上下文通知嵌套的 Markers
   clusterContext.showClusterPopup(coord, features)
+
+  return typeCount
 }
 
 /**
  * 隐藏聚合弹窗
  */
 function hideClusterPopup() {
-  if (clusterPopup) {
-    mapRef.value?.removeOverlay(clusterPopup)
-    clusterPopup = null
+  if (clusterPopup.value) {
+    mapRef.value?.removeOverlay(clusterPopup.value)
+    clusterPopup.value = null
   }
   clusterContext.hideClusterPopup()
 }
@@ -150,38 +139,38 @@ async function initCluster() {
   }
 
   // 创建聚合源
-  clusterSource = new ClusterSource({
+  clusterSource.value = new ClusterSource({
     distance: props.distance,
     source: rawSource,
   })
 
   // 创建图层（样式由嵌套的 Markers 提供）
-  clusterLayer = new VectorLayer({
-    source: clusterSource,
-    style: undefined, // 样式由 Markers 通过 clusterLayer 访问设置
+  clusterLayer.value = new VectorLayer({
+    source: clusterSource.value,
+    style: undefined,
   })
 
   // 暴露 clusterSource 给嵌套的 Markers
-  clusterContext.clusterLayer.value = clusterLayer
+  clusterContext.clusterLayer.value = clusterLayer.value
 
-  map.addLayer(clusterLayer)
+  map.addLayer(clusterLayer.value)
 
   // 点击事件
-  if (!clickKey) {
-    clickKey = map.on('singleclick', (e: any) => {
+  if (!clickKey.value) {
+    clickKey.value = map.on('singleclick', (e: any) => {
       hideClusterPopup()
 
       map.forEachFeatureAtPixel(e.pixel, (feature: any) => {
         const features = feature.get('features')
 
         if (features && features.length > 1) {
-          // 聚合点
-          createClusterPopup(e.coordinate, features)
-          emit('clusterClick', {
-            features,
-            count: features.length,
-            coordinate: e.coordinate,
-            typeCount: {},
+          createClusterPopup(e.coordinate, features).then((typeCount) => {
+            emit('clusterClick', {
+              features,
+              count: features.length,
+              coordinate: e.coordinate,
+              typeCount: typeCount ?? {},
+            })
           })
           return true
         }
@@ -200,42 +189,48 @@ async function destroyCluster() {
   const map = mapRef.value
   if (!map) return
 
-  if (clickKey) {
+  if (clickKey.value) {
     const { unByKey } = await ensureOlModules()
-    unByKey(clickKey)
-    clickKey = null
+    unByKey(clickKey.value)
+    clickKey.value = null
   }
 
-  if (clusterPopup) {
-    map.removeOverlay(clusterPopup)
-    clusterPopup = null
+  hideClusterPopup()
+
+  if (clusterLayer.value) {
+    map.removeLayer(clusterLayer.value)
+    clusterLayer.value = null
   }
 
-  if (clusterLayer) {
-    map.removeLayer(clusterLayer)
-    clusterLayer = null
-  }
-
-  clusterSource = null
+  clusterSource.value = null
   initialized.value = false
 }
 
-/**
- * 监听 markers 变化
- */
+// ===================== 生命周期 =====================
+
 watchEffect(() => {
-  if (!mapReady.value || initialized.value) return
+  if (!mapReady.value) return
+
+  if (initialized.value) return
   initCluster()
 })
 
 /**
  * 监听 markers 更新
+ * 先销毁旧实例再用最新数据初始化，避免图层残留和内存泄漏
  */
 watch(
   () => props.markers,
   async () => {
-    if (!initialized.value || !clusterSource) return
-    // 重新加载点位
+    if (!mapReady.value) return
+
+    if (!initialized.value || !clusterSource.value) {
+      // 尚未初始化，等 watchEffect 处理
+      return
+    }
+
+    // 先销毁再重建，避免图层残留
+    await destroyCluster()
     initCluster()
   },
   { deep: true }
@@ -246,13 +241,11 @@ onUnmounted(() => {
 })
 
 defineExpose({
-  refresh: () => clusterLayer?.changed(),
+  refresh: () => clusterLayer.value?.changed(),
   hidePopup: hideClusterPopup,
 })
 </script>
 
 <template>
-  <!-- Cluster 组件不渲染实际模板，只提供聚合上下文 -->
-  <!-- 嵌套的 Markers 组件从上下文获取 clusterSource 并设置样式 -->
   <slot />
 </template>

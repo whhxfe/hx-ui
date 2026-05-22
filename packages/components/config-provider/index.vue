@@ -87,6 +87,7 @@ const config = computed<HxConfig>(() => ({
   request: props.request,
   componentDefaults: props.componentDefaults,
   qrCode: props.qrCode,
+  form: props.form,
 }))
 
 // ========== Iconify 初始化 ==========

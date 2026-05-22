@@ -57,6 +57,8 @@ const currentControls = computed(() => {
       } else {
         controls[key] = true
       }
+    } else {
+      controls[key] = false
     }
   }
   return controls

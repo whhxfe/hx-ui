@@ -11,6 +11,7 @@ import { useMapContext } from '../composables/useMapContext'
 import { useClusterContext } from '../composables/useClusterContext'
 import { useMarkerStyle, preloadShape, type UseMarkerStyleOptions } from '../composables/useMarkerStyle'
 import { ensureOlModules } from '../composables/useOlModules'
+import { calcTypeCount } from '../utils'
 import type { MapMarkerItem } from '../types'
 import type { MarkersProps, OlMap, OlMapEvent, OlFeature, OlVectorSource, OlVectorLayer, OlModules } from './types'
 
@@ -35,6 +36,11 @@ const ownSource = shallowRef<OlVectorSource | null>(null) as ShallowRef<OlVector
 const ownLayer = shallowRef<OlVectorLayer | null>(null) as ShallowRef<OlVectorLayer | null>
 /** 点击事件监听 key */
 const clickKey = shallowRef<any>(null)
+/** Cluster 模式是否已就绪 */
+const clusterReady = shallowRef(false)
+
+/** 标记组件是否已初始化（仅控制独立模式） */
+let ownInitialized = false
 
 // 预热形状 SVG data URI
 const shape = props.markerStyle?.shape
@@ -155,41 +161,33 @@ function handleMapClick(e: OlMapEvent): void {
 
 // ==================== Cluster 模式 ====================
 
+/** 构建单个 feature 的同步样式（用于 Cluster 模式下的 style 回调） */
+function buildFeatureStyleSync(feature: OlFeature): any | undefined {
+  const features = feature.get('features')
+  const size = features.length
+
+  if (size === 1) {
+    const item = features[0].get('data')
+    return buildMarkerStyleSync(item, mergeStyleOptions(item))
+  }
+
+  const typeCount = calcTypeCount(features)
+  const names: string[] = []
+  features.forEach((f: OlFeature) => {
+    const item = f.get('data')
+    if (item.name && names.length < 2) {
+      names.push(item.name)
+    }
+  })
+
+  return buildClusterStyleSync(size, typeCount, names)
+}
+
 function setupClusterLayerStyle(): void {
   const layer = clusterContext?.clusterLayer?.value as OlVectorLayer | undefined
   if (!layer) return
 
-  const markerStyle = props.markerStyle
-
-  layer.setStyle((feature: OlFeature) => {
-    const features = feature.get('features')
-    const size = features.length
-
-    if (size === 1) {
-      const item = features[0].get('data')
-      return buildMarkerStyleSync(item, {
-        shape: markerStyle?.shape,
-        iconUrl: markerStyle?.iconUrl,
-        iconSize: markerStyle?.iconSize ?? item.iconSize,
-        iconOriginalSize: markerStyle?.iconOriginalSize ?? item.iconOriginalSize,
-        iconAnchor: markerStyle?.iconAnchor ?? item.iconAnchor,
-        color: markerStyle?.color,
-      })
-    }
-
-    const typeCount: Record<string, number> = {}
-    const names: string[] = []
-    features.forEach((f: OlFeature) => {
-      const item = f.get('data')
-      const type = item.type || '其他'
-      typeCount[type] = (typeCount[type] || 0) + 1
-      if (item.name && names.length < 2) {
-        names.push(item.name)
-      }
-    })
-
-    return buildClusterStyleSync(size, typeCount, names)
-  })
+  layer.setStyle((feature: OlFeature) => buildFeatureStyleSync(feature))
 }
 
 async function warmupClusterStyles(): Promise<void> {
@@ -204,14 +202,7 @@ async function warmupClusterStyles(): Promise<void> {
 
   // 预热单点样式缓存
   for (const item of markers) {
-    buildMarkerStyleSync(item, {
-      shape: props.markerStyle?.shape,
-      iconUrl,
-      iconSize: props.markerStyle?.iconSize ?? item.iconSize,
-      iconOriginalSize: props.markerStyle?.iconOriginalSize ?? item.iconOriginalSize,
-      iconAnchor: props.markerStyle?.iconAnchor ?? item.iconAnchor,
-      color: props.markerStyle?.color,
-    })
+    buildMarkerStyleSync(item, mergeStyleOptions(item))
   }
 
   // 预热聚合样式缓存（使用典型的 count 值）
@@ -221,48 +212,64 @@ async function warmupClusterStyles(): Promise<void> {
   }
 }
 
-// ===================== 生命周期 =====================
-let initialized = false
+/** 初始化 Cluster 模式 */
+async function initClusterMode(): Promise<void> {
+  if (clusterReady.value) return
 
+  const layer = clusterContext?.clusterLayer?.value
+  if (!layer) return
+
+  await ensureOlModules()
+  // 先预热样式缓存，再设置样式回调（避免首次渲染时 buildMarkerStyleSync 返回 null）
+  await warmupClusterStyles()
+  setupClusterLayerStyle()
+  layer.changed()
+
+  if (!clickKey.value) {
+    clickKey.value = (mapRef.value as OlMap).on('singleclick', handleMapClick)
+  }
+
+  clusterReady.value = true
+}
+
+// ===================== 生命周期 =====================
+
+// 独立模式：在 mapReady 后初始化
 watchEffect(() => {
-  if (!mapReady.value || initialized) return
-  initialized = true
+  if (!mapReady.value || ownInitialized) return
+  if (clusterContext) return // Cluster 模式由下面的 watch 处理
+
+  ownInitialized = true
 
   const map = mapRef.value as OlMap | null
   if (!map) return
 
-  if (!clusterContext) {
-    initOwnLayer()
-    if (!clickKey.value) {
-      clickKey.value = map.on('singleclick', handleMapClick)
-    }
-    return
+  initOwnLayer()
+  if (!clickKey.value) {
+    clickKey.value = map.on('singleclick', handleMapClick)
   }
-
-  // Cluster 模式：等待 clusterLayer 就绪后初始化
-  watch(
-    () => clusterContext?.clusterLayer?.value,
-    async (layer) => {
-      if (layer) {
-        await ensureOlModules()
-        // 先预热样式缓存，再设置样式回调（避免首次渲染时 buildMarkerStyleSync 返回 null）
-        await warmupClusterStyles()
-        setupClusterLayerStyle()
-        layer.changed()
-
-        if (!clickKey.value) {
-          clickKey.value = (mapRef.value as OlMap).on('singleclick', handleMapClick)
-        }
-      }
-    },
-    { immediate: true },
-  )
 })
+
+// Cluster 模式：等待 clusterLayer 就绪后初始化
+// 独立于 watchEffect 之外，避免嵌套 watch 导致多个 watch 实例
+watch(
+  () => clusterContext?.clusterLayer?.value,
+  async (layer) => {
+    if (!mapReady.value || !layer) return
+
+    await initClusterMode()
+  },
+  { immediate: true },
+)
 
 watch(
   () => props.markers,
   () => {
-    if (!clusterContext && initialized && ownSource.value) {
+    if (clusterReady.value) {
+      // Cluster 模式：预热新数据样式并刷新
+      warmupClusterStyles()
+      clusterContext!.clusterLayer!.value.changed()
+    } else if (ownInitialized && ownSource.value) {
       updateOwnMarkers()
     }
   },
@@ -272,10 +279,10 @@ watch(
 watch(
   () => props.markerStyle,
   async () => {
-    if (clusterContext?.clusterLayer?.value) {
+    if (clusterReady.value) {
       // Cluster 模式：重新预热样式并刷新
       await warmupClusterStyles()
-      clusterContext.clusterLayer.value.changed()
+      clusterContext!.clusterLayer!.value.changed()
     } else if (ownLayer.value) {
       updateOwnMarkers()
     }

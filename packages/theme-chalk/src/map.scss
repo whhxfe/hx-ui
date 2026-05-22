@@ -1,0 +1,27 @@
+// Map 组件样式
+.hx-map-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.hx-map {
+  width: 100%;
+  height: 100%;
+
+  // 覆盖 OpenLayers 默认样式
+  .ol-zoom,
+  .ol-attribution {
+    z-index: 10;
+  }
+
+  .ol-zoom {
+    left: 10px;
+    top: 10px;
+  }
+
+  .ol-attribution {
+    bottom: 5px;
+    right: 5px;
+    font-size: 12px;
+  }
+}

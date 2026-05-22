@@ -3,7 +3,7 @@
  * Cluster 组件提供此上下文，嵌套的 Markers 组件消费此上下文
  */
 
-import { ref, provide, inject, computed, type Ref, type InjectionKey } from 'vue'
+import { ref, shallowRef, provide, inject, computed, type Ref, type InjectionKey } from 'vue'
 import type { MapMarkerItem } from '../types'
 
 /** 聚合上下文状态 */
@@ -40,8 +40,8 @@ export function provideClusterContext() {
   const isClusterMode = ref(false)
   const clusterFeatures = ref<any[]>([])
   const clusterCoord = ref<[number, number] | null>(null)
-  // clusterLayer 使用 ref 以确保响应式更新
-  const clusterLayer = ref<any>(null)
+  // clusterLayer 使用 shallowRef 避免 OL 图层对象的深层响应式追踪
+  const clusterLayer = shallowRef<any>(null)
 
   const showClusterPopup = (coord: [number, number], features: any[]) => {
     isClusterMode.value = true

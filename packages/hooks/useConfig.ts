@@ -48,5 +48,10 @@ function getDefaultConfig(): HxConfig {
       maxZoom: 18,
       minZoom: 3,
     },
+    form: {
+      cols: 3,
+      gap: 16,
+      minColWidth: 0,
+    },
   }
 }

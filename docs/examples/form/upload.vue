@@ -2,6 +2,7 @@
   <hx-form
     v-model="formData"
     :fields="fields"
+    :inline="false"
     :cols="3"
   />
   <hx-json-view :data="formData" />

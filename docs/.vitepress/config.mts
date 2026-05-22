@@ -97,6 +97,8 @@ export default defineConfig({
           text: 'Map 地图组件',
           items: [
             { text: 'Map 地图', link: '/components/map' },
+            { text: 'MapMarkers 标记点', link: '/components/map-markers' },
+            { text: 'MapCluster 聚合', link: '/components/map-cluster' },
           ],
         },
         {

@@ -82,6 +82,22 @@ form/validation
 form/upload
 :::
 
+## 全局配置
+
+可通过 `HxConfigProvider` 在应用顶层统一配置 Form 组件的默认值：
+
+```vue
+<HxConfigProvider :form="{ cols: 4, gap: 12 }">
+  <!-- 全局生效 -->
+</HxConfigProvider>
+```
+
+配置优先级：**Props > ConfigProvider > 默认值**，即 Props 传入的值会覆盖全局配置。
+
+:::demo 通过 ConfigProvider 全局配置 Form 布局
+form/config-provider
+:::
+
 ## API
 
 ### Props
@@ -91,6 +107,8 @@ form/upload
 | v-model / modelValue | 表单数据对象 | `Record<string, any>` | `{}` |
 | fields | 表单字段配置数组 | `FormField[]` | - |
 | cols | 栅格列数 | `number` | `3` |
+| gap | 栅格间距（px） | `number` | `16` |
+| minColWidth | 栅格最小列宽（px） | `number` | `0` |
 | showAction | 是否显示操作按钮区域 | `boolean` | `true` |
 | labelWidth | 表单级别 label 宽度 | `string \| number` | - |
 | labelPosition | 表单级别 label 位置 | `'left' \| 'right' \| 'top'` | `'right'` |

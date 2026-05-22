@@ -72,15 +72,16 @@ export { HxUpload } from './upload'
 export type { UploadProps } from './upload'
 export { HxCardList } from './card-list'
 export { ThemeToggle } from './theme-toggle'
-export { HxMap, HxMapMarkers, HxMapCluster, HxMapPopup } from './map'
+export { HxMap, HxMapMarkers, HxMapCluster, HxMapPopup, registerMapMarkerShapes, getRegisteredShapes } from './map'
 export type {
   MapMarkerItem,
   MapCenter,
   BaseMapProps,
-  MarkerProps,
   MarkerGroupConfig,
   MarkerGroupStyle,
-  MarkerStyleOptions,
+  MarkerStyle,
+  MarkerShape,
+  ShapeDefinition,
   ClusterContentInfo,
   PopupProps,
   ClusterProps,

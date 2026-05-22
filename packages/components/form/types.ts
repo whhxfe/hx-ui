@@ -299,6 +299,10 @@ export interface FormProps {
 	fields?: FormField[]
 	/** 栅格列数 */
 	cols?: number
+	/** 栅格间距（px）*/
+	gap?: number
+	/** 栅格最小列宽（px）*/
+	minColWidth?: number
 	/** 是否显示底部的查询/重置操作区 */
 	showAction?: boolean
 	/** 是否使用行内布局（配合 cols 实现 grid 栅格，默认 true） */

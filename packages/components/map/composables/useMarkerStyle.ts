@@ -6,6 +6,7 @@
  * - 提供 buildIconStyle() 统一构建 Icon 样式
  * - 提供 buildMarkerStyle / buildMarkerStyleSync 构建单点样式
  * - 提供 buildClusterStyleSync 构建聚合样式
+ * - 样式缓存为模块级别单例，跨组件实例共享
  */
 
 import { render, type VNode } from 'vue'
@@ -157,6 +158,14 @@ const preloadedImages = new Map<string, HTMLImageElement>()
 /** 图片尺寸缓存 */
 const imageSizeCache = new Map<string, [number, number]>()
 
+// ==================== 样式缓存（模块级别单例，跨组件实例共享） ====================
+
+/** 聚合样式缓存 - 模块级，避免丢失 */
+const moduleClusterStyleCache = new Map<string, any>()
+
+/** 单点样式缓存（同步版本）- 模块级 */
+const moduleMarkerStyleCache = new Map<string, any>()
+
 /**
  * 预加载图标图片
  */
@@ -226,15 +235,28 @@ export async function buildIconStyle(
     // getImageSize 成功后 preloadedImages 中已有缓存的 img
     const img = preloadedImages.get(url)
 
+    if (img) {
+      // img 模式：使用 scale 控制显示尺寸，避免同时传入 size 导致 OL 内部 null 引用崩溃
+      const scaleX = size[0] / originalSize[0]
+      return new Style({
+        image: new Icon({
+          img,
+          imgSize: originalSize,
+          scale: scaleX,
+          anchor: iconAnchor,
+        }),
+      })
+    }
+
+    // src 模式：使用 size 控制显示尺寸
     return new Style({
       image: new Icon({
-        ...(img ? { img } : { src: url }),
-        imgSize: originalSize,
+        src: url,
         size,
         anchor: iconAnchor,
       }),
     })
-  } catch {
+  } catch (e) {
     // 图片加载失败，降级为灰色圆形
     const fallbackRadius = Math.min(size[0], size[1]) / 2
     return new Style({
@@ -266,16 +288,21 @@ export function buildIconStyleSync(
 
   const { Style, Icon } = modules
 
-  if (!preloadedImages.has(url)) return null
+  if (!preloadedImages.has(url)) {
+    return null
+  }
 
   const img = preloadedImages.get(url)!
   const size = targetSize ?? [32, 32]
+  const originalSize: [number, number] = [img.naturalWidth, img.naturalHeight]
 
+  // img 模式：使用 scale 控制显示尺寸，避免同时传入 size 导致 OL 内部 null 引用崩溃
+  const scaleX = size[0] / originalSize[0]
   return new Style({
     image: new Icon({
       img,
-      imgSize: [img.naturalWidth, img.naturalHeight],
-      size,
+      imgSize: originalSize,
+      scale: scaleX,
       anchor: anchor ?? [0.5, 1],
     }),
   })
@@ -310,6 +337,18 @@ function getShapeSrc(shape: string, color?: string): [string, [number, number]] 
   const svg = def.svg.replace(/currentColor/g, shapeColor)
   const dataUri = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
   shapeDataUriCache.set(cacheKey, dataUri)
+
+  // 预加载 data URI 到 preloadedImages，供 buildShapeIconStyle 的 img 模式使用
+  const cachedImg = new Image()
+  cachedImg.onload = () => {
+    preloadedImages.set(dataUri, cachedImg)
+    imageSizeCache.set(dataUri, [cachedImg.naturalWidth, cachedImg.naturalHeight])
+  }
+  cachedImg.onerror = () => {
+    // data URI 加载失败不需要处理
+  }
+  cachedImg.src = dataUri
+
   return [dataUri, def.size]
 }
 
@@ -353,14 +392,27 @@ function buildShapeIconStyle(
   const [srcUrl, svgSize] = src
   // 优先使用 iconOriginalSize，否则使用注册时解析的 SVG 尺寸
   const imgSize = iconOriginalSize ?? svgSize
-  // 计算缩放比例：将 SVG 原始尺寸缩放到目标渲染尺寸
-  const scale = iconSize ? iconSize[0] / imgSize[0] : 1
+  const displaySize = iconSize ?? imgSize
+  // 计算缩放比例：将原始尺寸缩放到目标渲染尺寸
+  const scaleX = displaySize[0] / imgSize[0]
 
+  // 优先使用 img 模式（data URI 已在 getShapeSrc 中同步预加载）
+  if (preloadedImages.has(srcUrl)) {
+    return new Style({
+      image: new Icon({
+        img: preloadedImages.get(srcUrl)!,
+        imgSize,
+        scale: scaleX,
+      }),
+    })
+  }
+
+  // src 模式：传入 imgSize 告知 OL 图片原始尺寸，避免 OL 在图片加载完成前访问 null 属性导致崩溃
   return new Style({
     image: new Icon({
       src: srcUrl,
       imgSize,
-      scale,
+      scale: scaleX,
     }),
   })
 }
@@ -432,6 +484,9 @@ function buildShapeStyleSync(
 
 /**
  * 构建自定义渲染样式（异步）
+ *
+ * 将 VNode / HTML 字符串渲染到 SVG foreignObject 中，生成 data URI 作为 Icon.src，
+ * 避免直接将 HTMLDivElement 传给 img 参数导致 OL 内部崩溃。
  */
 async function buildCustomRenderStyle(
   item: MapMarkerItem,
@@ -444,7 +499,7 @@ async function buildCustomRenderStyle(
 
   const content = renderFn(item)
   const el = document.createElement('div')
-  el.className = 'custom-marker'
+  el.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;'
 
   if (typeof content === 'string') {
     el.innerHTML = content
@@ -452,22 +507,103 @@ async function buildCustomRenderStyle(
     render(content, el)
   }
 
+  const size = iconSize ?? [32, 32]
+  const html = el.innerHTML || el.outerHTML
+
+  // 使用 SVG foreignObject 包裹渲染后的 HTML，生成 data URI
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size[0]}" height="${size[1]}">
+    <foreignObject width="${size[0]}" height="${size[1]}">
+      <div xmlns="http://www.w3.org/1999/xhtml" style="width:${size[0]}px;height:${size[1]}px;display:flex;align-items:center;justify-content:center;">
+        ${html}
+      </div>
+    </foreignObject>
+  </svg>`
+
+  const src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
+
+  // 预加载 data URI 图片，然后使用 img 模式（而非 src 模式）
+  // 避免 OL 在图片加载完成前访问 null 引用导致崩溃（Cannot read properties of null (reading '0')）
+  const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new Image()
+    image.onload = () => resolve(image)
+    image.onerror = () => reject(new Error('Failed to load custom render data URI'))
+    image.src = src
+  })
+
   return new Style({
     image: new Icon({
+      img,
+      imgSize: size,
+      scale: 1,
       anchor: iconAnchor ?? [0.5, 1],
-      img: el,
-      imgSize: iconSize,
     }),
   })
+}
+
+// ==================== 构建聚合样式（直接导出的函数） ====================
+
+/**
+ * 构建聚合簇样式（同步，返回 Style 实例）
+ * 作为独立函数导出（不受 Hot Reload 影响），
+ * composable 内部的 buildClusterStyleSync 委托给此函数
+ */
+function buildClusterStyleSyncImpl(
+  count: number,
+  typeCount?: Record<string, number>,
+  names?: string[],
+): any {
+  const modules = useOlModules()
+  if (!modules) return null
+
+  const cacheKey = `${count}-${JSON.stringify(typeCount)}-${JSON.stringify(names)}`
+  if (moduleClusterStyleCache.has(cacheKey)) {
+    return moduleClusterStyleCache.get(cacheKey)
+  }
+
+  const { Style, Circle, Fill, Stroke, Text } = modules
+
+  const radius = Math.min(24, 12 + Math.sqrt(count) * 2)
+
+  let displayText = String(count)
+  if (names && names.length > 0) {
+    displayText = count > 99 ? '99+' : String(count)
+  }
+
+  let fillColor = '#409eff'
+  if (typeCount) {
+    const mainType = Object.entries(typeCount).sort((a, b) => b[1] - a[1])[0]?.[0] || '地级市'
+    const colorMap: Record<string, string> = {
+      '省会': '#f56c6c',
+      '地级市': '#409eff',
+      '区县': '#67c23a',
+      '其他': '#909399',
+    }
+    fillColor = colorMap[mainType] || '#409eff'
+  }
+
+  const style = new Style({
+    image: new Circle({
+      radius,
+      fill: new Fill({ color: fillColor }),
+      stroke: new Stroke({ color: '#fff', width: 2 }),
+    }),
+    text: new Text({
+      text: displayText,
+      fill: new Fill({ color: '#fff' }),
+      font: 'bold 14px sans-serif',
+      textAlign: 'center',
+      textBaseline: 'middle',
+      offsetY: -1,
+    }),
+  })
+
+  moduleClusterStyleCache.set(cacheKey, style)
+  return style
 }
 
 // ==================== composable 主体 ====================
 
 export function useMarkerStyle() {
-  // Cluster 样式缓存
-  const clusterStyleCache = new Map<string, any>()
-  // 单点样式缓存
-  const markerStyleCache = new Map<string, any>()
 
   /**
    * 构建单个点位的样式（异步版本）
@@ -545,6 +681,8 @@ export function useMarkerStyle() {
    * 构建单个点位样式（同步版本）
    * 用于 Cluster 模式下同步构建单点样式
    * 仅支持预加载的图标、预定义形状和默认圆形
+   *
+   * 缓存为模块级单例，不受 Hot Reload 影响
    */
   function buildMarkerStyleSync(item: MapMarkerItem, options?: UseMarkerStyleOptions): any {
     const shape = options?.shape
@@ -561,8 +699,8 @@ export function useMarkerStyle() {
 
     // 构建缓存 key
     const cacheKey = `sync-${item.id ?? item.lon}-${item.lat}-${iconUrl ?? shape ?? 'circle'}-${JSON.stringify(iconSize)}-${color}`
-    if (markerStyleCache.has(cacheKey)) {
-      return markerStyleCache.get(cacheKey)
+    if (moduleMarkerStyleCache.has(cacheKey)) {
+      return moduleMarkerStyleCache.get(cacheKey)
     }
 
     let style: any
@@ -578,69 +716,23 @@ export function useMarkerStyle() {
     }
 
     if (style) {
-      markerStyleCache.set(cacheKey, style)
+      moduleMarkerStyleCache.set(cacheKey, style)
     }
     return style
   }
 
   /**
    * 构建聚合簇样式（同步，返回 Style 实例）
+   * 委托给模块级函数，缓存不受 Hot Reload 影响
+   *
+   * OL 尚未加载时返回 null（不做无意义的 ensureOlModules 调用）
    */
   function buildClusterStyleSync(
     count: number,
     typeCount?: Record<string, number>,
     names?: string[],
   ): any {
-    const modules = useOlModules()
-    if (!modules) {
-      ensureOlModules()
-      return null
-    }
-
-    const cacheKey = `${count}-${JSON.stringify(typeCount)}-${JSON.stringify(names)}`
-    if (clusterStyleCache.has(cacheKey)) {
-      return clusterStyleCache.get(cacheKey)
-    }
-
-    const { Style, Circle, Fill, Stroke, Text } = modules
-
-    const radius = Math.min(24, 12 + Math.sqrt(count) * 2)
-
-    let displayText = String(count)
-    if (names && names.length > 0) {
-      displayText = count > 99 ? '99+' : String(count)
-    }
-
-    let fillColor = '#409eff'
-    if (typeCount) {
-      const mainType = Object.entries(typeCount).sort((a, b) => b[1] - a[1])[0]?.[0] || '地级市'
-      const colorMap: Record<string, string> = {
-        '省会': '#f56c6c',
-        '地级市': '#409eff',
-        '区县': '#67c23a',
-        '其他': '#909399',
-      }
-      fillColor = colorMap[mainType] || '#409eff'
-    }
-
-    const style = new Style({
-      image: new Circle({
-        radius,
-        fill: new Fill({ color: fillColor }),
-        stroke: new Stroke({ color: '#fff', width: 2 }),
-      }),
-      text: new Text({
-        text: displayText,
-        fill: new Fill({ color: '#fff' }),
-        font: 'bold 14px sans-serif',
-        textAlign: 'center',
-        textBaseline: 'middle',
-        offsetY: -1,
-      }),
-    })
-
-    clusterStyleCache.set(cacheKey, style)
-    return style
+    return buildClusterStyleSyncImpl(count, typeCount, names)
   }
 
   return {
