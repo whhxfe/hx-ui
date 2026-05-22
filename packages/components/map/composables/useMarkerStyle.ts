@@ -223,10 +223,12 @@ export async function buildIconStyle(
 
   try {
     const originalSize = await getImageSize(url)
+    // getImageSize 成功后 preloadedImages 中已有缓存的 img
+    const img = preloadedImages.get(url)
 
     return new Style({
       image: new Icon({
-        src: url,
+        ...(img ? { img } : { src: url }),
         imgSize: originalSize,
         size,
         anchor: iconAnchor,
