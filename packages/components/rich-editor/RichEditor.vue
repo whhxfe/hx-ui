@@ -36,6 +36,7 @@ import "@wangeditor/editor/dist/css/style.css"
 import { ref, shallowRef, watch, computed, onBeforeUnmount } from "vue"
 import type { IDomEditor, IEditorConfig, IToolbarConfig } from "@wangeditor/editor"
 import { ElMessage } from "element-plus"
+import { request } from "../../utils/request"
 import type { RichEditorParams, RichEditorUploadOptions } from "./types"
 
 const props = withDefaults(defineProps<RichEditorParams>(), {
@@ -127,52 +128,7 @@ const toolbarConfig: Partial<IToolbarConfig> = {
 	]
 }
 
-// ========== 图片压缩 ==========
-const compressImage = (file: File): Promise<File> => {
-	return new Promise(resolve => {
-		if (!file.type.startsWith("image/")) {
-			resolve(file)
-			return
-		}
-
-		const reader = new FileReader()
-
-		reader.onload = e => {
-			const img = new Image()
-
-			img.onload = () => {
-				const canvas = document.createElement("canvas")
-				const ctx = canvas.getContext("2d")!
-
-				const maxWidth = 1600
-				const scale = Math.min(1, maxWidth / img.width)
-
-				canvas.width = img.width * scale
-				canvas.height = img.height * scale
-
-				ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-
-				canvas.toBlob(
-					blob => {
-						if (!blob) {
-							resolve(file)
-							return
-						}
-						resolve(new File([blob], file.name, { type: "image/jpeg" }))
-					},
-					"image/jpeg",
-					0.8
-				)
-			}
-
-			img.src = e.target!.result as string
-		}
-
-		reader.readAsDataURL(file)
-	})
-}
-
-// ========== 上传处理 ==========
+// ========== editor config ==========
 const resolveUploadOption = (type: "image" | "video", option: RichEditorUploadOptions): RichEditorUploadOptions => {
 	const resolvedUrl = option.url || props.uploadUrl
 	if (resolvedUrl) {
@@ -196,13 +152,12 @@ const uploadByRequest = async (file: File, option: RichEditorUploadOptions) => {
 		})
 	}
 
-	const res = await fetch(option.url, {
-		method: "POST",
-		body: formData,
-		headers: option.headers
-	})
+	const headers: Record<string, string> = {
+		...(option.headers || {})
+	}
 
-	const data = await res.json()
+	const data = await request.post<any>(option.url, formData, { headers })
+
 	const url = props.responseAdapter(data)
 	if (!url) throw new Error("未解析到url")
 	return url
@@ -244,11 +199,11 @@ const editorConfig = computed<Partial<IEditorConfig>>(() => ({
 	readOnly: props.readOnly,
 	MENU_CONF: {
 		uploadImage: {
+			base64LimitSize: 0,
 			async customUpload(file: File, insertFn: (url: string) => void) {
 				try {
-					const compressed = await compressImage(file)
 					const uploadOption = resolveUploadOption("image", props.uploadImage || {})
-					const url = await upload(compressed, uploadOption)
+					const url = await upload(file, uploadOption)
 					insertFn(url)
 					emit("upload-success", url)
 				} catch (err) {

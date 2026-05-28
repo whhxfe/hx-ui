@@ -5,11 +5,15 @@
       <HxRichEditor
         v-model="content3"
         :upload-url="uploadUrl"
-        :upload-image="{ url: uploadUrl }"
-        :upload-video="{ url: uploadUrl }"
+        :upload-image="{ url: uploadUrl,extraData:{ type:'image' } }"
+        :upload-video="{ url: uploadUrl,extraData:{ type:'video' }  }"
+        :response-adapter="(res)=>res.data.url"
       />
       <p class="demo-value">HTML 内容长度: {{ content3.length }} 字符</p>
-      <p class="demo-hint">图片上传前会自动压缩（最大宽度 1600px，JPEG 质量 80%）。请替换 <code>uploadUrl</code> 为实际接口地址。</p>
+      <p class="demo-hint">
+        所有图片和视频都会通过统一的 <code>request</code> 方法上传到后端接口，
+        不再进行客户端 Base64 转换。默认上传接口为 <code>/api/upload</code>。
+      </p>
     </div>
   </div>
 </template>
@@ -20,7 +24,7 @@ import { HxRichEditor } from "@hx/ui"
 
 const content3 = ref("<p>支持<em>图片</em>和<em>视频</em>上传，可通过 <code>uploadUrl</code> 或 <code>uploadImage</code> / <code>uploadVideo</code> 分别配置。</p>")
 
-/** 上传接口地址，请替换为实际接口 */
+/** 上传接口地址 */
 const uploadUrl = "/api/upload"
 </script>
 

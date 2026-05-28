@@ -1,6 +1,6 @@
 # RichEditor 富文本编辑器
 
-基于 [WangEditor v5](https://www.wangeditor.com/) 封装的富文本编辑器组件，支持图文混排、图片/视频上传（可配 MinIO 或任意 HTTP 接口）、图片压缩、只读预览等场景。
+基于 [WangEditor v5](https://www.wangeditor.com/) 封装的富文本编辑器组件，支持图文混排、图片/视频上传（可配 MinIO 或任意 HTTP 接口）、只读预览等场景。
 
 ## 基础用法
 
@@ -18,11 +18,11 @@ rich-editor/readonly
 
 ## 上传配置
 
-通过 `upload-url` 或 `upload-image` / `upload-video` 分别配置图片和视频的上传接口。内置**图片压缩**（最大宽度 1600px，JPEG 80%）。
+通过 `upload-url` 或 `upload-image` / `upload-video` 分别配置图片和视频的上传接口。所有文件都会通过统一封装的 `request` 方法上传到后端接口，不再进行客户端 Base64 转换。
 
 支持两种上传方式：
 
-- **HTTP 接口**：传入上传地址，组件自动 `POST FormData`，并通过 `responseAdapter` 从响应体解析资源 URL
+- **HTTP 接口**：传入上传地址，组件使用 `request.post` 自动 `POST FormData`，并通过 `responseAdapter` 从响应体解析资源 URL
 - **MinIO 直传**：传入 MinIO 配置，组件直接在浏览器端签名上传到 MinIO，无需后端介入
 
 :::demo 上传图片 / 视频
