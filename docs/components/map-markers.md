@@ -10,6 +10,10 @@
 map-markers/basic
 :::
 
+:::demo 建筑类型点位展示
+map-markers/building-types
+:::
+
 ---
 
 ## 样式配置

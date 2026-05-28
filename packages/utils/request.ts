@@ -40,6 +40,10 @@ function buildInstance(): AxiosInstance {
 		for (const [k, v] of Object.entries(merged)) {
 			config.headers.set(k, v)
 		}
+		// 如果是 FormData，不设置 Content-Type，让 axios 自动处理（包含正确的 boundary）
+		if (config.data instanceof FormData) {
+			config.headers.delete("Content-Type")
+		}
 		// 处理 prefix：拼接 URL 前缀
 		if (_options.prefix && config.url) {
 			const prefix = _options.prefix.endsWith("/")
