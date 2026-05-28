@@ -18,6 +18,8 @@ const mapEl = ref<HTMLDivElement | null>(null)
 const mapRef = shallowRef<any>(null)
 
 let syncControlsFn: ((config: any) => void) | null = null
+/** 点击监听器 key（用于解绑） */
+let clickKey: any = null
 
 /** projUtils 类型签名 */
 interface ProjUtils {
@@ -25,6 +27,9 @@ interface ProjUtils {
   toLonLat: (...args: any[]) => any
 }
 const projUtils = shallowRef<ProjUtils | null>(null)
+
+// 鼠标悬停时是否在 feature 上
+const isHoveringFeature = shallowRef(false)
 
 // =================== 配置合并 ===================
 // 优先级：Props > ConfigProvider > 默认值
@@ -55,7 +60,7 @@ const normalizedHeight = computed(() => {
 // =================== provide 上下文 ===================
 // 在 setup 阶段提前 provide，让子组件可以同步 inject（即使 map 还未就绪）
 provide(MapKey, mapRef)
-provideMapContext(mapRef)
+const mapContext = provideMapContext(mapRef)
 
 // =================== useMap ===================
 // 在 setup 阶段同步调用 useMap，确保其内部的 onUnmounted 正确注册
@@ -82,6 +87,35 @@ onMounted(async () => {
   // DOM 就绪后初始化地图
   await nextTick()
   await mapInstance.initMap()
+
+  const map = mapRef.value
+  console.log('[BaseMap] onMounted, map:', !!map, 'notifyMapClick:', !!mapContext.notifyMapClick)
+  if (map) {
+    // 监听鼠标悬停事件，设置 cursor 样式
+    map.on('pointermove', (e: any) => {
+      const hasFeature = map.forEachFeatureAtPixel(e.pixel, () => true)
+      isHoveringFeature.value = !!hasFeature
+    })
+
+    // 注册统一的 singleclick 监听，通知所有注册的 handlers
+    if (mapContext.notifyMapClick) {
+      map.on('singleclick', (e: any) => {
+        console.log('[BaseMap] singleclick triggered')
+        map.forEachFeatureAtPixel(e.pixel, (feature: any) => {
+          const data = feature.get('data')
+          const coord = feature.getGeometry().getCoordinates()
+          console.log('[BaseMap] feature found:', !!data, 'data:', data?.name)
+          if (data && coord) {
+            mapContext.notifyMapClick(data, coord)
+            return true
+          }
+          return false
+        })
+      })
+    } else {
+      console.log('[BaseMap] WARN: notifyMapClick is null, singleclick not registered')
+    }
+  }
 })
 
 // =================== Props 监听 ===================
@@ -162,7 +196,7 @@ defineExpose<BaseMapExposed>({
 
 <template>
   <div class="hx-map-container" :style="{ width: normalizedWidth, height: normalizedHeight }">
-    <div ref="mapEl" class="hx-map" />
+    <div ref="mapEl" class="hx-map" :class="{ 'is-hovering': isHoveringFeature }" />
     <slot />
   </div>
 </template>

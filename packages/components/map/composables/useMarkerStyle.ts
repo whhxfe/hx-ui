@@ -610,8 +610,9 @@ export function useMarkerStyle() {
    *
    * 优先级：
    * 1. item.iconUrl / item.render（数据项级别，最高优先级）
-   * 2. markerStyle.render（组件级自定义渲染）
-   * 3. markerStyle.shape（默认形状，保底）
+   * 2. item.shape / item.color（数据项级形状，优先级高于 markerStyle 配置）
+   * 3. markerStyle.render / markerStyle.iconUrl（组件级配置）
+   * 4. markerStyle.shape / markerStyle.color（组件级形状，兜底）
    *
    * 注意：markerGroup 的分组样式由 useMarkerGroup 处理，不经过此函数
    */
@@ -619,20 +620,19 @@ export function useMarkerStyle() {
     item: MapMarkerItem,
     options?: UseMarkerStyleOptions,
   ): Promise<any> => {
-    // shape 模式下未传 color 时使用形状默认色；circle 模式使用 #409eff
-    const shape = options?.shape
-    const isKnownShape = shape && shape !== 'circle' && shapeRegistry.has(shape)
-    const defaultColor = isKnownShape ? getShapeDefaultColor(shape!) : '#409eff'
-    const color = options?.color || defaultColor
-    const iconSize = options?.iconSize ?? DEFAULT_ICON_SIZE
-    const iconOriginalSize = options?.iconOriginalSize
+    // 图标尺寸和锚点：优先使用 item 级别，其次使用 options 级别
+    const iconSize = item.iconSize ?? options?.iconSize ?? DEFAULT_ICON_SIZE
+    const iconAnchor = item.iconAnchor ?? options?.iconAnchor
+
+    // 颜色：优先级 item.color > options.color > 形状默认色 > #409eff
+    const optionsColor = options?.color || '#409eff'
 
     // 模式1：item.iconUrl（最高优先级）
     if (item.iconUrl) {
       return buildIconStyle(
         item.iconUrl,
         item.iconSize ?? options?.iconSize,
-        item.iconAnchor ?? options?.iconAnchor,
+        iconAnchor,
       )
     }
 
@@ -642,15 +642,21 @@ export function useMarkerStyle() {
         return await buildCustomRenderStyle(
           item,
           item.render,
-          item.iconSize ?? options?.iconSize,
-          item.iconAnchor ?? options?.iconAnchor,
+          iconSize,
+          iconAnchor,
         )
       } catch (err) {
         console.error('[useMarkerStyle] item.render error:', err)
       }
     }
 
-    // 模式3：options.render（组件级自定义渲染）
+    // 模式3：item.shape（数据项级形状）
+    if (item.shape) {
+      const shapeColor = item.color || optionsColor
+      return buildShapeStyle(item.shape, shapeColor, iconSize, options?.iconOriginalSize)
+    }
+
+    // 模式4：options.render（组件级自定义渲染）
     if (options?.render) {
       try {
         return await buildCustomRenderStyle(
@@ -664,7 +670,7 @@ export function useMarkerStyle() {
       }
     }
 
-    // 模式4：options.iconUrl（组件级图标 URL）
+    // 模式5：options.iconUrl（组件级图标 URL）
     if (options?.iconUrl) {
       return buildIconStyle(
         options.iconUrl,
@@ -673,8 +679,12 @@ export function useMarkerStyle() {
       )
     }
 
-    // 模式5：默认形状（shape）
-    return buildShapeStyle(options?.shape, color, iconSize, iconOriginalSize)
+    // 模式6：默认形状（shape）
+    const shape = options?.shape
+    const isKnownShape = shape && shape !== 'circle' && shapeRegistry.has(shape)
+    const defaultColor = isKnownShape ? getShapeDefaultColor(shape!) : '#409eff'
+    const color = optionsColor || defaultColor
+    return buildShapeStyle(shape, color, iconSize, options?.iconOriginalSize)
   }
 
   /**
@@ -683,36 +693,51 @@ export function useMarkerStyle() {
    * 仅支持预加载的图标、预定义形状和默认圆形
    *
    * 缓存为模块级单例，不受 Hot Reload 影响
+   *
+   * 优先级：
+   * 1. item.iconUrl（数据项级图标 URL）
+   * 2. item.shape / item.color（数据项级形状）
+   * 3. options.iconUrl（组件级图标 URL）
+   * 4. options.shape / options.color（组件级形状）
    */
   function buildMarkerStyleSync(item: MapMarkerItem, options?: UseMarkerStyleOptions): any {
-    const shape = options?.shape
-    const isKnownShape = shape && shape !== 'circle' && shapeRegistry.has(shape)
-    const defaultColor = isKnownShape ? getShapeDefaultColor(shape!) : '#409eff'
-    const color = options?.color || defaultColor
-    const iconSize = options?.iconSize ?? DEFAULT_ICON_SIZE
+    // 图标尺寸和锚点：优先使用 item 级别，其次使用 options 级别
+    const iconSize = item.iconSize ?? options?.iconSize ?? DEFAULT_ICON_SIZE
+    const iconAnchor = item.iconAnchor ?? options?.iconAnchor
     const iconOriginalSize = options?.iconOriginalSize
+
+    // 颜色：优先级 item.color > options.color > 形状默认色 > #409eff
+    const defaultColor = options?.color || '#409eff'
 
     // 优先级：item 级别的属性优先于 options
     const iconUrl = item.iconUrl ?? options?.iconUrl
-    const itemIconSize = item.iconSize ?? options?.iconSize
-    const iconAnchor = item.iconAnchor ?? options?.iconAnchor
 
     // 构建缓存 key
-    const cacheKey = `sync-${item.id ?? item.lon}-${item.lat}-${iconUrl ?? shape ?? 'circle'}-${JSON.stringify(iconSize)}-${color}`
+    const cacheKey = `sync-${item.id ?? item.lon}-${item.lat}-${iconUrl ?? item.shape ?? options?.shape ?? 'circle'}-${JSON.stringify(iconSize)}-${item.color ?? defaultColor}`
     if (moduleMarkerStyleCache.has(cacheKey)) {
       return moduleMarkerStyleCache.get(cacheKey)
     }
 
     let style: any
 
-    // 模式1：item.iconUrl → options.iconUrl（尝试使用预加载的图标）
+    // 模式1：item.iconUrl 或 options.iconUrl（优先使用预加载的图标）
     if (iconUrl) {
-      style = buildIconStyleSync(iconUrl, itemIconSize, iconAnchor)
+      style = buildIconStyleSync(iconUrl, iconSize, iconAnchor)
     }
 
-    // 模式2：注册的自定义形状
+    // 模式2：item.shape（数据项级形状）
+    if (!style && item.shape) {
+      const shapeColor = item.color || defaultColor
+      style = buildShapeStyleSync(item.shape, shapeColor, iconSize, iconOriginalSize)
+    }
+
+    // 模式3：options.shape（组件级形状）
     if (!style) {
-      style = buildShapeStyleSync(shape, color, iconSize, iconOriginalSize)
+      const shape = options?.shape
+      const isKnownShape = shape && shape !== 'circle' && shapeRegistry.has(shape)
+      const shapeDefaultColor = isKnownShape ? getShapeDefaultColor(shape!) : '#409eff'
+      const shapeColor = defaultColor || shapeDefaultColor
+      style = buildShapeStyleSync(shape, shapeColor, iconSize, iconOriginalSize)
     }
 
     if (style) {

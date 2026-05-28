@@ -22,6 +22,15 @@ export interface MapMarkerItem {
   iconOriginalSize?: [number, number]
   /** 图标锚点（相对于图标尺寸的比例） */
   iconAnchor?: [number, number]
+  /**
+   * 自定义形状（优先级低于 iconUrl 和 render）
+   * 可使用已注册的形状名称，如 'map-marker'、'star' 等
+   */
+  shape?: MarkerShape
+  /**
+   * 形状填充颜色（仅 item.shape 非空时生效，优先级高于 markerStyle.color）
+   */
+  color?: string
   /** 数据项级自定义渲染函数（优先级最高，与 iconUrl 同级） */
   render?: (item: MapMarkerItem) => string | VNode
   /** 扩展信息（用于自定义 popup 内容） */

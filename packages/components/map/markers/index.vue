@@ -5,7 +5,7 @@
  * - 独立使用时：创建自己的 VectorSource 渲染 markers
  * - 嵌套在 Cluster 内时：从 ClusterContext 获取 clusterSource 并设置样式
  */
-import { watchEffect, watch, onUnmounted, shallowRef, type ShallowRef } from 'vue'
+import { watchEffect, watch, onUnmounted, shallowRef, provide, type ShallowRef } from 'vue'
 import { useMapRef, useMapReady } from '../composables/useMap'
 import { useMapContext } from '../composables/useMapContext'
 import { useClusterContext } from '../composables/useClusterContext'
@@ -13,7 +13,10 @@ import { useMarkerStyle, preloadShape, type UseMarkerStyleOptions } from '../com
 import { ensureOlModules } from '../composables/useOlModules'
 import { calcTypeCount } from '../utils'
 import type { MapMarkerItem } from '../types'
-import type { MarkersProps, OlMap, OlMapEvent, OlFeature, OlVectorSource, OlVectorLayer, OlModules } from './types'
+import type { MarkersProps, OlMap, OlFeature, OlVectorSource, OlVectorLayer, OlModules } from './types'
+
+/** Markers 数据 ID Key，用于 Popup 过滤 */
+const MARKERS_DATA_KEY = Symbol.for('markers-data')
 
 const props = withDefaults(defineProps<MarkersProps>(), {
   markerStyle: () => ({
@@ -34,8 +37,6 @@ const { buildMarkerStyle, buildMarkerStyleSync, buildClusterStyleSync, preloadIc
 const ownSource = shallowRef<OlVectorSource | null>(null) as ShallowRef<OlVectorSource | null>
 /** 独立模式下的矢量图层 */
 const ownLayer = shallowRef<OlVectorLayer | null>(null) as ShallowRef<OlVectorLayer | null>
-/** 点击事件监听 key */
-const clickKey = shallowRef<any>(null)
 /** Cluster 模式是否已就绪 */
 const clusterReady = shallowRef(false)
 
@@ -47,6 +48,11 @@ const shape = props.markerStyle?.shape
 if (shape && shape !== 'circle') {
   preloadShape(shape, props.markerStyle?.color)
 }
+
+// ==================== 为 Popup 提供数据过滤 ====================
+/** Markers 数据 ID 集合，用于 Popup 过滤 */
+const markerIds = new Set(props.markers.map((m) => m.id))
+provide(MARKERS_DATA_KEY, markerIds)
 
 // ==================== 公共工具函数 ====================
 
@@ -117,12 +123,6 @@ async function destroyOwnLayer(): Promise<void> {
   const map = mapRef.value as OlMap | null
   if (!map) return
 
-  if (clickKey.value) {
-    const modules = (await ensureOlModules()) as unknown as OlModules
-    modules.unByKey(clickKey.value)
-    clickKey.value = null
-  }
-
   if (ownLayer.value) {
     map.removeLayer(ownLayer.value)
     ownLayer.value = null
@@ -131,32 +131,23 @@ async function destroyOwnLayer(): Promise<void> {
 }
 
 // ==================== 交互处理 ====================
+/** 标记组件是否已注册点击处理 */
+let clickHandlerRegistered = false
 
-function handleMapClick(e: OlMapEvent): void {
-  const map = mapRef.value as OlMap | null
-  if (!map) return
+function handleMarkerClick(data: MapMarkerItem, coord: [number, number]): void {
+  console.log('[Markers] handleMarkerClick:', data.name)
+  mapContext?.setActiveMarker(data, coord)
+}
 
-  map.forEachFeatureAtPixel(e.pixel, (feature: OlFeature) => {
-    let data: MapMarkerItem | undefined
-    let coord: [number, number] | undefined
-
-    if (clusterContext?.clusterLayer?.value) {
-      const features = feature.get('features')
-      if (features && features.length === 1) {
-        data = features[0].get('data')
-        coord = features[0].getGeometry().getCoordinates()
-      }
-    } else {
-      data = feature.get('data')
-      coord = feature.getGeometry().getCoordinates()
-    }
-
-    if (data && coord) {
-      mapContext?.setActiveMarker(data, coord)
-      return true
-    }
-    return false
-  })
+/** 注册/取消注册点击回调 */
+function registerClickHandler() {
+  console.log('[Markers] registerClickHandler called, mapContext:', !!mapContext, 'registered:', clickHandlerRegistered)
+  if (clickHandlerRegistered) return
+  const unregister = mapContext?.registerMapClickHandler(handleMarkerClick)
+  console.log('[Markers] unregister returned:', typeof unregister)
+  if (unregister !== undefined) {
+    clickHandlerRegistered = true
+  }
 }
 
 // ==================== Cluster 模式 ====================
@@ -225,9 +216,7 @@ async function initClusterMode(): Promise<void> {
   setupClusterLayerStyle()
   layer.changed()
 
-  if (!clickKey.value) {
-    clickKey.value = (mapRef.value as OlMap).on('singleclick', handleMapClick)
-  }
+  registerClickHandler()
 
   clusterReady.value = true
 }
@@ -237,17 +226,13 @@ async function initClusterMode(): Promise<void> {
 // 独立模式：在 mapReady 后初始化
 watchEffect(() => {
   if (!mapReady.value || ownInitialized) return
-  if (clusterContext) return // Cluster 模式由下面的 watch 处理
+  // 如果存在 Cluster 层，则由 Cluster 模式处理
+  if (clusterContext?.clusterLayer?.value) return
 
   ownInitialized = true
 
-  const map = mapRef.value as OlMap | null
-  if (!map) return
-
   initOwnLayer()
-  if (!clickKey.value) {
-    clickKey.value = map.on('singleclick', handleMapClick)
-  }
+  registerClickHandler()
 })
 
 // Cluster 模式：等待 clusterLayer 就绪后初始化

@@ -1,4 +1,4 @@
-import { ref, provide, inject, computed, type Ref, type InjectionKey } from 'vue'
+import { ref, provide, inject, computed, type Ref, type InjectionKey, type ComponentPublicInstance } from 'vue'
 import type { MapMarkerItem } from '../types'
 import { MapKey, type ShallowRef } from './useMap'
 
@@ -16,6 +16,10 @@ export interface MapContextActions {
   setActiveMarker: (marker: MapMarkerItem | null, coord: [number, number] | null) => void
   /** 清除当前激活的 marker */
   clearActiveMarker: () => void
+  /** 注册地图点击回调（用于 Markers 组件获取点击的 feature） */
+  registerMapClickHandler: (handler: (data: MapMarkerItem, coord: [number, number]) => void) => () => void
+  /** 通知地图点击（供 BaseMap 调用） */
+  notifyMapClick: (data: MapMarkerItem, coord: [number, number]) => void
 }
 
 /** Map Context 完整类型 */
@@ -37,14 +41,35 @@ export function provideMapContext(mapRef: ShallowRef<any>) {
   const activeMarker = ref<MapMarkerItem | null>(null)
   const activeCoord = ref<[number, number] | null>(null)
 
+  /** 点击回调列表 */
+  const clickHandlers: Array<(data: MapMarkerItem, coord: [number, number]) => void> = []
+
   const setActiveMarker = (marker: MapMarkerItem | null, coord: [number, number] | null) => {
+    console.log('[MapContext] setActiveMarker called:', { marker: marker?.name, coord })
     activeMarker.value = marker
     activeCoord.value = coord
   }
 
   const clearActiveMarker = () => {
+    console.log('[MapContext] clearActiveMarker called')
     activeMarker.value = null
     activeCoord.value = null
+  }
+
+  /** 注册地图点击回调，返回取消注册函数 */
+  const registerMapClickHandler = (handler: (data: MapMarkerItem, coord: [number, number]) => void) => {
+    clickHandlers.push(handler)
+    return () => {
+      const index = clickHandlers.indexOf(handler)
+      if (index > -1) {
+        clickHandlers.splice(index, 1)
+      }
+    }
+  }
+
+  /** 供 BaseMap 调用，触发所有注册的点击回调 */
+  const notifyMapClick = (data: MapMarkerItem, coord: [number, number]) => {
+    clickHandlers.forEach((handler) => handler(data, coord))
   }
 
   const context: MapContext = {
@@ -52,10 +77,12 @@ export function provideMapContext(mapRef: ShallowRef<any>) {
     activeCoord,
     setActiveMarker,
     clearActiveMarker,
+    registerMapClickHandler,
+    notifyMapClick,
   }
 
   provide(MapContextKey, context)
-  provide('mapInstanceId', instanceId) // 用于唯一标识地图实例
+  provide('mapInstanceId', instanceId)
 
   return context
 }

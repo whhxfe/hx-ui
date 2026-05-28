@@ -249,3 +249,77 @@ defineExpose({
 <template>
   <slot />
 </template>
+
+<style lang="scss">
+// Cluster Popup 样式（必须为非 scoped，因为 popup DOM 是通过 document.createElement 动态创建的）
+.cluster-popup {
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  padding: 0;
+  min-width: 160px;
+  max-width: 280px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #fff;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+  }
+}
+
+.cluster-popup__header {
+  padding: 10px 12px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+}
+
+.cluster-popup__list {
+  padding: 4px 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.cluster-popup__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+
+  &:hover {
+    background: #f5f7fa;
+  }
+
+  .type {
+    color: #606266;
+    font-size: 13px;
+  }
+
+  .count {
+    color: #409eff;
+    font-weight: 500;
+    font-size: 13px;
+  }
+}
+
+.cluster-popup__footer {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #909399;
+  text-align: center;
+  border-top: 1px solid #eee;
+}
+</style>
