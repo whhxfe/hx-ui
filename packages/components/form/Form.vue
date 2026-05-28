@@ -324,6 +324,11 @@ defineExpose<FormExpose>({
 				justify-content: flex-end;
 			}
 		}
+		.el-input,
+		.el-date-editor,
+		.el-time-editor {
+			width: 100% ;
+		}
 	}
 }
 

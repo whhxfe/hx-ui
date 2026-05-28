@@ -3,7 +3,8 @@
     ref="formRef"
     v-model="formData"
     :fields="fields"
-    :cols="3"
+    label-width="90px"
+    :cols="2"
   >
     <template #action-buttons="{ validate, reset }">
       <div class="form-actions">
@@ -17,7 +18,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxForm as Form, HxJsonView } from "@hx/ui"
+import { HxForm , HxJsonView } from "@hx/ui"
 import type { FormField, FormExpose } from "@hx/ui"
 import { ElMessage } from "element-plus"
 
@@ -92,7 +93,7 @@ const fields: FormField[] = [
     rows: 2,
     maxlength: 200,
     showWordLimit: true,
-    colSpan: 3,
+    colSpan: 2,
   },
 
   // ——— 选择类组件 ———
@@ -209,7 +210,7 @@ const fields: FormField[] = [
         ],
       },
     ],
-    colSpan: 3,
+    colSpan: 2,
   },
 
   // ——— 日期时间 ———
@@ -276,7 +277,7 @@ const fields: FormField[] = [
       { label: "运营部", value: "operations" },
       { label: "人力资源部", value: "hr" },
     ],
-    colSpan: 3,
+    colSpan: 2,
   },
 
   // ——— 上传 ———
@@ -294,7 +295,7 @@ const fields: FormField[] = [
     responseMapper: (res: any) => res["data"]["id"],
     previewUrl: "/api/upload/preview",
     placeholder: "上传头像",
-    colSpan: 3,
+    colSpan: 2,
   },
 ]
 
