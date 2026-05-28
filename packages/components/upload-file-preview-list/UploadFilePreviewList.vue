@@ -82,7 +82,10 @@ interface PreviewItem {
 }
 
 const previewMap = reactive<Map<string, PreviewItem>>(new Map())
-const pendingFetches = new Set<string>()
+const pendingFetches = reactive<Set<string>>(new Set())
+
+// 用于存储请求的 AbortController，以支持取消请求
+const pendingControllers = new Map<string, AbortController>()
 
 const previewList = computed<PreviewItem[]>(() => {
 	return parseModelValue(props.modelValue)
@@ -114,10 +117,17 @@ function syncPreviewMap(nextIdsRaw: string | string[] | undefined) {
 	const nextIds = parseModelValue(nextIdsRaw)
 	const nextSet = new Set(nextIds)
 
+	// 取消并清理不再需要的请求
 	for (const [id] of previewMap) {
 		if (!nextSet.has(id)) {
 			previewMap.delete(id)
-			pendingFetches.delete(id)
+			// 取消仍在进行中的请求
+			const controller = pendingControllers.get(id)
+			if (controller) {
+				controller.abort()
+				pendingControllers.delete(id)
+				pendingFetches.delete(id)
+			}
 		}
 	}
 
@@ -147,10 +157,17 @@ async function fetchPreviewUrl(fileId: string) {
 	if (pendingFetches.has(fileId)) return
 	pendingFetches.add(fileId)
 
+	const controller = new AbortController()
+	pendingControllers.set(fileId, controller)
+
 	try {
 		const res = await request.get<{ code?: number; data?: { url?: string; name?: string; size?: number } }>(
 			`${props.previewUrl}/${fileId}`,
+			{ signal: controller.signal },
 		)
+
+		// 检查请求是否已被取消
+		if (controller.signal.aborted) return
 
 		if (res.data) {
 			const data = res.data
@@ -162,11 +179,16 @@ async function fetchPreviewUrl(fileId: string) {
 				item.loading = false
 			}
 		}
-	} catch {
+	} catch (err: any) {
+		// 忽略 abort 错误
+		if (err?.name === 'AbortError' || err?.name === 'CanceledError') return
 		const item = previewMap.get(fileId)
 		if (item) item.loading = false
 	} finally {
-		pendingFetches.delete(fileId)
+		if (!controller.signal.aborted) {
+			pendingFetches.delete(fileId)
+			pendingControllers.delete(fileId)
+		}
 	}
 }
 
