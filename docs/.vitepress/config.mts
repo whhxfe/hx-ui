@@ -99,6 +99,8 @@ export default defineConfig({
             { text: 'Map 地图', link: '/components/map' },
             { text: 'MapMarkers 标记点', link: '/components/map-markers' },
             { text: 'MapCluster 聚合', link: '/components/map-cluster' },
+            { text: 'MapPopup 弹窗', link: '/components/map-popup' },
+            { text: 'Map 组件组合', link: '/components/map-combination' },
           ],
         },
         {
@@ -137,6 +139,7 @@ export default defineConfig({
           text: '文件预览',
           items: [
             { text: 'FilePreview 文件预览', link: '/components/file-preview' },
+            { text: 'UploadFilePreviewList 文件预览列表', link: '/components/upload-file-preview-list' },
 
           ],
         },
