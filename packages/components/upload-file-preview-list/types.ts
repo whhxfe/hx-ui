@@ -20,4 +20,18 @@ export interface UploadFilePreviewListProps {
 	removable?: boolean
 	/** 是否禁用（禁用时隐藏操作按钮） */
 	disabled?: boolean
+	/** 删除确认框标题（默认"确认删除"） */
+	removeConfirmTitle?: string
+	/** 删除确认框内容（默认"确定要删除文件「{name}」吗？"） */
+	removeConfirmMessage?: string
+	/** 卡片宽度（如 "200px" 或 200） */
+	itemWidth?: string | number
+	/** 卡片高度（如 "120px" 或 120） */
+	itemHeight?: string | number
+	/**
+	 * 根据 fileId 删除文件的接口
+	 * 组件调用 `DELETE ${deleteUrl}/${fileId}` 删除文件。
+	 * 不传则不在前端发起删除请求。
+	 */
+	deleteUrl?: string
 }

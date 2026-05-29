@@ -10,6 +10,10 @@
 			:key="item.fileId"
 			class="hx-upload-file-preview-list-item"
 			:class="{ 'is-disabled': disabled }"
+			:style="{
+				width: normalizedWidth,
+				height: normalizedHeight,
+			}"
 		>
 			<HxFilePreview
 				:url="item.url"
@@ -47,6 +51,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, reactive, watch } from 'vue'
+import { ElMessageBox } from 'element-plus'
 import HxFilePreview from '../file-preview/FilePreview.vue'
 import { request } from '../../utils/request'
 import type { UploadFilePreviewListProps } from './types'
@@ -55,18 +60,30 @@ function formatFileSize(size?: number): string {
 	if (!size) return ''
 	if (size < 1024) return `${size} B`
 	if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`
-	if (size < 1024 * 1024 * 1024) return `${(size / 1024 / 1024 / 1024).toFixed(1)} GB`
+	if (size < 1024 * 1024 * 1024) return `${(size / 1024 / 1024).toFixed(1)} MB`
 	return `${(size / 1024 / 1024 / 1024).toFixed(1)} GB`
+}
+
+function normalizeSize(value?: string | number): string | undefined {
+	if (value === undefined || value === null) return undefined
+	return typeof value === 'number' ? `${value}px` : value
 }
 
 const MODEL_VALUE_SEPARATOR = ','
 
 const props = withDefaults(defineProps<UploadFilePreviewListProps>(), {
 	showDownload: true,
-	removable: false,
+	removable: true,
 	disabled: false,
 	modelValueType: 'array',
+	removeConfirmTitle: '确认删除',
+	removeConfirmMessage: '确定要删除文件「{name}」吗？',
+	itemWidth: undefined,
+	itemHeight: undefined,
 })
+
+const normalizedWidth = computed(() => normalizeSize(props.itemWidth))
+const normalizedHeight = computed(() => normalizeSize(props.itemHeight))
 
 const emit = defineEmits<{
 	(e: 'update:modelValue', value: string | string[]): void
@@ -192,11 +209,31 @@ async function fetchPreviewUrl(fileId: string) {
 	}
 }
 
-function handleRemove(item: PreviewItem) {
+async function handleRemove(item: PreviewItem) {
 	if (props.disabled) return
-	const newIds = parseModelValue(props.modelValue).filter((id) => id !== item.fileId)
-	emitValue(newIds)
-	emit('remove', item.fileId)
+	const defaultMessage = '确定要删除该文件吗？'
+	const message = props.removeConfirmMessage?.replace('{name}', item.name) ?? defaultMessage
+	try {
+		await ElMessageBox.confirm(message, props.removeConfirmTitle, {
+			confirmButtonText: '确定',
+			cancelButtonText: '取消',
+			type: 'warning',
+		})
+		console.log('props.deleteUrl',props.deleteUrl);
+		// 调用 deleteUrl 删除后端文件
+		if (props.deleteUrl) {
+			try {
+				await request.delete(`${props.deleteUrl}/${item.fileId}`)
+			} catch (e) {
+				console.error('[HxUploadFilePreviewList] 删除文件失败:', e)
+			}
+		}
+		const newIds = parseModelValue(props.modelValue).filter((id) => id !== item.fileId)
+		emitValue(newIds)
+		emit('remove', item.fileId)
+	} catch {
+		// 用户取消操作
+	}
 }
 
 function handleDownload(item: PreviewItem) {
@@ -221,6 +258,7 @@ function handleDownload(item: PreviewItem) {
 	align-items: center;
 	gap: 10px;
 	padding: 8px 12px;
+	min-width: 0;
 	background: #f5f7fa;
 	border: 1px solid #ebeef5;
 	border-radius: 6px;
