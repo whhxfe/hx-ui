@@ -34,46 +34,21 @@
 			</span>
 		</div>
 
-		<!-- 文件预览列表：v-model 是唯一数据源 -->
-		<div v-if="previewList.length" class="hx-upload-file-preview-list">
-			<div
-				v-for="item in previewList"
-				:key="item.fileId"
-				class="hx-upload-file-preview-item"
-				:class="{ 'is-disabled': disabled }"
-			>
-				<HxFilePreview
-					:url="item.url"
-					preview-width="100px"
-					preview-height="80px"
-					class="hx-upload-file-preview-thumb"
-				/>
-				<div class="hx-upload-file-preview-info">
-					<span class="hx-upload-file-preview-name" :title="item.name">
-						{{ item.name }}
-					</span>
-					<span class="hx-upload-file-preview-size">
-						{{ formatFileSize(item.size) }}
-					</span>
-				</div>
-				<div class="hx-upload-file-preview-item-actions">
-					<hx-icon
-						v-if="showDownload && !disabled"
-						type="iconify"
-						name="ep:download"
-						class="hx-upload-file-preview-action-btn"
-						@click.stop="handleDownload(item)"
-					/>
-					<hx-icon
-						v-if="!disabled"
-						type="iconify"
-						name="ep:close"
-						class="hx-upload-file-preview-action-btn hx-upload-file-preview-remove"
-						@click.stop="handleRemove(item)"
-					/>
-				</div>
-			</div>
-		</div>
+		<!-- 文件预览列表：使用 UploadFilePreviewList 组件 -->
+		<HxUploadFilePreviewList
+			v-if="hasPreviewList"
+			:model-value="modelValue"
+			:preview-url="previewUrl!"
+			:delete-url="deleteUrl"
+			:show-download="showDownload"
+			:removable="removable"
+			:disabled="disabled"
+			:model-value-type="modelValueType"
+			:item-width="itemWidth"
+			:item-height="itemHeight"
+			v-bind="confirmProps"
+			@update:model-value="$emit('update:modelValue', $event)"
+		/>
 	</div>
 
 	<!-- 其他模式：使用 el-upload 原生列表 -->
@@ -126,18 +101,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref, watch } from 'vue'
-import HxFilePreview from '../file-preview/FilePreview.vue'
+import { computed, ref } from 'vue'
+import HxUploadFilePreviewList from '../upload-file-preview-list/UploadFilePreviewList.vue'
 import type { UploadProps } from './types'
-import { request, getRequest } from '../../utils/request'
-
-function formatFileSize(size?: number): string {
-	if (!size) return ''
-	if (size < 1024) return `${size} B`
-	if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`
-	if (size < 1024 * 1024 * 1024) return `${(size / 1024 / 1024 / 1024).toFixed(1)} GB`
-	return `${(size / 1024 / 1024 / 1024).toFixed(1)} GB`
-}
+import { getRequest } from '../../utils/request'
 
 const MODEL_VALUE_SEPARATOR = ','
 
@@ -156,7 +123,7 @@ const emit = defineEmits<{
 }>()
 
 // ——————————————————————————————————
-// modelValue 类型处理（参考 Transfer 组件）
+// modelValue 类型处理
 // ——————————————————————————————————
 
 /** 解析 v-model 绑定的值为内部统一数组格式 */
@@ -189,132 +156,30 @@ const emitValue = (values: string[]) => {
 const uploadRef = ref()
 
 /* ============================================================
-   file-preview 模式：v-model (modelValue) 是唯一数据源
+   file-preview 模式：使用 HxUploadFilePreviewList 渲染
    ============================================================ */
 
-interface PreviewItem {
-	fileId: string
-	name: string
-	size?: number
-	url: string
-	loading: boolean
-}
-
-const previewMap = reactive<Map<string, PreviewItem>>(new Map())
-const pendingFetches = new Set<string>()
-
-// previewList：computed 保证每次访问都从 previewMap 取最新值
-const previewList = computed<PreviewItem[]>(() => {
-	return parseModelValue(props.modelValue)
-		.map((id) => previewMap.get(id))
-		.filter((item): item is PreviewItem => !!item)
+const hasPreviewList = computed(() => {
+	return parseModelValue(props.modelValue).length > 0
 })
 
-/** 同步 modelValue → previewMap（新增取 GET，移除触发 DELETE） */
-function syncPreviewMap(nextIdsRaw: string | string[] | undefined) {
-	const nextIds = parseModelValue(nextIdsRaw)
-	const nextSet = new Set(nextIds)
-
-	// 移除：id 不再出现在 modelValue 中
-	for (const [id] of previewMap) {
-		if (!nextSet.has(id)) {
-			if (props.deleteUrl) {
-				console.log('delete file by id', `${props.deleteUrl}/${id}`)
-				request.delete(`${props.deleteUrl}/${id}`).catch((e: any) => {
-					console.error('[HxUpload] DELETE failed:', e)
-				})
-			}
-			previewMap.delete(id)
-			pendingFetches.delete(id)
-		}
-	}
-
-	// 新增：id 首次出现，构建预览项并触发 URL 拉取
-	for (const id of nextIds) {
-		if (!previewMap.has(id)) {
-			const item: PreviewItem = reactive({
-				fileId: id,
-				name: `文件 ${id}`,
-				size: undefined,
-				url: '',
-				loading: true,
-			})
-			previewMap.set(id, item)
-			fetchPreviewUrl(id)
-		}
-	}
-}
-
-// 初始化时同步一次
-onMounted(() => syncPreviewMap(props.modelValue))
-
-// 后续 modelValue 变化时同步
-watch(
-	() => props.modelValue,
-	(next) => syncPreviewMap(next),
-)
-
-async function fetchPreviewUrl(fileId: string) {
-	if (pendingFetches.has(fileId)) return
-	pendingFetches.add(fileId)
-	// console.log('fetch file info by id', fileId)
-
-	try {
-		const res = await request.get<{ code?: number; data?: { url?: string; name?: string; size?: number } }>(
-			`${props.previewUrl}/${fileId}`,
-		)
-
-		if (res.data) {
-			const data = res.data;
-			const item = previewMap.get(fileId)
-			if (item) {
-				item.url = data.url ?? ''
-				item.name = data.name ?? item.name
-				item.size = data.size
-				item.loading = false
-			}
-		}
-	} catch {
-		const item = previewMap.get(fileId)
-		if (item) item.loading = false
-	} finally {
-		pendingFetches.delete(fileId)
-	}
-}
-
-async function handleRemove(item: PreviewItem) {
-	const newIds = parseModelValue(props.modelValue).filter((id) => id !== item.fileId)
-	emitValue(newIds)
-}
-
-function handleDownload(item: PreviewItem) {
-	if (!item.url) return
-	const a = document.createElement('a')
-	a.href = item.url
-	a.download = item.name
-	a.click()
-}
+/** 只在有值时才传递给子组件，避免覆盖默认值 */
+const confirmProps = computed(() => {
+	const result: Record<string, any> = {}
+	if (props.removeConfirmTitle) result.removeConfirmTitle = props.removeConfirmTitle
+	if (props.removeConfirmMessage) result.removeConfirmMessage = props.removeConfirmMessage
+	return result
+})
 
 // 上传成功：提取 fileId，追加到 modelValue
 function handleSuccess(response: any, file: any, fileList: any[]) {
-	if(!response) return 
+	if (!response) return
 	const fileId = props.responseMapper ? props.responseMapper(response, file) : response?.data?.id
 	if (!fileId) return
-	// console.log('handleSuccess', response, file, fileList)
 
 	const currentIds = parseModelValue(props.modelValue)
 	if (!currentIds.includes(fileId)) {
 		emitValue([...currentIds, fileId])
-	}
-
-	// 若接口直接返回 url，也同步更新到 previewMap
-	const directUrl = response?.data?.url
-	if (directUrl && previewMap.has(fileId)) {
-		const item = previewMap.get(fileId)!
-		item.url = directUrl
-		item.name = file.name
-		item.size = file.size
-		item.loading = false
 	}
 
 	emit('success', response, file, fileList)
@@ -365,7 +230,6 @@ async function handleHttpRequest(options: any) {
 const innerFileList = ref<any[]>([])
 
 const effectiveListType = computed(() => {
-	if (props.listType === 'file-preview') return 'picture-card'
 	return props.listType
 })
 
@@ -394,13 +258,18 @@ function handleChange(file: any, fileList: any[]) {
 	innerFileList.value = fileList
 }
 
+function handleRemove(file: any) {
+	innerFileList.value = innerFileList.value.filter((f) => f.uid !== file.uid)
+}
+
 defineExpose({
 	handleRemove: (file: any) => uploadRef.value?.handleRemove(file),
 })
 </script>
 
 <style scoped lang="scss">
-// file-preview 模式样式
+// file-preview 模式样式由 HxUploadFilePreviewList 组件提供
+
 .hx-upload-file-preview-mode {
 	display: flex;
 	flex-direction: column;
@@ -411,99 +280,6 @@ defineExpose({
 	display: flex;
 	align-items: center;
 	gap: 12px;
-}
-
-.hx-upload-file-preview-list {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 12px;
-}
-
-.hx-upload-file-preview-item {
-	position: relative;
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	padding: 8px 12px;
-	background: var(--el-fill-color-light);
-	border: 1px solid var(--el-border-color);
-	border-radius: 6px;
-	transition: all 0.2s;
-
-	&:hover:not(.is-disabled) {
-		border-color: #409eff;
-
-		.hx-upload-file-preview-item-actions {
-			opacity: 1;
-		}
-	}
-
-	&.is-disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-}
-
-.hx-upload-file-preview-thumb {
-	flex-shrink: 0;
-	border-radius: 4px;
-	overflow: hidden;
-}
-
-.hx-upload-file-preview-info {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-	min-width: 0;
-}
-
-.hx-upload-file-preview-item-actions {
-	position: absolute;
-	top: 4px;
-	right: 4px;
-	display: flex;
-	align-items: center;
-	gap: 2px;
-	opacity: 0;
-	transition: opacity 0.2s;
-}
-
-.hx-upload-file-preview-name {
-	font-size: 14px;
-	color: var(--el-text-color-regular);
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.hx-upload-file-preview-size {
-	font-size: 12px;
-	color: var(--el-text-color-placeholder);
-}
-
-.hx-upload-file-preview-action-btn {
-	width: 18px;
-	height: 18px;
-	background: rgba(0, 0, 0, 0.5);
-	border-radius: 50%;
-	color: #fff;
-	font-size: 12px;
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	transition: background 0.2s;
-
-	&:hover {
-		background: rgba(0, 0, 0, 0.7);
-	}
-}
-
-.hx-upload-file-preview-remove {
-	&:hover {
-		background: #f56c6c;
-	}
 }
 
 .hx-upload-file-preview-tip {

@@ -1,6 +1,18 @@
 import type { VNode } from 'vue'
+import type { UploadFilePreviewListProps } from '../upload-file-preview-list/types'
 
-export interface UploadProps {
+/** file-preview 模式需要的 UploadFilePreviewList 属性（排除 deleteUrl，因为 Upload 本身也需要） */
+export type FilePreviewListProps = Pick<
+	UploadFilePreviewListProps,
+	| 'showDownload'
+	| 'removable'
+	| 'removeConfirmTitle'
+	| 'removeConfirmMessage'
+	| 'itemWidth'
+	| 'itemHeight'
+>
+
+export interface UploadProps extends FilePreviewListProps {
 	/** v-model：上传文件后绑定到表单的值 */
 	modelValue?: string | string[]
 	/**
@@ -21,7 +33,7 @@ export interface UploadProps {
 	disabled?: boolean
 	/**
 	 * 列表展示类型
-	 * - text：文字列表（默认）
+	 * - text：文字列表
 	 * - picture：图片列表
 	 * - picture-card：图片卡片
 	 * - file-preview：文件预览列表（基于 HxFilePreview，点击弹窗预览）
@@ -52,31 +64,14 @@ export interface UploadProps {
 	 * @example previewUrl: '/api/upload' → GET /api/upload/{fileId}
 	 */
 	previewUrl?: string
-	/**
-	 * 根据 fileId 删除文件的接口
-	 *
-	 * 组件调用 `DELETE ${deleteUrl}/${fileId}` 删除文件。
-	 * 不传则不在前端发起删除请求。
-	 *
-	 * @example deleteUrl: '/api/upload' → DELETE /api/upload/{fileId}
-	 */
+	/** 根据 fileId 删除文件的接口 */
 	deleteUrl?: string
-	/** 是否显示下载按钮（file-preview 模式） */
-	showDownload?: boolean
-	/** 自定义文件列表项渲染 */
+	/** 自定义文件列表项渲染（非 file-preview 模式） */
 	fileRender?: (file: any, actions: { remove: () => void }) => VNode
 	/**
-	 * 自定义文件预览渲染
+	 * 自定义文件预览渲染（非 file-preview 模式）
 	 *
 	 * 与 fileRender 互斥，优先级：fileRender > filePreviewRender > 默认预览
-	 *
-	 * @param file el-upload 的文件对象
-	 * @param actions 操作方法：{ remove: 删除该文件 }
-	 * @returns VNode
-	 *
-	 * @example 使用 HxFilePreview 预览
-	 * import HxFilePreview from '@hx/ui'
-	 * filePreviewRender: (file, { remove }) => h(HxFilePreview, { url: file.url, previewWidth: '80px', previewHeight: '80px' })
 	 */
 	filePreviewRender?: (file: any, actions: { remove: () => void }) => VNode
 	/** 额外的 el-upload props */
