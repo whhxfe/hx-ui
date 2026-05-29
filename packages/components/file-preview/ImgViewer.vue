@@ -43,7 +43,7 @@ $shadow: var(--hx-shadow-color);
   &:hover {
     background: $hover-bg;
     border-color: $primary-color;
-    transform: translateY(-2px);
+    // transform: translateY(-2px);
     box-shadow: 0 2px 8px $shadow;
   }
 

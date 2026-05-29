@@ -379,7 +379,7 @@ $danger-color: var(--hx-danger-color, #e57373);
 
     &:hover {
       box-shadow: 0 4px 12px $shadow;
-      transform: translateY(-2px);
+      /* transform: translateY(-2px); */
       border-color: $primary-color;
     }
   }

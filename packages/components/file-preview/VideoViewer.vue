@@ -195,7 +195,7 @@ $shadow: var(--hx-shadow-color);
 
     &:hover {
       border-color: $primary-color;
-      transform: translateY(-2px);
+      // transform: translateY(-2px);
       box-shadow: 0 2px 8px $shadow;
 
       .hx-video-viewer__play {
