@@ -151,15 +151,6 @@ export interface HxConfigProviderProps {
   map?: MapConfig
   /** Form 组件全局配置 */
   form?: FormConfig
-
-  // ========== 顶层快捷配置（优先级高于 icon 对象）==========
-
-  /** SVG symbol 前缀，默认 'icon' */
-  iconSymbolPrefix?: string
-  /** Iconify 图标源模式：'offline'（默认） | 'cdn' */
-  iconifySource?: 'offline' | 'cdn'
-  /** Iconify CDN 服务地址（当 iconifySource 为 'cdn' 时使用） */
-  iconifyCdnUrl?: string
 }
 
 export interface HxConfig {
