@@ -43,7 +43,7 @@ const requestConfig = {
   prefix: '/api',
   headers: {
     lang: 'zh-CN',
-    'xxx-xxx': 'xxxx',
+    token: 'xxx',
   },
 };
 </script>

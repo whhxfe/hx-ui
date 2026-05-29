@@ -21,8 +21,10 @@ packages/*/dist
 packages/*/dist-types
 packages/*/dist/types
 play/dist
-server/public/uploads
 
+#server
+server/public/uploads
+server/registry.json
 # Local env files
 *.local
 .env
@@ -43,6 +45,6 @@ Thumbs.db
 # pnpm
 .pnpm-store
 
-server/registry.json
+
 
 _temp/
