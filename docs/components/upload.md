@@ -4,7 +4,7 @@
 
 ## 懒加载预览
 
-上传接口只返回 `id`，通过 `previewFetchUrl` 按需获取预览 URL，删除时调用 `deleteFetchUrl` 删除服务端文件。
+上传接口只返回 `id`，通过 `previewUrl` 按需获取预览 URL，删除时调用 `deleteUrl` 删除服务端文件。
 
 :::demo
 upload/lazy-preview
@@ -31,14 +31,19 @@ upload/model-value-type
 | limit | 最大上传数量 | `number` | - |
 | multiple | 是否支持多文件 | `boolean` | - |
 | disabled | 是否禁用 | `boolean` | - |
-| listType | 列表展示类型：`text` / `picture` / `picture-card` / `file-preview` | `string` | `'text'` |
+| listType | 列表展示类型：`text` / `picture` / `picture-card` / `file-preview` | `string` | `'file-preview'` |
 | autoUpload | 是否自动上传（无 action 时关闭） | `boolean` | `true` |
 | placeholder | 上传按钮占位文本 | `string` | - |
 | responseMapper | 从服务端响应中提取要存储的值（如 fileId） | `(response, file) => any` | - |
 | valueMapper | 从 file 对象提取值的映射函数 | `(file, response?) => any` | - |
-| previewFetchUrl | 根据 fileId 获取文件预览信息的接口（listType=file-preview 时使用） | `string` | - |
-| deleteFetchUrl | 根据 fileId 删除文件的接口 | `string` | - |
-| showDownload | 是否显示下载按钮（file-preview 模式） | `boolean` | - |
+| previewUrl | 根据 fileId 获取文件预览信息的接口（listType=file-preview 时使用） | `string` | - |
+| deleteUrl | 根据 fileId 删除文件的接口（file-preview 模式） | `string` | - |
+| showDownload | 是否显示下载按钮（file-preview 模式） | `boolean` | `true` |
+| removable | 是否显示删除按钮（file-preview 模式） | `boolean` | - |
+| removeConfirmTitle | 删除确认框标题（file-preview 模式） | `string` | - |
+| removeConfirmMessage | 删除确认框内容（file-preview 模式） | `string` | - |
+| itemWidth | 卡片宽度（file-preview 模式） | `string \| number` | - |
+| itemHeight | 卡片高度（file-preview 模式） | `string \| number` | - |
 | fileRender | 自定义文件列表项渲染 | `(file, actions) => VNode` | - |
 | filePreviewRender | 自定义文件预览渲染 | `(file, actions) => VNode` | - |
 | componentProps | 额外的 el-upload props | `Record<string, any>` | - |
@@ -55,5 +60,5 @@ upload/model-value-type
 
 | 事件名 | 说明 | 参数 |
 | --- | --- | --- |
-| change | 文件列表变化 | `(fileList: any[]) => void` |
-| exceed | 超出限制时触发 | `(files, fileList) => void` |
+| success | 上传成功时触发 | `(response, file, fileList) => void` |
+| update:modelValue | 文件列表变化时触发（file-preview 模式） | `(value: string \| string[])` |

@@ -64,7 +64,6 @@ registerMapMarkerShapes([
     :icon="iconConfig"
     :request="requestConfig"
     :map="mapConfig"
-    iconify-source="offline"
     :iconify-collections="['ep', 'mdi', 'logos', 'twemoji']"
   >
     <DefaultTheme.Layout />
