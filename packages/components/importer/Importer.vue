@@ -16,9 +16,9 @@
 		@close="handleClose"
 	>
 		<!-- 模板下载 -->
-		<div v-if="templateUrl" class="importer-template">
+		<div v-if="resolvedTemplateUrl" class="importer-template">
 			<span class="importer-template-label">导入模板：</span>
-			<el-link type="primary" :href="templateUrl" :download="templateFileName" target="_blank">
+			<el-link type="primary" :href="resolvedTemplateUrl" :download="templateFileName" target="_blank">
 				<el-icon class="el-icon--left"><Download /></el-icon>
 				{{ templateFileName || '下载模板' }}
 			</el-link>
@@ -76,11 +76,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Download, UploadFilled } from '@element-plus/icons-vue'
 import type { UploadInstance, UploadFile } from 'element-plus'
-import { getRequest } from '../../utils/request'
+import { getRequest, getRequestOptions } from '../../utils/request'
 import type { ImporterProps } from './types'
 
 defineOptions({
@@ -115,6 +115,35 @@ const uploadedCount = ref(0)
 const uploadProgress = ref(0)
 
 const fileList = ref<UploadFile[]>([])
+
+/** 处理模板 URL：相对路径需要拼接 baseUrl 和 prefix，完整路径直接返回 */
+const resolvedTemplateUrl = computed(() => {
+	const url = props.templateUrl
+	if (!url) return ''
+
+	// 完整 URL（包含协议）直接返回
+	if (/^https?:\/\//i.test(url)) {
+		return url
+	}
+
+	// 相对路径：拼接 baseUrl 和 prefix
+	const options = getRequestOptions()
+	const baseUrl = options.baseUrl || ''
+	const prefix = options.prefix || ''
+
+	let fullUrl = baseUrl
+
+	// 处理 prefix
+	if (prefix) {
+		const normalizedPrefix = prefix.endsWith('/') ? prefix.slice(0, -1) : prefix
+		const normalizedUrl = url.startsWith('/') ? url : '/' + url
+		fullUrl += normalizedPrefix + normalizedUrl
+	} else {
+		fullUrl += url.startsWith('/') ? url : '/' + url
+	}
+
+	return fullUrl
+})
 
 function getUploadProgressText(): string {
 	if (fileList.value.length === 0) return ''
