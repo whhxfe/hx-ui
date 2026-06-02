@@ -79,9 +79,12 @@ export function useRemoteOptions(remote: RemoteConfig | undefined) {
 
 			const list: any[] = res?.data ?? []
 
+			// 分组数据 = 子项是扁平叶子节点（select 分组场景）
+			// 如果子项本身也有 children，则是级联树形数据，不应走 buildGroup
 			const hasGroups =
 				list.length > 0 &&
-				(Array.isArray(list[0].options) || Array.isArray(list[0].children))
+				(Array.isArray(list[0].options) || Array.isArray(list[0].children)) &&
+				!(Array.isArray(list[0].children) && list[0].children.some((child: any) => Array.isArray(child.children)))
 
 			if (hasGroups) {
 				remoteOptions.value = list.map((item: any) =>
