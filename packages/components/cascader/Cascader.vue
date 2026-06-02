@@ -6,7 +6,7 @@
 	<el-cascader
 		v-model="innerValue"
 		:options="effectiveOptions"
-		:props="panelProps"
+		:props="effectivePanelProps"
 		:placeholder="placeholder || '请选择'"
 		:clearable="clearable ?? true"
 		:disabled="disabled"
@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 import { computed, useAttrs } from "vue"
 import type { CascaderProps } from "./types"
-import { useRemoteOptions } from "../../hooks/useRemoteOptions"
+import { useCascaderRemoteOptions } from "../../hooks/useCascaderRemoteOptions"
 
 defineOptions({ inheritAttrs: false })
 
@@ -32,20 +32,30 @@ const emit = defineEmits<{
 	(e: "update:modelValue", value: any): void
 }>()
 
-const { remoteOptions } = useRemoteOptions(props.remote)
+const { remoteOptions, loading } = useCascaderRemoteOptions(props.remote)
 
 const effectiveOptions = computed(() =>
 	props.remote ? remoteOptions.value : (props.options || [])
 )
 
-const panelProps = computed(() => ({
-	...(props.cascaderProps ?? {}),
-}))
+const effectivePanelProps = computed(() => {
+	const labelKey = props.remote?.labelKey || "label"
+	const valueKey = props.remote?.valueKey || "value"
+	const childrenKey = props.remote?.childrenKey || "children"
+	return {
+		label: labelKey,
+		value: valueKey,
+		children: childrenKey,
+		...(props.cascaderProps ?? {}),
+	}
+})
 
 const innerValue = computed({
 	get: () => props.modelValue,
 	set: (val) => emit("update:modelValue", val),
 })
 
-defineExpose({})
+defineExpose({
+	loading,
+})
 </script>

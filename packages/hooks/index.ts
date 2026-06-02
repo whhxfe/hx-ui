@@ -1,5 +1,6 @@
 export { useTheme } from './useTheme'
 export { useRemoteOptions } from './useRemoteOptions'
+export { useCascaderRemoteOptions } from './useCascaderRemoteOptions'
 export { useFilterRemoteOptions } from './useFilterRemoteOptions'
 export { useClickOutside } from './useClickOutside'
 export { useZIndex } from './useZIndex'
