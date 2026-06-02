@@ -112,6 +112,8 @@ export default defineConfig({
             { text: 'Radio 单选组', link: '/components/radio' },
             { text: 'Checkbox 多选组', link: '/components/checkbox' },
             { text: 'Switch 开关', link: '/components/switch' },
+            { text: 'DatePicker 日期选择器', link: '/components/date-picker' },
+            { text: 'DateTimePicker 日期时间选择器', link: '/components/date-time-picker' },
             { text: 'Transfer 穿梭框', link: '/components/transfer' },
             { text: 'Upload 上传', link: '/components/upload' },
             { text: 'RichEditor 富文本编辑器', link: '/components/rich-editor' },

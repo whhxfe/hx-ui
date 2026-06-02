@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { HxConfigProvider, addIconSet } from '@hx/ui'
-
+import { HxConfigProvider } from '@hx/ui'
+import { dateTimeRangeShortcuts, dateShortcuts } from '@/utils'
 // ============================================================
 // 注册离线图标集（支持懒加载，推荐）
 // ============================================================
@@ -46,12 +46,25 @@ const requestConfig = {
     token: 'xxx',
   },
 };
+
+const form = {
+	cols: 4,
+	gap: 12,
+	minColWidth: 200,
+	actionAlign: "right" as const,
+	datePickerDefaults: {
+		dateTimeRangeShortcuts,
+		dateShortcuts,
+	},
+}
+
 </script>
 
 <template>
   <HxConfigProvider
     :icon="iconConfig"
     :request="requestConfig"
+    :form="form"
   >
     <router-view />
   </HxConfigProvider>

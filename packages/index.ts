@@ -23,6 +23,8 @@ export type {
   IconifyProps,
   RequestProviderProps,
   ComponentDefaults,
+  DateRangeShortcut,
+  FormConfig,
 } from './types/config'
 export { ThemeToggle } from './components/theme-toggle'
 

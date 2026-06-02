@@ -34,6 +34,42 @@ export const COLUMN_DIRECT_PROPS = [
 
 export type ColumnDirectProp = (typeof COLUMN_DIRECT_PROPS)[number]
 
+/** 分页布局配置 */
+export type PaginationLayout =
+  | 'total'
+  | 'sizes'
+  | 'prev'
+  | 'pager'
+  | 'next'
+  | 'jumper'
+  | '->'
+  | 'total, sizes, prev, pager, next, jumper'
+
+export interface TableProps {
+  /** 表格列配置 */
+  columns?: TableColumn[]
+  /** 表格数据源 */
+  data?: any[]
+  /** 是否显示分页 */
+  showPagination?: boolean
+  /** 当前页码（受控模式） */
+  currentPage?: number
+  /** 每页条数（受控模式） */
+  pageSize?: number
+  /** 每页条数选项 */
+  pageSizes?: number[]
+  /** 数据总条数（受控模式） */
+  total?: number
+  /** 分页组件布局 */
+  paginationLayout?: string
+  /** 是否启用前端分页 */
+  frontPagination?: boolean
+  /** 表格容器高度，支持 number（像素）或 string（如 '400px'，不含分页高度） */
+  height?: number | string
+  /** 表格最大高度，超出后可滚动 */
+  maxHeight?: number | string
+}
+
 export interface TableColumn {
   // common el-table-column props
   type?: 'selection' | 'index' | 'expand'

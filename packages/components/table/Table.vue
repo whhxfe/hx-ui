@@ -33,7 +33,7 @@ import { computed, provide, ref, useAttrs, useSlots, watch } from 'vue'
 import TableColumnItem from './ColumnItem.vue'
 import { TABLE_SLOTS_KEY } from '../../constants'
 import { useFrontPagination } from '../../hooks/useFrontPagination'
-import type { TableColumn } from './types'
+import type { TableColumn, TableProps } from './types'
 
 defineOptions({
   name: 'HxTable',
@@ -41,21 +41,7 @@ defineOptions({
 })
 
 const props = withDefaults(
-  defineProps<{
-    columns?: TableColumn[]
-    data?: any[]
-    showPagination?: boolean
-    currentPage?: number
-    pageSize?: number
-    pageSizes?: number[]
-    total?: number
-    paginationLayout?: string
-    frontPagination?: boolean
-    /** 表格容器高度，支持 number（像素）或 string（如 '400px'，不含分页高度） */
-    height?: number | string
-    /** 表格最大高度，超出后可滚动 */
-    maxHeight?: number | string
-  }>(),
+  defineProps<TableProps>(),
   {
     columns: () => [],
     data: () => [],

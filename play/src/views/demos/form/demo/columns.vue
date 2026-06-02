@@ -18,9 +18,10 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxForm , HxJsonView } from "@hx/ui"
+import { HxForm, HxJsonView } from "@hx/ui"
 import type { FormField, FormExpose } from "@hx/ui"
 import { ElMessage } from "element-plus"
+
 const formRef = ref<FormExpose>()
 
 const formData = ref({
@@ -226,7 +227,8 @@ const fields: FormField[] = [
     label: "在职时间段",
     type: "daterange",
     placeholder: "请选择在职时间段",
-    valueFormat: "YYYY-MM-DD",
+    valueFormat: "x",
+    format:"YYYY-MM-DD HH:mm:ss",
     colSpan: 1,
   },
   {

@@ -36,4 +36,8 @@ export const componentRoutes: Record<string, RouteMeta> = {
     title: '表格 Table',
     icon: 'ep-grid',
   },
+  form: {
+    title: '表单 Form',
+    icon: 'ep-edit',
+  },
 }
