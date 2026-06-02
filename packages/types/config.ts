@@ -116,14 +116,32 @@ export interface MapConfig {
   minZoom?: number
 }
 
+import type { DateRangeShortcut, DateShortcut } from "../components/date-picker/types"
+
+/** DatePicker 全局默认配置 */
+export interface DatePickerDefaults {
+	/** 默认显示格式 */
+	format?: string
+	/** 默认值格式 */
+	valueFormat?: string
+	/** 默认禁用日期函数 */
+	disabledDate?: (date: Date) => boolean
+	/** 日期时间范围快捷选项（daterange / datetimerange，保留时分秒） */
+	dateTimeRangeShortcuts?: DateRangeShortcut[]
+	/** 单个日期快捷选项（date / datetime，精确到日） */
+	dateShortcuts?: DateShortcut[]
+}
+
 /** Form 组件全局配置 */
 export interface FormConfig {
-  /** 默认栅格列数 */
-  cols?: number
-  /** 默认间距（px）*/
-  gap?: number
-  /** 默认最小列宽（px）*/
-  minColWidth?: number
+	/** 默认栅格列数 */
+	cols?: number
+	/** 默认间距（px）*/
+	gap?: number
+	/** 默认最小列宽（px）*/
+	minColWidth?: number
+	/** DatePicker 全局默认配置 */
+	datePickerDefaults?: DatePickerDefaults
 }
 
 /** 二维码 Provider Props */

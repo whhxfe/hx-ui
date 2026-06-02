@@ -17,11 +17,14 @@ export { HxFilePreview } from './file-preview'
 export { HxUploadFilePreviewList } from './upload-file-preview-list'
 export { HxForm, HxFormField } from './form'
 export type { FormExpose, FormField, FieldType, OptionItem, GroupOptionItem, RemoteConfig, FormFieldProps } from './form'
-
-// 兼容别名
-export { HxForm as DynamicForm, HxForm as HxDynamicForm } from './form'
 export { HxSelect } from './select'
 export type { SelectProps } from './select'
+export { HxDatePicker } from './date-picker'
+export type { DatePickerProps, DatePickerType, DateRangeShortcut } from './date-picker'
+export { HxDateTimePicker } from './date-time-picker'
+export type { DateTimePickerProps } from './date-time-picker'
+// 兼容别名
+export { HxForm as DynamicForm, HxForm as HxDynamicForm } from './form'
 export { HxRadio } from './radio'
 export type { RadioProps } from './radio'
 export { HxCheckbox } from './checkbox'
