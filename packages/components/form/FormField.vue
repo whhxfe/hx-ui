@@ -11,7 +11,7 @@
 		:data-prop="field.prop"
 	>
 		<!-- input -->
-		<template v-if="field.type === 'input'">
+		<template v-if="isFieldType('input')">
 			<el-input
 				:modelValue="modelValue"
 				@update:modelValue="$emit('update:modelValue', $event)"
@@ -27,8 +27,7 @@
 			/>
 		</template>
 
-		<!-- textarea -->
-		<template v-else-if="field.type === 'textarea'">
+		<template v-else-if="isFieldType('textarea')">
 			<el-input
 				type="textarea"
 				:modelValue="modelValue"
@@ -43,8 +42,7 @@
 			/>
 		</template>
 
-		<!-- number -->
-		<template v-else-if="field.type === 'number'">
+		<template v-else-if="isFieldType('number')">
 			<el-input-number
 				:modelValue="modelValue"
 				@update:modelValue="$emit('update:modelValue', $event)"
@@ -59,8 +57,7 @@
 			/>
 		</template>
 
-		<!-- select -->
-		<template v-else-if="field.type === 'select'">
+		<template v-else-if="isFieldType('select')">
 			<HxSelect
 				:modelValue="modelValue"
 				@update:modelValue="$emit('update:modelValue', $event)"
@@ -79,8 +76,7 @@
 			/>
 		</template>
 
-		<!-- radio -->
-		<template v-else-if="field.type === 'radio'">
+		<template v-else-if="isFieldType('radio')">
 			<HxRadio
 				:modelValue="modelValue"
 				@update:modelValue="$emit('update:modelValue', $event)"
@@ -92,8 +88,7 @@
 			/>
 		</template>
 
-		<!-- radio-btn -->
-		<template v-else-if="field.type === 'radio-btn'">
+		<template v-else-if="isFieldType('radio-btn')">
 			<HxRadio
 				:modelValue="modelValue"
 				@update:modelValue="$emit('update:modelValue', $event)"
@@ -106,8 +101,7 @@
 			/>
 		</template>
 
-		<!-- checkbox -->
-		<template v-else-if="field.type === 'checkbox'">
+		<template v-else-if="isFieldType('checkbox')">
 			<HxCheckbox
 				:modelValue="modelValue"
 				@update:modelValue="$emit('update:modelValue', $event)"
@@ -120,8 +114,7 @@
 			/>
 		</template>
 
-		<!-- checkbox-btn -->
-		<template v-else-if="field.type === 'checkbox-btn'">
+		<template v-else-if="isFieldType('checkbox-btn')">
 			<HxCheckbox
 				:modelValue="modelValue"
 				@update:modelValue="$emit('update:modelValue', $event)"
@@ -135,8 +128,7 @@
 			/>
 		</template>
 
-		<!-- switch -->
-		<template v-else-if="field.type === 'switch'">
+		<template v-else-if="isFieldType('switch')">
 			<HxSwitch
 				:modelValue="modelValue"
 				@update:modelValue="$emit('update:modelValue', $event)"
@@ -145,8 +137,7 @@
 			/>
 		</template>
 
-		<!-- cascader -->
-		<template v-else-if="field.type === 'cascader'">
+		<template v-else-if="isFieldType('cascader')">
 			<HxCascader
 				:modelValue="modelValue"
 				@update:modelValue="$emit('update:modelValue', $event)"
@@ -160,8 +151,7 @@
 			/>
 		</template>
 
-		<!-- transfer -->
-		<template v-else-if="field.type === 'transfer'">
+		<template v-else-if="isFieldType('transfer')">
 			<el-form-item style="width: 100%;">
 				<HxTransfer
 					:modelValue="modelValue"
@@ -182,72 +172,46 @@
 			</el-form-item>
 		</template>
 
-		<!-- datetime -->
-		<template v-else-if="field.type === 'datetime'">
-			<el-date-picker
-				type="datetime"
+		<!-- datetimerange / datetime -->
+		<template v-else-if="isFieldType('datetime') || isFieldType('datetimerange')">
+			<HxDateTimePicker
 				:modelValue="modelValue"
 				@update:modelValue="$emit('update:modelValue', $event)"
+				:mode="(field.type as any)"
 				:placeholder="field.placeholder || `请选择${field.label}`"
-				:valueFormat="field.valueFormat ?? 'YYYY-MM-DD HH:mm:ss'"
-				:format="field.format ?? 'YYYY-MM-DD HH:mm:ss'"
-				:disabled="field.disabled"
-				:clearable="field.clearable ?? true"
-				:disabledDate="field.disableFutureTime ? (time: Date) => time.getTime() > Date.now() : field.disabledDate"
-				v-bind="field?.componentProps"
-			/>
-		</template>
-
-		<!-- datetimerange -->
-		<template v-else-if="field.type === 'datetimerange'">
-			<el-date-picker
-				type="datetimerange"
-				:modelValue="modelValue"
-				@update:modelValue="$emit('update:modelValue', $event)"
-				:placeholder="field.placeholder || `请选择${field.label}`"
-				:valueFormat="field.valueFormat ?? 'YYYY-MM-DD HH:mm:ss'"
-				:format="field.format ?? 'YYYY-MM-DD HH:mm:ss'"
+				:startPlaceholder="field.startPlaceholder"
+				:endPlaceholder="field.endPlaceholder"
+				:valueFormat="field.valueFormat"
+				:format="field.format"
 				:disabled="field.disabled"
 				:clearable="field.clearable ?? true"
 				:disabledDate="field.disabledDate"
+				:shortcuts="field.shortcuts"
 				v-bind="field?.componentProps"
 			/>
 		</template>
 
-		<!-- date -->
-		<template v-else-if="field.type === 'date'">
-			<el-date-picker
-				type="date"
+		<!-- date / daterange / month / monthrange / year / week -->
+		<template v-else-if="['date', 'daterange', 'month', 'monthrange', 'year', 'week'].includes(field.type)">
+			<HxDatePicker
 				:modelValue="modelValue"
 				@update:modelValue="$emit('update:modelValue', $event)"
+				:type="field.type"
 				:placeholder="field.placeholder || `请选择${field.label}`"
-				:valueFormat="field.valueFormat ?? 'YYYY-MM-DD'"
-				:format="field.format ?? 'YYYY-MM-DD'"
+				:startPlaceholder="field.startPlaceholder"
+				:endPlaceholder="field.endPlaceholder"
+				:valueFormat="field.valueFormat"
+				:format="field.format"
 				:disabled="field.disabled"
 				:clearable="field.clearable ?? true"
 				:disabledDate="field.disabledDate"
+				:disableFutureTime="field.disableFutureTime"
+				:shortcuts="field.shortcuts"
 				v-bind="field?.componentProps"
 			/>
 		</template>
 
-		<!-- daterange -->
-		<template v-else-if="field.type === 'daterange'">
-			<el-date-picker
-				type="daterange"
-				:modelValue="modelValue"
-				@update:modelValue="$emit('update:modelValue', $event)"
-				:placeholder="field.placeholder || `请选择${field.label}`"
-				:valueFormat="field.valueFormat ?? 'YYYY-MM-DD'"
-				:format="field.format ?? 'YYYY-MM-DD'"
-				:disabled="field.disabled"
-				:clearable="field.clearable ?? true"
-				:disabledDate="field.disabledDate"
-				v-bind="field?.componentProps"
-			/>
-		</template>
-
-		<!-- time -->
-		<template v-else-if="field.type === 'time'">
+		<template v-else-if="isFieldType('time')">
 			<el-time-picker
 				:modelValue="modelValue"
 				@update:modelValue="$emit('update:modelValue', $event)"
@@ -263,8 +227,7 @@
 			/>
 		</template>
 
-		<!-- timerange -->
-		<template v-else-if="field.type === 'timerange'">
+		<template v-else-if="isFieldType('timerange')">
 			<el-time-picker
 				type="timerange"
 				:modelValue="modelValue"
@@ -281,8 +244,7 @@
 			/>
 		</template>
 
-		<!-- upload -->
-		<template v-else-if="field.type === 'upload'">
+		<template v-else-if="isFieldType('upload')">
 			<HxUpload
 				:modelValue="modelValue"
 				@update:modelValue="$emit('update:modelValue', $event)"
@@ -307,8 +269,7 @@
 			/>
 		</template>
 
-		<!-- richeditor -->
-		<template v-else-if="field.type === 'richeditor'">
+		<template v-else-if="isFieldType('richeditor')">
 			<HxRichEditor
 				:modelValue="modelValue"
 				@update:modelValue="$emit('update:modelValue', $event)"
@@ -316,20 +277,18 @@
 			/>
 		</template>
 
-		<!-- slot -->
-		<template v-else-if="field.type === 'slot'">
+		<template v-else-if="isFieldType('slot')">
 			<slot :name="field.prop" :formData="formData" :field="field" />
 		</template>
 
-		<!-- render -->
-		<template v-else-if="field.type === 'render' && field.render">
+		<template v-else-if="isFieldType('render') && field.render">
 			<component :is="field.render(formData, field)" />
 		</template>
 	</el-form-item>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, inject } from "vue"
 import { HxSelect } from "../select"
 import { HxRadio } from "../radio"
 import { HxCheckbox } from "../checkbox"
@@ -338,14 +297,21 @@ import { HxCascader } from "../cascader"
 import { HxTransfer } from "../transfer"
 import { HxUpload } from "../upload"
 import { HxRichEditor } from "../rich-editor"
+import { HxConfigKey } from "../config-provider/injection"
+import { HxDatePicker } from "../date-picker"
+import { HxDateTimePicker } from "../date-time-picker"
+import type { HxConfig } from "../../types/config"
 import type { FormField, FormFieldProps, FormFieldEmits } from "./types"
 
 const props = defineProps<FormFieldProps>()
 const emit = defineEmits<FormFieldEmits>()
 
-const field = computed(() => props.field)
-const mergedCascaderProps = computed(() => ({ ...field.value?.cascaderProps, ...field.value?.componentProps }))
-const mergedRichEditorProps = computed(() => ({ ...field.value?.richEditorParams, ...field.value?.componentProps }))
+const config = inject<HxConfig>(HxConfigKey)
+
+/** 类型守卫，帮助 ts-plugin 正确理解 v-if/v-else-if 链中的类型收窄 */
+const isFieldType = (knownType: string) => props.field.type === knownType
+const mergedCascaderProps = computed(() => ({ ...props.field?.cascaderProps, ...props.field?.componentProps }))
+const mergedRichEditorProps = computed(() => ({ ...props.field?.richEditorParams, ...props.field?.componentProps }))
 
 defineOptions({ name: "HxFormField" })
 </script>

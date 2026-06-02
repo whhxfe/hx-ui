@@ -7,6 +7,7 @@ import type { CascaderProps, CascaderPanelProps } from "../cascader/types"
 import type { RadioProps } from "../radio/types"
 import type { CheckboxProps } from "../checkbox/types"
 import type { TransferProps } from "../transfer/types"
+import type { DatePickerProps } from "../date-picker/types"
 
 // Re-export 公共类型，保持向后兼容（外部仍从 form/types 导入）
 export type { OptionItem, GroupOptionItem, RemoteConfig } from "../../types"
@@ -156,9 +157,15 @@ export type FormField_Upload = Pick<
 	| "previewUrl"
 	| "deleteUrl"
 	| "showDownload"
+	| "removable"
+	| "removeConfirmTitle"
+	| "removeConfirmMessage"
+	| "itemWidth"
+	| "itemHeight"
 	| "fileRender"
 	| "filePreviewRender"
 	| "componentProps"
+	| "modelValueType"
 >
 
 // ——— Select：从 SelectProps Pick（排除 modelValue）————————————————————————
@@ -205,19 +212,31 @@ export interface FormField_RichEditor {
 	richEditorParams?: RichEditorParams
 }
 
-// ——— DateTime ————————————————————————————————————————————————————————————
+// ——— DatePicker：从 DatePickerProps Pick（排除 modelValue）———————————————————
 
-export interface FormField_DateTime {
-	/** 值格式化 */
-	valueFormat?: string
-	/** 显示格式化 */
-	format?: string
-	/** 禁用未来时间 */
+export type FormField_DatePicker = Pick<
+	DatePickerProps,
+	| "type"
+	| "placeholder"
+	| "startPlaceholder"
+	| "endPlaceholder"
+	| "format"
+	| "valueFormat"
+	| "disabled"
+	| "clearable"
+	| "disabledDate"
+	| "shortcuts"
+	| "defaultValue"
+> & {
+	/** 禁用未来时间（仅 datetime 类型有效） */
 	disableFutureTime?: boolean
 	/** 日期范围限制（天数） */
 	dateRangeLimit?: number
-	/** 禁用日期函数（适用于 date/daterange/datetime/datetimerange） */
-	disabledDate?: (date: Date) => boolean
+}
+
+// ——— TimePicker 专用字段（time / timerange 使用的 disabledTime）———————
+
+export interface FormField_TimePicker {
 	/** 禁用时间函数（适用于 time/timerange），返回 { hours, minutes, seconds } */
 	disabledTime?: () => { hours?: number[]; minutes?: number[]; seconds?: number[] }
 }
@@ -258,7 +277,7 @@ export interface FormField_NumberInput {
  * 表单字段配置（fields 中的每一项）
  *
  * 通过交叉类型组合各组件 interface，保持字段命名与独立组件完全一致。
- * 字段按功能分为：Base（通用）| Options（选项类共用）| Upload | Select | Cascader | Radio | Checkbox | Transfer | RichEditor | DateTime | TextInput | NumberInput
+ * 字段按功能分为：Base（通用）| Options（选项类共用）| Upload | Select | Cascader | Radio | Checkbox | Transfer | RichEditor | DatePicker | TimePicker | TextInput | NumberInput
  */
 export type FormField = FormFieldBase &
 	FormField_Options &
@@ -269,7 +288,8 @@ export type FormField = FormFieldBase &
 	FormField_Checkbox &
 	FormField_Transfer &
 	FormField_RichEditor &
-	FormField_DateTime &
+	FormField_DatePicker &
+	FormField_TimePicker &
 	FormField_TextInput &
 	FormField_NumberInput
 

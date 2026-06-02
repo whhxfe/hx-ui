@@ -53,7 +53,7 @@ import FormField from "./FormField.vue"
 import { FORM_SLOTS_KEY } from "../../constants"
 import { useConfig } from "../../hooks/useConfig"
 import { isEqual } from "../../utils"
-import type { FormField as FormFieldType, FormExpose, FormProps } from "./types"
+import type { FieldType, FormField as FormFieldType, FormExpose, FormProps } from "./types"
 
 defineOptions({
 	name: "HxForm",
@@ -119,6 +119,9 @@ const visibleFields = computed(() => safeFields.value.filter(field => !field.hid
  * 校验规则合并
  */
 const SELECT_TYPES = new Set(["select", "radio", "radio-btn", "checkbox", "cascader", "date", "datetime", "switch"])
+const UPLOAD_TYPES = new Set(["upload"])
+const RANGE_TYPES = new Set(["datetimerange", "daterange", "timerange"])
+const CHECKBOX_TYPES = new Set(["checkbox"])
 
 const mergedRules = computed(() => {
 	const autoRules: Record<string, unknown[]> = {}
@@ -128,13 +131,14 @@ const mergedRules = computed(() => {
 
 		if (field.required) {
 			const isSelect = SELECT_TYPES.has(field.type)
+			const isUpload = UPLOAD_TYPES.has(field.type)
 			fieldRules.push({
 				required: true,
-				message: field.type === "upload"
+				message: isUpload
 					? `请上传${field.label}`
 					: `${isSelect ? "请选择" : "请输入"}${field.label}`,
 				trigger: "change",
-				...(field.type === "upload" ? { type: "array", min: 1 } : {}),
+				...(isUpload ? { type: "array", min: 1 } : {}),
 			})
 		}
 
@@ -186,9 +190,10 @@ let isInitialized = false
 
 function getDefaultValue(field: FormFieldType): unknown {
 	if (field.defaultValue !== undefined) return structuredClone(field.defaultValue)
-	if (field.type === "select") return field.multiple ? [] : ""
-	if (field.type === "checkbox") return []
-	if (["datetimerange", "daterange", "timerange", "upload"].includes(field.type)) return []
+	if (SELECT_TYPES.has(field.type as FieldType)) {
+		return CHECKBOX_TYPES.has(field.type as FieldType) ? [] : (field.multiple ? [] : "")
+	}
+	if (RANGE_TYPES.has(field.type as FieldType)) return []
 	return ""
 }
 
