@@ -212,22 +212,9 @@ export interface FormField_RichEditor {
 	richEditorParams?: RichEditorParams
 }
 
-// ——— DatePicker：从 DatePickerProps Pick（排除 modelValue）———————————————————
+// ——— DatePicker：从 DatePickerProps Pick（排除 type，与 FormFieldBase.type 冲突，改为 dateType）———————
 
-export type FormField_DatePicker = Pick<
-	DatePickerProps,
-	| "type"
-	| "placeholder"
-	| "startPlaceholder"
-	| "endPlaceholder"
-	| "format"
-	| "valueFormat"
-	| "disabled"
-	| "clearable"
-	| "disabledDate"
-	| "shortcuts"
-	| "defaultValue"
-> & {
+export type FormField_DatePicker = Omit<DatePickerProps, "type" | "mode"> & {
 	/** 禁用未来时间（仅 datetime 类型有效） */
 	disableFutureTime?: boolean
 	/** 日期范围限制（天数） */

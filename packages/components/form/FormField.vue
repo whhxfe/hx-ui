@@ -196,7 +196,7 @@
 			<HxDatePicker
 				:modelValue="modelValue"
 				@update:modelValue="$emit('update:modelValue', $event)"
-				:type="field.type"
+				:mode="(field.type as any)"
 				:placeholder="field.placeholder || `请选择${field.label}`"
 				:startPlaceholder="field.startPlaceholder"
 				:endPlaceholder="field.endPlaceholder"

@@ -35,8 +35,10 @@ export interface DateShortcut {
 export interface DatePickerProps {
 	/** v-model */
 	modelValue?: any
-	/** 日期选择器类型 */
+	/** 日期选择器类型（兼容 el-date-picker） */
 	type?: DatePickerType
+	/** 日期选择器类型（与 HxDateTimePicker 命名一致） */
+	mode?: DatePickerType
 	/** 占位文本（单个选择器） */
 	placeholder?: string
 	/** 开始日期占位文本（范围选择器） */

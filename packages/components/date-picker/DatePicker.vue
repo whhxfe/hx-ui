@@ -7,7 +7,7 @@
 	<el-date-picker
 		:modelValue="modelValue"
 		@update:modelValue="$emit('update:modelValue', $event)"
-		:type="props.type"
+		:type="effectiveType"
 		:placeholder="isRange ? (props.startPlaceholder || '请选择开始日期') : (props.placeholder || placeholderText)"
 		:start-placeholder="props.startPlaceholder || '请选择开始日期'"
 		:end-placeholder="props.endPlaceholder || '请选择结束日期'"
@@ -36,6 +36,9 @@ const props = withDefaults(defineProps<DatePickerProps>(), {
 	disabled: false,
 })
 
+/** 优先使用 mode，其次 type（与 HxDateTimePicker 命名保持一致） */
+const effectiveType = computed(() => props.mode ?? props.type ?? "date")
+
 const attrs = useAttrs()
 
 const emit = defineEmits<{
@@ -45,9 +48,9 @@ const emit = defineEmits<{
 
 const config = inject<HxConfig>(HxConfigKey)
 
-/** 根据 type 推断默认 placeholder */
+/** 根据 mode 推断默认 placeholder */
 const placeholderText = computed(() => {
-	switch (props.type) {
+	switch (effectiveType.value) {
 		case "date":
 			return "请选择日期"
 		case "datetime":
@@ -65,9 +68,9 @@ const placeholderText = computed(() => {
 	}
 })
 
-/** 根据 type 推断默认 format */
+/** 根据 mode 推断默认 format */
 const defaultFormat = computed(() => {
-	switch (props.type) {
+	switch (effectiveType.value) {
 		case "date":
 		case "daterange":
 			return "YYYY-MM-DD"
@@ -86,9 +89,9 @@ const defaultFormat = computed(() => {
 	}
 })
 
-/** 根据 type 推断默认 valueFormat */
+/** 根据 mode 推断默认 valueFormat */
 const defaultValueFormat = computed(() => {
-	switch (props.type) {
+	switch (effectiveType.value) {
 		case "date":
 		case "daterange":
 			return "YYYY-MM-DD"
@@ -110,7 +113,7 @@ const mergedValueFormat = computed(() => props.valueFormat ?? config?.form?.date
 
 /** 是否为范围类型（范围类型返回 Date[]，单个类型返回 Date） */
 const isRange = computed(() =>
-	["daterange", "datetimerange", "monthrange"].includes(props.type!)
+	["daterange", "datetimerange", "monthrange"].includes(effectiveType.value)
 )
 
 /** 合并 shortcuts：字段级 > 全局配置，根据类型自动选择对应的全局 shortcuts
@@ -118,7 +121,7 @@ const isRange = computed(() =>
  * - date/datetime → dateShortcuts（精确到日） */
 const mergedShortcuts = computed(() => {
 	if (props.shortcuts) return props.shortcuts
-	if (["daterange", "datetimerange"].includes(props.type!))
+	if (["daterange", "datetimerange"].includes(effectiveType.value))
 		return config?.form?.datePickerDefaults?.dateTimeRangeShortcuts
 	return config?.form?.datePickerDefaults?.dateShortcuts
 })
@@ -136,6 +139,7 @@ const elDatePickerAttrs = computed(() => {
 	const excludes = new Set([
 		"modelValue",
 		"type",
+		"mode",
 		"placeholder",
 		"startPlaceholder",
 		"endPlaceholder",
