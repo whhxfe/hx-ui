@@ -34,7 +34,7 @@
 			:limit="limit"
 			:multiple="multiple"
 			:auto-upload="false"
-			:with-credentials="true"
+			:with-credentials="props.withCredentials"
 			:name="props.name"
 			:data="props.data"
 			:on-change="handleChange"
@@ -240,7 +240,7 @@ async function handleUpload() {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},
-				withCredentials: true,
+				withCredentials: props.withCredentials,
 				onUploadProgress: (progressEvent: any) => {
 					if (progressEvent.total) {
 						const currentProgress = progressEvent.loaded / progressEvent.total
