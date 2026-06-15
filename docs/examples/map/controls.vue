@@ -1,4 +1,5 @@
-﻿<template>
+<template>
+  <ClientOnly>
   <div>
     <div class="control-switches">
       <label v-for="(config, key) in controlOptions" :key="key">
@@ -21,6 +22,7 @@
       :controls="currentControls"
     />
   </div>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">

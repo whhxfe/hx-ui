@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { HxMap, HxMapMarkers, HxMapPopup } from '@whhx/ui'
 
 const markerList = [
@@ -7,6 +7,7 @@ const markerList = [
 </script>
 
 <template>
+  <ClientOnly>
   <div style="height: 500px">
     <HxMap :center="{ lon: 116.397, lat: 39.908 }" :zoom="13">
       <HxMapMarkers :markers="markerList" :marker-style="{ shape:'map-marker',iconSize:[36,36] }" >
@@ -14,4 +15,5 @@ const markerList = [
       </HxMapMarkers>
     </HxMap>
   </div>
+  </ClientOnly>
 </template>

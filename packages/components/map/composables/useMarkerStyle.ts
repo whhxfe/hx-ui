@@ -13,8 +13,6 @@ import { render, type VNode } from 'vue'
 import type { MapMarkerItem, MarkerStyle, MarkerShape, ShapeDefinition } from '../types'
 import { ensureOlModules, useOlModules } from './useOlModules'
 
-const isSSR = typeof window === 'undefined'
-
 // ==================== 形状注册表 ====================
 
 /** 形状注册表 */
@@ -172,9 +170,6 @@ const moduleMarkerStyleCache = new Map<string, any>()
  * 预加载图标图片
  */
 export function preloadIcon(src: string): Promise<HTMLImageElement> {
-  if (isSSR) {
-    return Promise.resolve(null as any)
-  }
   if (preloadedImages.has(src)) {
     return Promise.resolve(preloadedImages.get(src)!)
   }
@@ -194,9 +189,6 @@ export function preloadIcon(src: string): Promise<HTMLImageElement> {
  * 获取图片原始尺寸（自动缓存）
  */
 export function getImageSize(src: string): Promise<[number, number]> {
-  if (isSSR) {
-    return Promise.resolve([0, 0])
-  }
   if (imageSizeCache.has(src)) {
     return Promise.resolve(imageSizeCache.get(src)!)
   }
@@ -347,17 +339,15 @@ function getShapeSrc(shape: string, color?: string): [string, [number, number]] 
   shapeDataUriCache.set(cacheKey, dataUri)
 
   // 预加载 data URI 到 preloadedImages，供 buildShapeIconStyle 的 img 模式使用
-  if (!isSSR) {
-    const cachedImg = new Image()
-    cachedImg.onload = () => {
-      preloadedImages.set(dataUri, cachedImg)
-      imageSizeCache.set(dataUri, [cachedImg.naturalWidth, cachedImg.naturalHeight])
-    }
-    cachedImg.onerror = () => {
-      // data URI 加载失败不需要处理
-    }
-    cachedImg.src = dataUri
+  const cachedImg = new Image()
+  cachedImg.onload = () => {
+    preloadedImages.set(dataUri, cachedImg)
+    imageSizeCache.set(dataUri, [cachedImg.naturalWidth, cachedImg.naturalHeight])
   }
+  cachedImg.onerror = () => {
+    // data URI 加载失败不需要处理
+  }
+  cachedImg.src = dataUri
 
   return [dataUri, def.size]
 }
@@ -504,9 +494,6 @@ async function buildCustomRenderStyle(
   iconSize?: [number, number],
   iconAnchor?: [number, number],
 ): Promise<any> {
-  if (isSSR) {
-    return null
-  }
   const modules = await ensureOlModules()
   const { Style, Icon } = modules
 

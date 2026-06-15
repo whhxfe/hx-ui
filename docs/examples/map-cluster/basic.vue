@@ -1,4 +1,5 @@
-﻿<template>
+<template>
+  <ClientOnly>
   <div>
     <p class="desc">地图上散布着 30 个随机标记点，距离小于 40px 的标记自动聚合为带数字的圆形。</p>
     <hx-map :center="{ lon: 113.5, lat: 31.5 }" :zoom="7" :height="400">
@@ -11,6 +12,7 @@
       点击聚合：{{ lastClick }} 个点
     </div>
   </div>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">

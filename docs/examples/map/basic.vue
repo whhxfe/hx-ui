@@ -1,4 +1,5 @@
-﻿<template>
+<template>
+  <ClientOnly>
   <div>
     <div class="map-demo-toolbar">
       <el-button type="primary" size="small" @click="centerToShanghai">
@@ -19,6 +20,7 @@
       @map-click="handleMapClick"
     />
   </div>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">

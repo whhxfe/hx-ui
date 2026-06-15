@@ -1,10 +1,12 @@
-﻿<template>
+<template>
+  <ClientOnly>
   <hx-form
     v-model="formData"
     :fields="fields"
     :cols="2"
   />
   <hx-json-view :data="formData" />
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">

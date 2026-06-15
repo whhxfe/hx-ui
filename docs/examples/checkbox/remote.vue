@@ -1,4 +1,5 @@
-﻿<template>
+<template>
+  <ClientOnly>
   <div class="demo-grid">
     <div class="demo-item">
       <p class="demo-label">静态 options</p>
@@ -18,6 +19,7 @@
       <p class="demo-value">值: {{ JSON.stringify(value2) }}</p>
     </div>
   </div>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">

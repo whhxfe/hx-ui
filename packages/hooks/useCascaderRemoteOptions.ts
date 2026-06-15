@@ -10,10 +10,9 @@ import { get, post } from "../utils"
 export function useCascaderRemoteOptions(remote: RemoteConfig | undefined) {
 	const remoteOptions = ref<any[]>([])
 	const loading = ref(false)
-	const isSSR = typeof window === 'undefined'
 
 	async function fetchOptions() {
-		if (!remote?.url || isSSR) {
+		if (!remote?.url) {
 			remoteOptions.value = []
 			return
 		}

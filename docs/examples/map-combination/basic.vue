@@ -1,4 +1,5 @@
-﻿<template>
+<template>
+  <ClientOnly>
   <div class="map-combination-demo">
     <p class="overall-desc">
       综合示例展示 HxMap、HxMapCluster、HxMapMarkers、HxMapPopup 组件的组合使用，
@@ -123,6 +124,7 @@
       </div>
     </div>
   </div>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">

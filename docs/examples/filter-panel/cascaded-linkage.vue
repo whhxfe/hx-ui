@@ -1,4 +1,5 @@
-﻿<template>
+<template>
+  <ClientOnly>
   <div class="filter-panel-demo">
     <HxFilterPanel
       v-model="filterState"
@@ -12,6 +13,7 @@
       <pre class="filter-panel-demo__pre">{{ JSON.stringify(filterState, null, 2) }}</pre>
     </div>
   </div>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">

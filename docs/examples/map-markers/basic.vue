@@ -1,4 +1,5 @@
-﻿<template>
+<template>
+  <ClientOnly>
   <div class="map-markers-verify">
     <p class="overall-desc">
       HxMapMarkers 功能验证示例，验证组件的核心功能点：独立使用、弹窗交互、动态数据更新、样式动态切换、点击事件等。
@@ -190,6 +191,7 @@
       </div>
     </div>
   </div>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">

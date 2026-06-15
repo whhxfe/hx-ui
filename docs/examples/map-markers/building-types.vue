@@ -1,4 +1,5 @@
-﻿<template>
+<template>
+  <ClientOnly>
   <div class="building-types-demo">
     <p class="overall-desc">
       多种建筑类型点位展示示例，使用不同的 shape
@@ -87,6 +88,7 @@
       </div>
     </div>
   </div>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">
