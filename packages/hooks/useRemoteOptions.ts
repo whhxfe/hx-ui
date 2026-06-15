@@ -54,9 +54,10 @@ function buildGroup(
 export function useRemoteOptions(remote: RemoteConfig | undefined) {
 	const remoteOptions = ref<(OptionItem | GroupOptionItem)[]>([])
 	const loading = ref(false)
+	const isSSR = typeof window === 'undefined'
 
 	async function fetchOptions() {
-		if (!remote?.url) {
+		if (!remote?.url || isSSR) {
 			remoteOptions.value = []
 			return
 		}
