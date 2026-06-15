@@ -1,11 +1,11 @@
-# Transfer 穿梭框
+﻿# Transfer 穿梭框
 
 用于在两个面板之间进行数据交互，支持单选/多选、分组折叠、搜索过滤、静态数据源 / 远程数据源等功能。
 
 业务项目中请确保已引入组件库样式：
 
 ```ts
-import '@hx/ui/index.css'
+import '@whhx/ui/index.css'
 ```
 
 ## 基础用法（options 模式）

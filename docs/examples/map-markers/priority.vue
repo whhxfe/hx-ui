@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="priority-demo">
     <h3>渲染优先级说明（从高到低）</h3>
     <ol class="priority-list">
@@ -67,8 +67,8 @@
 
 <script setup lang="ts">
 import { h } from "vue"
-import { HxMap, HxMapMarkers, registerMapMarkerShapes } from "@hx/ui"
-import type { MapMarkerItem, MarkerStyle } from "@hx/ui"
+import { HxMap, HxMapMarkers, registerMapMarkerShapes } from "@whhx/ui"
+import type { MapMarkerItem, MarkerStyle } from "@whhx/ui"
 
 // 注册自定义形状
 registerMapMarkerShapes([

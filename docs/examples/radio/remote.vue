@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-grid">
     <div class="demo-item">
       <p class="demo-label">静态 options</p>
@@ -32,8 +32,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxRadio } from "@hx/ui"
-import type { OptionItem, RemoteConfig } from "@hx/ui"
+import { HxRadio } from "@whhx/ui"
+import type { OptionItem, RemoteConfig } from "@whhx/ui"
 
 const value1 = ref("1")
 const value2 = ref("")

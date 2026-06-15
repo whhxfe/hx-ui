@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-title">基础类型</p>
     <div class="link-demo-row">
@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxLink } from '@hx/ui'
+import { HxLink } from '@whhx/ui'
 </script>
 
 <style scoped>

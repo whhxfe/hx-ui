@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-title">本地图片图标</p>
     <p class="demo-desc">通过 import.meta.glob 加载本地图片资源，存放在 @/assets/icons/{group}/ 目录下</p>
@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { ImageIcon } from '@hx/ui'
+import { ImageIcon } from '@whhx/ui'
 </script>
 
 <style scoped>

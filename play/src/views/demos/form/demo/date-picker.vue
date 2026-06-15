@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="date-picker-demo">
     <!-- 独立使用 -->
     <section class="demo-section">
@@ -166,7 +166,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxDatePicker, HxDateTimePicker } from "@hx/ui"
+import { HxDatePicker, HxDateTimePicker } from "@whhx/ui"
 import { dateTimeRangeShortcuts } from "@/utils"
 import dayjs from "dayjs"
 

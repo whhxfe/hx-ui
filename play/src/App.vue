@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { HxConfigProvider } from '@hx/ui'
+﻿<script setup lang="ts">
+import { HxConfigProvider } from '@whhx/ui'
 import { dateTimeRangeShortcuts, dateShortcuts } from '@/utils'
 // ============================================================
 // 注册离线图标集（支持懒加载，推荐）

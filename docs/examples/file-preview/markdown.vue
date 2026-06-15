@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-row">
     <hx-file-preview
       url="/files/markdown/sample.md"
@@ -9,5 +9,5 @@
 </template>
 
 <script setup lang="ts">
-import { HxFilePreview as FilePreview } from "@hx/ui"
+import { HxFilePreview as FilePreview } from "@whhx/ui"
 </script>

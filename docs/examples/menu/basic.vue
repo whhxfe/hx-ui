@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-title">竖向模式（默认）</p>
     <div class="menu-demo-col">
@@ -13,8 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import { HxMenu } from '@hx/ui'
-import type { MenuItem } from '@hx/ui'
+import { HxMenu } from '@whhx/ui'
+import type { MenuItem } from '@whhx/ui'
 
 /** 全部使用 iconify 图标，示例展示两种常用图标集 */
 const menu: MenuItem[] = [

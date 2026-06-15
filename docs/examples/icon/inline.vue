@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <p class="desc">
       <strong>inline=false（默认）</strong>：图标以 inline-block 渲染，占用完整行高空间
@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxIcon as Icon } from "@hx/ui"
+import { HxIcon as Icon } from "@whhx/ui"
 </script>
 
 <style scoped>

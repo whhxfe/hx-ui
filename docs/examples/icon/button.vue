@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <hx-button type="primary">
       <hx-icon type="iconify" name="ep:check" size="16px" />
@@ -20,5 +20,5 @@
 </template>
 
 <script setup lang="ts">
-import { HxButton as Button } from "@hx/ui"
+import { HxButton as Button } from "@whhx/ui"
 </script>

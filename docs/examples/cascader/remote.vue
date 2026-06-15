@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-grid">
     <div class="demo-item">
       <p class="demo-label">静态 options（无 remote）</p>
@@ -25,8 +25,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxCascader } from "@hx/ui"
-import type { RemoteConfig } from "@hx/ui"
+import { HxCascader } from "@whhx/ui"
+import type { RemoteConfig } from "@whhx/ui"
 
 const value1 = ref<string[]>([])
 const value2 = ref<string[]>([])

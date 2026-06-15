@@ -1,4 +1,4 @@
-# QrCode 二维码
+﻿# QrCode 二维码
 
 基于 `qrcode` 库封装的 Vue 3 二维码组件，支持 SVG / Canvas 两种渲染模式，可配置前景/背景色、纠错等级、Logo 等。
 
@@ -113,5 +113,5 @@ qrcode/logo
 ### 类型定义
 
 ```ts
-import type { QrCodeProps, QrCodeLogo, QrCodeRenderMode, QrCodeErrorCorrectionLevel } from '@hx/ui'
+import type { QrCodeProps, QrCodeLogo, QrCodeRenderMode, QrCodeErrorCorrectionLevel } from '@whhx/ui'
 ```

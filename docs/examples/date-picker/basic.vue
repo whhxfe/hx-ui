@@ -1,4 +1,4 @@
-<template>
+﻿<template>
 	<div class="demo-section">
 		<p class="demo-title">日期选择 date</p>
 		<HxDatePicker v-model="date1" type="date" placeholder="请选择日期" />
@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxDatePicker } from "@hx/ui"
+import { HxDatePicker } from "@whhx/ui"
 
 const date1 = ref<string>("")
 const date2 = ref<string>("")

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-wrapper">
     <p class="demo-desc">
       模拟表格详情页场景：切换不同数据时，组件会加载对应的文件预览列表。
@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { HxButton, HxUploadFilePreviewList } from '@hx/ui'
+import { HxButton, HxUploadFilePreviewList } from '@whhx/ui'
 
 // 模拟的详情数据（使用 picsum 图片 ID 作为文件 ID）
 const detailList = [

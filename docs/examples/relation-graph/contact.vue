@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="contact-demo">
     <hx-relation-graph
       :nodes="nodes"
@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxRelationGraph, type RelationNode, type RelationEdge } from '@hx/ui'
+import { HxRelationGraph, type RelationNode, type RelationEdge } from '@whhx/ui'
 
 // 人物节点及其虚拟账号
 const nodes: RelationNode[] = [

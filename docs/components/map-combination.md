@@ -1,4 +1,4 @@
-# Map 组件组合
+﻿# Map 组件组合
 
 综合示例展示 HxMap、HxMapCluster、HxMapMarkers、HxMapPopup 组件的组合使用方式。
 
@@ -64,7 +64,7 @@ map-combination/basic
 
 <script setup lang="ts">
 import { h } from 'vue'
-import type { ClusterContentInfo } from '@hx/ui'
+import type { ClusterContentInfo } from '@whhx/ui'
 
 function customClusterContent(info: ClusterContentInfo) {
   return h('div', { class: 'cluster-popup' }, [
@@ -85,7 +85,7 @@ function customClusterContent(info: ClusterContentInfo) {
 
 <script setup lang="ts">
 import { h } from 'vue'
-import type { MapMarkerItem } from '@hx/ui'
+import type { MapMarkerItem } from '@whhx/ui'
 
 function customPopupRender(item: MapMarkerItem) {
   return h('div', [
@@ -129,7 +129,7 @@ function customPopupRender(item: MapMarkerItem) {
 
 <script setup lang="ts">
 import type { Map } from 'ol'
-import type { ClusterContentInfo } from '@hx/ui'
+import type { ClusterContentInfo } from '@whhx/ui'
 
 function onMapReady(map: Map) {
   console.log('地图已就绪')

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-grid">
     <div class="demo-item">
       <p class="demo-label">分组数据（可折叠分组）</p>
@@ -17,8 +17,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxTransfer } from "@hx/ui"
-import type { TransferGroup } from "@hx/ui"
+import { HxTransfer } from "@whhx/ui"
+import type { TransferGroup } from "@whhx/ui"
 
 const value = ref("1,3")
 

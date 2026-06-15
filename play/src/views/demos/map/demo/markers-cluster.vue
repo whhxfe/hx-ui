@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <div class="demo-toolbar">
       <span>聚合开关：</span>
@@ -41,8 +41,8 @@
 <script setup lang="tsx">
 import { ref, computed } from "vue"
 import { ElSwitch, ElRadioGroup, ElRadioButton, ElText, ElMessage } from "element-plus"
-import { HxMap, HxMapMarkers, HxMapCluster, HxMapPopup } from "@hx/ui"
-import type { MapMarkerItem, ClusterContentInfo } from "@hx/ui"
+import { HxMap, HxMapMarkers, HxMapCluster, HxMapPopup } from "@whhx/ui"
+import type { MapMarkerItem, ClusterContentInfo } from "@whhx/ui"
 
 // 湖北区域范围
 const HUBEI_BOUNDS = {

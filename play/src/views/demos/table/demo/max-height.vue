@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="max-height-demo">
     <p class="demo-info">表格 max-height="400px"，内容超出后可滚动查看</p>
     <hx-table
@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxTable as Table } from '@hx/ui'
+import { HxTable as Table } from '@whhx/ui'
 
 // 生成 50 条测试数据
 const data = Array.from({ length: 50 }, (_, i) => ({

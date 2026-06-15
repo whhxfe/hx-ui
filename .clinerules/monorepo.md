@@ -1,4 +1,4 @@
-# Monorepo 工程规范
+﻿# Monorepo 工程规范
 
 ## Workspace 组织
 
@@ -6,10 +6,10 @@
 
 | 包路径 | 包名 | 用途 |
 |--------|------|------|
-| `packages/` | `@hx/ui` | 组件库主包（库代码） |
+| `packages/` | `@whhx/ui` | 组件库主包（库代码） |
 | `docs/` | — | VitePress 文档站点 |
 | `play/` | — | 开发调试沙盒 |
-| `server/` | `@hx/ui-server` | 示例后端服务 |
+| `server/` | `@whhx/ui-server` | 示例后端服务 |
 
 ## 构建流程
 
@@ -43,7 +43,7 @@ pnpm play:dev
 ```
 
 - 独立的 Vite 应用，用于组件开发时的实时调试
-- 可以使用 `@hx/ui` 的全部导出
+- 可以使用 `@whhx/ui` 的全部导出
 
 ## 依赖管理策略
 
@@ -66,18 +66,18 @@ pnpm play:dev
 pnpm add -wD <package>
 
 # 子包依赖
-pnpm add <package> --filter @hx/ui
+pnpm add <package> --filter @whhx/ui
 
 # 工作空间内部依赖
-pnpm add @hx/ui --filter play
+pnpm add @whhx/ui --filter play
 ```
 
 ## 包命名规范
 
 | 包名 | 规范 |
 |------|------|
-| 组件库 | `@hx/ui` |
-| 后端服务 | `@hx/ui-server` |
+| 组件库 | `@whhx/ui` |
+| 后端服务 | `@whhx/ui-server` |
 | 目录命名 | kebab-case |
 
 ## 组件导出链路

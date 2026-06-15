@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="filter-panel-demo">
     <HxFilterPanel
       v-model="filterState"
@@ -16,8 +16,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { HxFilterPanel } from '@hx/ui'
-import type { FilterConfig, FilterState } from '@hx/ui'
+import { HxFilterPanel } from '@whhx/ui'
+import type { FilterConfig, FilterState } from '@whhx/ui'
 
 /**
  * =============================================================

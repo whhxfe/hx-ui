@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { HxMap, HxMapMarkers, HxMapPopup } from '@hx/ui'
+﻿<script setup lang="ts">
+import { HxMap, HxMapMarkers, HxMapPopup } from '@whhx/ui'
 
 const markerList = [
   { id: 1, lon: 116.397, lat: 39.908, name: '天安门', address: '北京市东城区长安街' },

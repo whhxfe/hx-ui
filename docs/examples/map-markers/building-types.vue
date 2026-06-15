@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="building-types-demo">
     <p class="overall-desc">
       多种建筑类型点位展示示例，使用不同的 shape
@@ -96,8 +96,8 @@ import {
   HxMapMarkers,
   HxMapPopup,
   registerMapMarkerShapes,
-} from "@hx/ui";
-import type { MapMarkerItem } from "@hx/ui";
+} from "@whhx/ui";
+import type { MapMarkerItem } from "@whhx/ui";
 
 // 注册建筑类型对应的形状
 registerMapMarkerShapes([

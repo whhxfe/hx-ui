@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <hx-icon type="iconify" name="ep:star-filled" color="#ff4757" size="24px" />
     <hx-icon type="iconify" name="ep:star-filled" color="#ffd700" size="24px" />
@@ -8,5 +8,5 @@
 </template>
 
 <script setup lang="ts">
-import { HxIcon as Icon } from "@hx/ui"
+import { HxIcon as Icon } from "@whhx/ui"
 </script>

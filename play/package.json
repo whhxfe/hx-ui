@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@hx/ui": "workspace:^",
+    "@whhx/ui": "workspace:^",
     "@iconify/vue": "^5.0.0",
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",

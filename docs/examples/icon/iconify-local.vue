@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-title">Element Plus 图标集（ep）</p>
     <p class="demo-desc">使用离线 @iconify/json 包中的 ep 图标集</p>
@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { IconifyIcon } from '@hx/ui'
+import { IconifyIcon } from '@whhx/ui'
 </script>
 
 <style scoped>

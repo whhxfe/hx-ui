@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <div class="relation-graph-event-demo">
       <el-descriptions :column="2" border>
@@ -23,8 +23,8 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { ElMessage } from "element-plus"
-import { HxRelationGraph } from "@hx/ui"
-import type { RelationNodeClickEvent, RelationNode } from "@hx/ui"
+import { HxRelationGraph } from "@whhx/ui"
+import type { RelationNodeClickEvent, RelationNode } from "@whhx/ui"
 
 const clickedNode = ref<RelationNode | null>(null)
 

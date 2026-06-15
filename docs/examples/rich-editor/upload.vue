@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-wrapper">
     <div class="demo-item">
       <p class="demo-label">配置上传地址（图片 / 视频）</p>
@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxRichEditor } from "@hx/ui"
+import { HxRichEditor } from "@whhx/ui"
 
 const content3 = ref("<p>支持<em>图片</em>和<em>视频</em>上传，可通过 <code>uploadUrl</code> 或 <code>uploadImage</code> / <code>uploadVideo</code> 分别配置。</p>")
 

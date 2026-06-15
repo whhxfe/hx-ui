@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-title">子菜单（sub）+ 图标</p>
     <div class="menu-demo-col">
@@ -8,8 +8,8 @@
 </template>
 
 <script setup lang="ts">
-import { HxMenu } from '@hx/ui'
-import type { MenuItem } from '@hx/ui'
+import { HxMenu } from '@whhx/ui'
+import type { MenuItem } from '@whhx/ui'
 
 /**
  * iconify 图标格式：{ name: '集合:图标名', type: 'iconify' }

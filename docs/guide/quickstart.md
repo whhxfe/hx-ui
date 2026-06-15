@@ -1,9 +1,9 @@
-# 快速开始
+﻿# 快速开始
 
 ## 安装
 
 ```bash
-pnpm add @hx/ui element-plus vue
+pnpm add @whhx/ui element-plus vue
 ```
 
 ## 使用
@@ -14,8 +14,8 @@ pnpm add @hx/ui element-plus vue
 import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
-import '@hx/ui/index.css'
-import HxUI from '@hx/ui'
+import '@whhx/ui/index.css'
+import HxUI from '@whhx/ui'
 import App from './App.vue'
 
 const app = createApp(App)
@@ -30,8 +30,8 @@ app.mount('#app')
 import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
-import '@hx/ui/index.css'
-import { Button } from '@hx/ui'
+import '@whhx/ui/index.css'
+import { Button } from '@whhx/ui'
 import App from './App.vue'
 
 const app = createApp(App)
@@ -40,7 +40,7 @@ app.use(Button)
 app.mount('#app')
 ```
 
-> 样式与 JS 分离打包，**必须**引入 `@hx/ui/index.css`，否则 Transfer、Form 等自定义布局组件会没有样式。
+> 样式与 JS 分离打包，**必须**引入 `@whhx/ui/index.css`，否则 Transfer、Form 等自定义布局组件会没有样式。
 
 ## 开发调试
 

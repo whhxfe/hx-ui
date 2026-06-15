@@ -1,4 +1,4 @@
-# RelationGraph 人物关系图
+﻿# RelationGraph 人物关系图
 
 基于 `@antv/g6` 封装的关系图组件，用于展示人物之间的关联关系。
 
@@ -169,5 +169,5 @@ relation-graph/contact
 ### 类型定义
 
 ```ts
-import type { RelationGraphProps, RelationNode, RelationEdge, RelationNodeStyle, RelationEdgeData, RelationGraphIconConfig, RelationNodeClickEvent, AccountType, ContactAccount } from '@hx/ui'
+import type { RelationGraphProps, RelationNode, RelationEdge, RelationNodeStyle, RelationEdgeData, RelationGraphIconConfig, RelationNodeClickEvent, AccountType, ContactAccount } from '@whhx/ui'
 ```

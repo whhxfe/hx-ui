@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <hx-form
     v-model="formData"
     :fields="fields"
@@ -9,8 +9,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxForm as Form, HxJsonView } from "@hx/ui"
-import type { FormField } from "@hx/ui"
+import { HxForm as Form, HxJsonView } from "@whhx/ui"
+import type { FormField } from "@whhx/ui"
 
 const formData = ref({
   cascader: "",

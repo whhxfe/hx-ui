@@ -1,4 +1,4 @@
-import { dirname, resolve } from 'path'
+﻿import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -34,10 +34,10 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, 'src'),
       '@iconify-json': resolve(__dirname, '../node_modules/@iconify/json/json'),
-      // CSS 文件需要指向 dist 目录（必须在 @hx/ui 之前，防止被更宽泛的别名覆盖）
-      '@hx/ui/dist/index.css': resolve(__dirname, '../packages/dist/index.css'),
+      // CSS 文件需要指向 dist 目录（必须在 @whhx/ui 之前，防止被更宽泛的别名覆盖）
+      '@whhx/ui/dist/index.css': resolve(__dirname, '../packages/dist/index.css'),
       // 直接解析到源码而不是 dist（指向 index.ts 而非目录，避免被 package.json#module 覆盖）
-      '@hx/ui': resolve(__dirname, '../packages/index.ts'),
+      '@whhx/ui': resolve(__dirname, '../packages/index.ts'),
     },
   },
   server: {

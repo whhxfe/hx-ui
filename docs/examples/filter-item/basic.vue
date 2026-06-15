@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-title">单选（multiple=false）</p>
     <HxFilterItem
@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { HxFilterItem } from '@hx/ui'
+import { HxFilterItem } from '@whhx/ui'
 
 const singleValue = ref('')
 const multiValue = ref<string[]>([])

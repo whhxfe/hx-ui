@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <hx-table :data="data" :columns="columns" border>
     <template #action="{ row }">
       <el-button link type="primary">编辑 {{ row.name }}</el-button>
@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxTable as Table } from "@hx/ui"
+import { HxTable as Table } from "@whhx/ui"
 
 const data = [
   { id: 1, name: 'Alice', dept: 'R&D' },

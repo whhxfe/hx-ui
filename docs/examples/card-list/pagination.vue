@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div style="width: 100%">
     <hx-card-list
       :data="cardList"
@@ -31,7 +31,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { HxCardList } from '@hx/ui'
+import { HxCardList } from '@whhx/ui'
 
 const currentPage = ref(1)
 

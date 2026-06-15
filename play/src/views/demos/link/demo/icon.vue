@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <p class="demo-label">图标组合</p>
     <div class="demo-row">
@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxLink, IconifyIcon } from '@hx/ui'
+import { HxLink, IconifyIcon } from '@whhx/ui'
 </script>
 
 <style scoped>

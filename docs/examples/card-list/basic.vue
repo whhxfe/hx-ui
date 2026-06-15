@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div style="width: 100%">
     <hx-card-list :data="cardList" :columns="3" :column-gap="16" :row-gap="16" >
       <template #default="{ item, index }">
@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { HxCardList } from '@hx/ui'
+import { HxCardList } from '@whhx/ui'
 
 const cardList = Array.from({ length: 6 }, (_, i) => ({
   name: `项目 ${i + 1}`,

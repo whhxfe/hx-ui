@@ -1,9 +1,9 @@
-<template>
+﻿<template>
   <hx-table :data="data" :columns="columns" border stripe />
 </template>
 
 <script setup lang="ts">
-import { HxTable as Table } from '@hx/ui'
+import { HxTable as Table } from '@whhx/ui'
 
 const data = [
   { id: 1, name: '张三', age: 25, dept: '研发部', status: 'active' },

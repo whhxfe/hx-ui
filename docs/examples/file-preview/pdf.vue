@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-row">
     pdf:
     <hx-file-preview
@@ -10,5 +10,5 @@
 </template>
 
 <script setup lang="ts">
-import { HxFilePreview as FilePreview } from "@hx/ui"
+import { HxFilePreview as FilePreview } from "@whhx/ui"
 </script>

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <HxUpload
     v-model="fileIds"
     action="/api/upload"
@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { HxUpload } from '@hx/ui'
+import { HxUpload } from '@whhx/ui'
 
 const fileIds = ref<string[]>([])
 const accept = '.jpg,.png,.gif,.pdf,.doc,.docx,.mp4'

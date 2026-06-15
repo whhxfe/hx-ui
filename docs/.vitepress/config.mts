@@ -1,4 +1,4 @@
-import { dirname, resolve } from 'node:path'
+﻿import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig, loadEnv } from 'vitepress'
 import markdownItContainer from 'markdown-it-container'
@@ -216,10 +216,10 @@ export default defineConfig({
         { find: /^flv\.js$/, replacement: resolve(__dirname, 'flv-ssr.cjs') },
         { find: /^hls\.js$/, replacement: resolve(__dirname, 'hls-ssr.cjs') },
         { find: '@', replacement: resolve(__dirname, '../../play/src') },
-        // CSS 别名必须在 @hx/ui 之前，防止被更宽泛的别名覆盖
-        { find: '@hx/ui/dist/index.css', replacement: resolve(__dirname, '../../packages/dist/index.css') },
-        { find: '@hx/ui/theme-chalk/index.css', replacement: resolve(__dirname, '../../packages/theme-chalk/index.scss') },
-        { find: '@hx/ui', replacement: resolve(__dirname, '../../packages/index.ts') },
+        // CSS 别名必须在 @whhx/ui 之前，防止被更宽泛的别名覆盖
+        { find: '@whhx/ui/dist/index.css', replacement: resolve(__dirname, '../../packages/dist/index.css') },
+        { find: '@whhx/ui/theme-chalk/index.css', replacement: resolve(__dirname, '../../packages/theme-chalk/index.scss') },
+        { find: '@whhx/ui', replacement: resolve(__dirname, '../../packages/index.ts') },
         { find: '@iconify-json', replacement: resolve(__dirname, '../../node_modules/@iconify/json/json') },
       ],
     },

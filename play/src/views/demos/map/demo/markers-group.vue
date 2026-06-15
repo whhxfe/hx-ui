@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <div class="demo-toolbar">
       <span>分组控制：</span>
@@ -32,8 +32,8 @@
 <script setup lang="ts">
 import { ref, h } from "vue"
 import { ElButton, ElButtonGroup } from "element-plus"
-import { HxMap, HxMapMarkers } from "@hx/ui"
-import type { MapMarkerItem, MarkerGroupConfig } from "@hx/ui"
+import { HxMap, HxMapMarkers } from "@whhx/ui"
+import type { MapMarkerItem, MarkerGroupConfig } from "@whhx/ui"
 
 const markersRef = ref<InstanceType<typeof HxMapMarkers> | null>(null)
 const groupReady = ref(false)

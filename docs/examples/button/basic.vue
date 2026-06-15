@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-title">类型</p>
     <div class="demo-row">
@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { HxButton } from '@hx/ui'
+import { HxButton } from '@whhx/ui'
 
 const loading = ref(false)
 </script>

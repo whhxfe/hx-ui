@@ -1,4 +1,4 @@
-# FilterDateRange 日期范围选择
+﻿# FilterDateRange 日期范围选择
 
 用于筛选条件中的快捷日期范围选择器，支持预定义快捷按钮和自定义日期范围选择。通常作为 `HxFilterPanel` 的子组件使用，也支持独立使用。
 
@@ -45,7 +45,7 @@ import type {
   FilterDateRangeProps,
   FilterDateRangeShortcut,
   FilterValueType,
-} from '@hx/ui'
+} from '@whhx/ui'
 ```
 
 ## 功能说明

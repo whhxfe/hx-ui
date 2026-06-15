@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-grid">
     <div class="demo-item">
       <p class="demo-label">静态数据（单选）</p>
@@ -54,8 +54,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxTransfer } from "@hx/ui"
-import type { TransferOption, TransferRemoteConfig } from "@hx/ui"
+import { HxTransfer } from "@whhx/ui"
+import type { TransferOption, TransferRemoteConfig } from "@whhx/ui"
 
 const value1 = ref("")
 const value2 = ref("")

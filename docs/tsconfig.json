@@ -1,11 +1,11 @@
-{
+﻿{
   "compilerOptions": {
     "baseUrl": ".",
     "module": "ESNext",
     "target": "ESNext",
     "moduleResolution": "Bundler",
     "paths": {
-      "@hx/ui": ["../packages/index.ts"]
+      "@whhx/ui": ["../packages/index.ts"]
     }
   },
   "include": [

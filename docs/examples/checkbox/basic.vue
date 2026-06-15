@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-grid">
     <div class="demo-item">
       <p class="demo-label">基础 options</p>
@@ -23,8 +23,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxCheckbox } from "@hx/ui"
-import type { OptionItem } from "@hx/ui"
+import { HxCheckbox } from "@whhx/ui"
+import type { OptionItem } from "@whhx/ui"
 
 const value1 = ref<string[]>(["sing", "code"])
 const value2 = ref<string[]>(["sing"])

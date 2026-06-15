@@ -1,6 +1,6 @@
-# 二次封装组件流程
+﻿# 二次封装组件流程
 
-本文档描述在 `@hx/ui` 中创建二次封装组件的标准流程。
+本文档描述在 `@whhx/ui` 中创建二次封装组件的标准流程。
 
 > 详细开发规范请参阅根目录下的 [CONTRIBUTING.md](../../CONTRIBUTING.md)。
 
@@ -113,16 +113,16 @@ const components = [HxButton, HxTable, /* ... */]
 
 ```ts
 // 全量引入
-import HxUI from '@hx/ui'
+import HxUI from '@whhx/ui'
 app.use(ElementPlus)
 app.use(HxUI)
 
 // 按需引入
-import { HxButton } from '@hx/ui'
+import { HxButton } from '@whhx/ui'
 app.use(HxButton)
 ```
 
-> **注意**：样式与 JS 分离打包，必须引入 `@hx/ui/index.css`。
+> **注意**：样式与 JS 分离打包，必须引入 `@whhx/ui/index.css`。
 
 ## 开发调试
 

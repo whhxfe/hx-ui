@@ -1,5 +1,5 @@
 {
-  "name": "@hx/ui-server",
+  "name": "@whhx/ui-server",
   "private": true,
   "version": "0.0.1",
   "description": "hx-ui Mock Server - 组件静态资源与接口服务",

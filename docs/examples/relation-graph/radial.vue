@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <hx-relation-graph
       :nodes="nodes"
@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxRelationGraph } from "@hx/ui"
+import { HxRelationGraph } from "@whhx/ui"
 
 // 径向布局数据 - 中心节点 + 层级关系
 const nodes = [

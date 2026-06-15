@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <p class="desc">地图上散布着 30 个随机标记点，距离小于 40px 的标记自动聚合为带数字的圆形。</p>
     <hx-map :center="{ lon: 113.5, lat: 31.5 }" :zoom="7" :height="400">
@@ -15,8 +15,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { HxMap, HxMapCluster, HxMapMarkers } from '@hx/ui'
-import type { MapMarkerItem } from '@hx/ui'
+import { HxMap, HxMapCluster, HxMapMarkers } from '@whhx/ui'
+import type { MapMarkerItem } from '@whhx/ui'
 
 // 生成 30 个湖北省内随机点
 const cities = [

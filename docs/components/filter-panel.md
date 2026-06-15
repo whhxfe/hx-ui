@@ -1,4 +1,4 @@
-# FilterPanel 筛选面板
+﻿# FilterPanel 筛选面板
 
 用于管理列表页筛选条件的面板组件，支持多选筛选项、单选筛选项、快捷日期范围、展开收起、重置等功能。
 
@@ -111,4 +111,4 @@ import type {
   FilterItemEmits,
   FilterItemInstance,
   FilterDateRangeProps,
-} from '@hx/ui'
+} from '@whhx/ui'

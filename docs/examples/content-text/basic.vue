@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-title">普通文本</p>
     <HxContentText :content="plainText" />
@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxContentText } from '@hx/ui'
+import { HxContentText } from '@whhx/ui'
 
 const plainText = '这是一段普通的纯文本内容，无需任何特殊处理。'
 

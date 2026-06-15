@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="hx-upload-model-value-type-demo">
     <!-- array 模式（默认） -->
     <div class="demo-block">
@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { HxUpload } from '@hx/ui'
+import { HxUpload } from '@whhx/ui'
 
 const fileIds = ref<string[]>([])
 const fileIdsStr = ref<string>('')

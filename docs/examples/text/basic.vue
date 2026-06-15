@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-title">基础用法</p>
     <div class="text-demo-row">
@@ -65,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxText } from '@hx/ui'
+import { HxText } from '@whhx/ui'
 </script>
 
 <style scoped>

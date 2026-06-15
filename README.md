@@ -1,4 +1,4 @@
-# Hx UI
+﻿# Hx UI
 
 基于 `Vue 3` + `TypeScript` + `Element Plus` 的业务组件二次封装库。
 
@@ -12,7 +12,7 @@
 ## 安装
 
 ```bash
-pnpm add @hx/ui element-plus vue
+pnpm add @whhx/ui element-plus vue
 ```
 
 ## 快速开始
@@ -21,8 +21,8 @@ pnpm add @hx/ui element-plus vue
 import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
-import '@hx/ui/index.css'
-import HxUI from '@hx/ui'
+import '@whhx/ui/index.css'
+import HxUI from '@whhx/ui'
 import App from './App.vue'
 
 const app = createApp(App)

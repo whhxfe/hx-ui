@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-grid">
     <div class="demo-item">
       <p class="demo-label">基础 options</p>
@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxCascader } from "@hx/ui"
+import { HxCascader } from "@whhx/ui"
 
 const value1 = ref<string[]>([])
 /** emitPath=false 时仅为叶子 value（string | number） */

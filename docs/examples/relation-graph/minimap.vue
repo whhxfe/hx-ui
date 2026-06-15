@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <hx-relation-graph
       :nodes="nodes"
@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxRelationGraph } from "@hx/ui"
+import { HxRelationGraph } from "@whhx/ui"
 
 // 大规模数据示例 - 展示小地图效果
 const nodes = [

@@ -1,5 +1,5 @@
 {
-  "name": "@hx/ui-monorepo",
+  "name": "@whhx/ui-monorepo",
   "version": "0.0.1",
   "private": true,
   "description": "基于 Vue 3 + TypeScript + Element Plus 的业务组件二次封装库 monorepo",
@@ -7,9 +7,9 @@
   "author": "hx-admin",
   "packageManager": "pnpm@10.18.3",
   "scripts": {
-    "build:ui": "pnpm --filter @hx/ui run build",
-    "version:pkg": "pnpm --filter @hx/ui run version",
-    "publish:ui": "pnpm --filter @hx/ui run publish-pkg",
+    "build:ui": "pnpm --filter @whhx/ui run build",
+    "version:pkg": "pnpm --filter @whhx/ui run version",
+    "publish:ui": "pnpm --filter @whhx/ui run publish-pkg",
     "release": "pnpm run build:ui && pnpm run version:pkg && pnpm run publish:ui",
     "docs:dev": "vitepress dev docs --host --port 4001",
     "docs:build": "vitepress build docs",
@@ -17,12 +17,12 @@
     "play:dev": "pnpm --filter play dev",
     "play:build": "pnpm --filter play build",
     "play:preview": "pnpm --filter play preview",
-    "server:dev": "pnpm --filter @hx/ui-server dev",
-    "server:build": "pnpm --filter @hx/ui-server build",
+    "server:dev": "pnpm --filter @whhx/ui-server dev",
+    "server:build": "pnpm --filter @whhx/ui-server build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@hx/ui": "workspace:*",
+    "@whhx/ui": "workspace:*",
     "@iconify/json": "^2.2.458",
     "@iconify/types": "^2.0.0",
     "@iconify/vue": "^5.0.0",

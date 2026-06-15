@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-wrapper">
     <p class="demo-desc">
       通过 <code>itemWidth</code> 和 <code>itemHeight</code> 控制卡片尺寸，
@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { HxUploadFilePreviewList } from '@hx/ui'
+import { HxUploadFilePreviewList } from '@whhx/ui'
 
 const fileIds = ref(['file-001', 'file-002', 'file-003'])
 

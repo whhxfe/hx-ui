@@ -1,6 +1,6 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import DefaultTheme from "vitepress/theme";
-import { HxConfigProvider,registerMapMarkerShapes } from "@hx/ui";
+import { HxConfigProvider,registerMapMarkerShapes } from "@whhx/ui";
 /** 本地 glob 资源 */
 const imageIconModules = import.meta.glob<{ default: string }>(
   "../../../play/src/assets/icons/**/*",

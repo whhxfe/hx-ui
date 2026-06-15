@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-title">带图标的链接</p>
     <div class="link-demo-row">
@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxLink, IconifyIcon } from '@hx/ui'
+import { HxLink, IconifyIcon } from '@whhx/ui'
 </script>
 
 <style scoped>

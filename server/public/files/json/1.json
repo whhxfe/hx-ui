@@ -1,5 +1,5 @@
-{
-  "name": "@hx/ui",
+﻿{
+  "name": "@whhx/ui",
   "version": "0.0.1",
   "description": "基于 Vue 3 + TypeScript + Element Plus 的业务组件二次封装库",
   "main": "dist/index.es.js",

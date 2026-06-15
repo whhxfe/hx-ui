@@ -1,4 +1,4 @@
-import DefaultTheme from 'vitepress/theme'
+﻿import DefaultTheme from 'vitepress/theme'
 /** SVG sprite：与 play 使用同一目录与 symbolId（icon-[dir]-[name]） */
 import 'virtual:svg-icons-register'
 import ElementPlus from 'element-plus'
@@ -7,8 +7,8 @@ import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
-import HxUI from '@hx/ui'
-import '@hx/ui/dist/index.css'
+import HxUI from '@whhx/ui'
+import '@whhx/ui/dist/index.css'
 import Layout from './Layout.vue'
 import DemoBlock from './components/DemoBlock.vue'
 import DemoContainer from './components/DemoContainer.vue'

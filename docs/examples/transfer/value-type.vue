@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-grid">
     <div class="demo-item">
       <p class="demo-label">多选（modelValueType="string"，默认）</p>
@@ -31,8 +31,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxTransfer } from "@hx/ui"
-import type { TransferOption } from "@hx/ui"
+import { HxTransfer } from "@whhx/ui"
+import type { TransferOption } from "@whhx/ui"
 
 const value1 = ref("")
 const value2 = ref<string[]>([])

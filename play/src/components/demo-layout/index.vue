@@ -1,8 +1,8 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { componentRoutes } from '@/views/demos/demo-registry'
-import { ThemeToggle } from '@hx/ui'
+import { ThemeToggle } from '@whhx/ui'
 
 const route = useRoute()
 const isCollapse = ref(false)

@@ -14,7 +14,7 @@ console.log(`Publishing ${name}@${version}...`)
 
 try {
   execSync(
-    `pnpm publish --no-git-checks --registry http://localhost:4873 --access public`,
+    `pnpm publish --no-git-checks --access public`,
     {
       stdio: 'inherit',
       cwd: path.join(__dirname, '..'),

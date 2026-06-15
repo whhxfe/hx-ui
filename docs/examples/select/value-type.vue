@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-grid">
     <!-- 多选 - 默认 emit 逗号拼接字符串 -->
     <div class="demo-item">
@@ -34,8 +34,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxSelect } from "@hx/ui"
-import type { OptionItem } from "@hx/ui"
+import { HxSelect } from "@whhx/ui"
+import type { OptionItem } from "@whhx/ui"
 
 const value1 = ref("")
 const value2 = ref<string[]>([])

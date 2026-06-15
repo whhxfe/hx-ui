@@ -1,4 +1,4 @@
-# FilterItem 筛选选项
+﻿# FilterItem 筛选选项
 
 用于选型筛选条件中单个筛选字段的选项选择器，支持单选/多选、远程数据加载、联动清空等功能。通常作为 `HxFilterPanel` 的子组件使用，也支持独立使用。
 
@@ -67,7 +67,7 @@ import type {
   FilterValueType,
   FilterOption,
   FilterRemoteConfig,
-} from '@hx/ui'
+} from '@whhx/ui'
 ```
 
 ## 功能说明

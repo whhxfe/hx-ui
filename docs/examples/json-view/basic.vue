@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-title">简单对象</p>
     <HxJsonView :data="simpleObj" />
@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxJsonView } from '@hx/ui'
+import { HxJsonView } from '@whhx/ui'
 
 const simpleObj = {
   name: '张三',

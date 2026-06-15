@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <div class="demo-toolbar">
       <span>样式类型：</span>
@@ -21,8 +21,8 @@
 <script setup lang="ts">
 import { ref, computed, h } from "vue"
 import { ElRadioGroup, ElRadioButton } from "element-plus"
-import { HxMap, HxMapMarkers } from "@hx/ui"
-import type { MapMarkerItem, MarkerStyleOptions } from "@hx/ui"
+import { HxMap, HxMapMarkers } from "@whhx/ui"
+import type { MapMarkerItem, MarkerStyleOptions } from "@whhx/ui"
 
 const iconMode = ref<'circle' | 'url'>('circle')
 

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-row">
     <HxLink underline="always">始终显示</HxLink>
     <HxLink underline="hover">悬停显示</HxLink>
@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxLink } from '@hx/ui'
+import { HxLink } from '@whhx/ui'
 </script>
 
 <style scoped>

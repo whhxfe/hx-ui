@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-row">
     <HxLink href="https://github.com" target="_blank">默认</HxLink>
     <HxLink type="primary">主要</HxLink>
@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxLink } from '@hx/ui'
+import { HxLink } from '@whhx/ui'
 </script>
 
 <style scoped>

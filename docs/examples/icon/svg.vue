@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h4>单色 mono（默认）</h4>
     <p class="desc">默认 mono 模式，color 属性生效，图标使用 currentColor 着色。</p>
@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxIcon as Icon } from "@hx/ui"
+import { HxIcon as Icon } from "@whhx/ui"
 </script>
 
 <style scoped>

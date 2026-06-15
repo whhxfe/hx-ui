@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-label">类型</p>
     <div class="demo-row">
@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxText } from '@hx/ui'
+import { HxText } from '@whhx/ui'
 
 function handleClick() {
   console.log('click')

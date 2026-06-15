@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-title">Iconify CDN 模式</p>
     <p class="demo-desc">通过 CDN API 获取图标数据，格式为 {prefix}:{name}，如 ep:edit、mdi:home</p>
@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { IconifyIcon } from '@hx/ui'
+import { IconifyIcon } from '@whhx/ui'
 </script>
 
 <style scoped>

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="space-y-4">
     <hx-label-text label="居中对齐" text="内容居中显示" align="center" />
     <hx-label-text label="左对齐" text="内容左对齐显示" align="start" />
@@ -8,5 +8,5 @@
 </template>
 
 <script setup lang="ts">
-import { HxLabelText as LabelText } from "@hx/ui"
+import { HxLabelText as LabelText } from "@whhx/ui"
 </script>

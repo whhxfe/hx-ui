@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-title">普通文本 + 复制（hover 查看）</p>
     <HxContentText :content="plainText" :copyable="true" />
@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxContentText } from '@hx/ui'
+import { HxContentText } from '@whhx/ui'
 
 const plainText = '可通过 Ctrl+C 或点击复制按钮复制本段内容。'
 

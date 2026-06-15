@@ -1,4 +1,4 @@
-# JsonView JSON 视图
+﻿# JsonView JSON 视图
 
 用于展示 JSON 数据结构，带语法高亮、展开/折叠、复制等交互。
 
@@ -31,4 +31,4 @@ json-view/basic
 ## 类型定义
 
 ```ts
-import type { JsonViewProps } from '@hx/ui'
+import type { JsonViewProps } from '@whhx/ui'

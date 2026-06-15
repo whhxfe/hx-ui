@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="height-demo">
     <p class="demo-info">容器高度 600px，表格 height="500px"（包含分页区域 56px）</p>
     <div class="table-container">
@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { HxTable as Table } from '@hx/ui'
+import { HxTable as Table } from '@whhx/ui'
 
 const currentPage = ref(1)
 const pageSize = ref(20)

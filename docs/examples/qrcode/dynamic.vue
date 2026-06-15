@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="qrcode-dynamic-demo">
     <el-input
       v-model="qrValue"
@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { HxQrCode } from "@hx/ui"
+import { HxQrCode } from "@whhx/ui"
 
 const qrValue = ref('https://hxui.example.com')
 const debouncedValue = ref(qrValue.value)

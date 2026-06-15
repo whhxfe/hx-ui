@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-title">CDN 模式</p>
     <p class="demo-desc">通过 cdnBaseUrl 配置 CDN 地址，组件按 {cdnBaseUrl}/{group}/{name}.{ext} 规则拼接 URL</p>
@@ -68,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { ImageIcon } from '@hx/ui'
+import { ImageIcon } from '@whhx/ui'
 </script>
 
 <style scoped>

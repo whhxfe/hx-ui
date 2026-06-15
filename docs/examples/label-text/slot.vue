@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="space-y-4">
     <hx-label-text label="富文本" text="使用插槽插入自定义内容">
       <span class="text-red-500">红色</span> <span class="text-blue-500">蓝色</span>文本
@@ -14,5 +14,5 @@
 </template>
 
 <script setup lang="ts">
-import { HxLabelText as LabelText } from "@hx/ui"
+import { HxLabelText as LabelText } from "@whhx/ui"
 </script>

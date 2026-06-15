@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div style="height: 500px; display: flex; flex-direction: column;">
     <hx-table
       :data="data"
@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxTable as Table } from "@hx/ui"
+import { HxTable as Table } from "@whhx/ui"
 
 const currentPage = ref(1)
 const pageSize = ref(5)

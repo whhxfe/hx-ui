@@ -1,4 +1,4 @@
-# Icon 图标
+﻿# Icon 图标
 
 一个功能强大、灵活的图标组件，支持 SVG、Image、Iconify 等多种图标类型。
 
@@ -126,7 +126,7 @@ Image 和 Iconify 图标支持 `className` 属性添加自定义 CSS 类名：
 在应用入口中配置本地图片 glob：
 
 ```ts
-import { buildImageSourceMap, registerImageIcon } from '@hx/ui'
+import { buildImageSourceMap, registerImageIcon } from '@whhx/ui'
 
 // 方式一：使用 glob 自动构建
 const imageIconModules = import.meta.glob('@/assets/icons/**/*', { eager: true })
@@ -322,15 +322,15 @@ import type {
   IconifyIconProps,
   ImageIconProps,
   FlipDirection,
-} from '@hx/ui'
+} from '@whhx/ui'
 ```
 
 ### 引入方式
 
 ```ts
 // 全量引入
-import { HxIcon } from '@hx/ui'
+import { HxIcon } from '@whhx/ui'
 
 // 按需引入子组件
-import { SvgIcon, IconifyIcon, ImageIcon } from '@hx/ui'
+import { SvgIcon, IconifyIcon, ImageIcon } from '@whhx/ui'
 ```

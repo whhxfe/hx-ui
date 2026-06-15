@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="qrcode-logo-demo">
     <hx-qr-code
       :value="qrValue"
@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxQrCode } from "@hx/ui"
+import { HxQrCode } from "@whhx/ui"
 
 const qrValue = 'https://hxui.example.com'
 </script>

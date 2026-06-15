@@ -1,4 +1,4 @@
-# ContentText 内容文本
+﻿# ContentText 内容文本
 
 用于展示纯文本内容，支持行数截断、展开折叠、复制等交互。
 
@@ -35,7 +35,7 @@ content-text/copyable
 ## 类型定义
 
 ```ts
-import type { ContentTextProps } from '@hx/ui'
+import type { ContentTextProps } from '@whhx/ui'
 // ContentTextProps:
 // content?: string
 // line?: number

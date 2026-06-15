@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-wrapper">
     <div class="demo-item">
       <p class="demo-label">基础富文本编辑器</p>
@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxRichEditor } from "@hx/ui"
+import { HxRichEditor } from "@whhx/ui"
 
 const content1 = ref("<p>欢迎使用富文本编辑器，支持<strong>加粗</strong>、<em>斜体</em>、链接、图片上传等功能。</p>")
 </script>

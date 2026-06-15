@@ -1,4 +1,4 @@
-# MapMarkers 标记点
+﻿# MapMarkers 标记点
 
 地图标记点组件，用于在地图上渲染多个点位。
 
@@ -65,7 +65,7 @@ map-markers/priority
 通过 `registerMapMarkerShapes` 注册自定义形状，注册后即可在 `markerStyle.shape` 中使用自定义名称。
 
 ```typescript
-import { registerMapMarkerShapes } from '@hx/ui'
+import { registerMapMarkerShapes } from '@whhx/ui'
 
 // 方式1：Raw SVG 字符串（支持颜色替换）
 import starSvg from './star.svg?raw'
@@ -109,7 +109,7 @@ Raw SVG 字符串中使用 `currentColor` 作为颜色占位符，注册时会�
 ### 查询已注册形状
 
 ```typescript
-import { getRegisteredShapes } from '@hx/ui'
+import { getRegisteredShapes } from '@whhx/ui'
 
 console.log(getRegisteredShapes()) // ['star', ...]
 ```

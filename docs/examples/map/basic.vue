@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <div class="map-demo-toolbar">
       <el-button type="primary" size="small" @click="centerToShanghai">
@@ -24,8 +24,8 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { ElMessage, ElButton, ElDivider } from "element-plus"
-import { HxMap } from "@hx/ui"
-import type { MapCenter } from "@hx/ui"
+import { HxMap } from "@whhx/ui"
+import type { MapCenter } from "@whhx/ui"
 
 const mapRef = ref()
 

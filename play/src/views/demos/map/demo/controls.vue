@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <div class="control-switches">
       <label v-for="(config, key) in controlOptions" :key="key">
@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { reactive, computed } from 'vue'
-import { HxMap } from "@hx/ui"
+import { HxMap } from "@whhx/ui"
 
 const controlOptions = reactive({
   zoom: { label: '缩放按钮', enabled: true },

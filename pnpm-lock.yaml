@@ -8,9 +8,6 @@ importers:
 
   .:
     devDependencies:
-      '@hx/ui':
-        specifier: workspace:*
-        version: link:packages
       '@iconify/json':
         specifier: ^2.2.458
         version: 2.2.462
@@ -50,6 +47,9 @@ importers:
       '@vitejs/plugin-vue-jsx':
         specifier: ^5.1.5
         version: 5.1.5(vite@8.0.8(@types/node@24.12.2)(esbuild@0.27.7)(jiti@2.6.1)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.3))(vue@3.5.32(typescript@5.9.3))
+      '@whhx/ui':
+        specifier: workspace:*
+        version: link:packages
       element-plus:
         specifier: ^2.13.5
         version: 2.13.7(typescript@5.9.3)(vue@3.5.32(typescript@5.9.3))
@@ -77,7 +77,7 @@ importers:
       '@antv/g6':
         specifier: ^5.1.1
         version: 5.1.1
-      '@hx/ui':
+      '@whhx/ui':
         specifier: workspace:*
         version: link:../packages
       markdown-it-container:
@@ -155,9 +155,6 @@ importers:
 
   play:
     dependencies:
-      '@hx/ui':
-        specifier: workspace:^
-        version: link:../packages
       '@iconify/vue':
         specifier: ^5.0.0
         version: 5.0.0(vue@3.5.32(typescript@5.9.3))
@@ -167,6 +164,9 @@ importers:
       '@wangeditor/editor-for-vue':
         specifier: ^5.1.12
         version: 5.1.12(@wangeditor/editor@5.1.23)(vue@3.5.32(typescript@5.9.3))
+      '@whhx/ui':
+        specifier: workspace:^
+        version: link:../packages
       dayjs:
         specifier: ^1.11.20
         version: 1.11.20

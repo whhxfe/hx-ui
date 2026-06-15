@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <div class="control-switches">
       <label v-for="(config, key) in controlOptions" :key="key">
@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import { reactive, computed, ref } from 'vue'
-import { HxMap } from "@hx/ui"
+import { HxMap } from "@whhx/ui"
 
 const OVERVIEW_URLS = {
   satellite: 'https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',

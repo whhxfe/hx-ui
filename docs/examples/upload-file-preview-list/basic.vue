@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-wrapper">
     <p class="demo-desc">传入文件 ID 列表，组件自动请求后端获取文件详情并渲染预览。</p>
 
@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { HxUploadFilePreviewList } from '@hx/ui'
+import { HxUploadFilePreviewList } from '@whhx/ui'
 
 const fileIds = ref(['file-001', 'file-002', 'file-003'])
 

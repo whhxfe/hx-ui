@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <hx-relation-graph
       :nodes="nodes"
@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxRelationGraph } from "@hx/ui"
+import { HxRelationGraph } from "@whhx/ui"
 
 // 可折叠的关系数据
 const nodes = [

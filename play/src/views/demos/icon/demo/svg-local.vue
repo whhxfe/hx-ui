@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-title">单色模式（mono）</p>
     <p class="demo-desc">使用 currentColor 填充，可通过 color 属性设置颜色</p>
@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { SvgIcon } from '@hx/ui'
+import { SvgIcon } from '@whhx/ui'
 </script>
 
 <style scoped>

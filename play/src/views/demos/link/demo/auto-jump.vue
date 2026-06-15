@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <p class="demo-label">自动跳转</p>
     <div class="demo-row">
@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { HxLink } from '@hx/ui'
+import { HxLink } from '@whhx/ui'
 </script>
 
 <style scoped>

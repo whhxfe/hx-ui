@@ -1,4 +1,4 @@
-<template>
+﻿<template>
 	<div class="demo-section">
 		<p class="demo-title">日期时间范围 datetimerange（默认）</p>
 		<HxDateTimePicker v-model="value1" />
@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxDateTimePicker } from "@hx/ui"
+import { HxDateTimePicker } from "@whhx/ui"
 
 const value1 = ref<[string, string]>(["", ""])
 const value2 = ref<[string, string]>(["", ""])

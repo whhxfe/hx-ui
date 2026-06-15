@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-dynamic">
     <div class="demo-dynamic__controls">
       <div class="demo-dynamic__label">文件类型：</div>
@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { HxFilePreview as FilePreview } from "@hx/ui"
+import { HxFilePreview as FilePreview } from "@whhx/ui"
 
 const BASE = '/files'
 

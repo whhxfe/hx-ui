@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <hx-form
     ref="formRef"
     v-model="formData"
@@ -17,8 +17,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxForm as Form, HxJsonView } from "@hx/ui"
-import type { FormField, FormExpose } from "@hx/ui"
+import { HxForm as Form, HxJsonView } from "@whhx/ui"
+import type { FormField, FormExpose } from "@whhx/ui"
 import { ElMessage } from "element-plus"
 
 const formRef = ref<FormExpose>()

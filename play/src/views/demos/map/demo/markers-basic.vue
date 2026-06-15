@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <p class="demo-desc">点击标记点查看 popup 信息</p>
 
@@ -12,8 +12,8 @@
 
 <script setup lang="ts">
 import { h } from "vue"
-import { HxMap, HxMapMarkers, HxMapPopup } from "@hx/ui"
-import type { MapMarkerItem } from "@hx/ui"
+import { HxMap, HxMapMarkers, HxMapPopup } from "@whhx/ui"
+import type { MapMarkerItem } from "@whhx/ui"
 
 const markers: MapMarkerItem[] = [
   { id: 1, lon: 114.31, lat: 30.52, name: '武汉', address: '湖北省武汉市江岸区', type: '省会' },

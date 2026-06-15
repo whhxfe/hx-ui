@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-row">
     <HxLink disabled>禁用状态</HxLink>
     <HxLink @click="handleClick">点击触发事件</HxLink>
@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { HxLink } from '@hx/ui'
+import { HxLink } from '@whhx/ui'
 
 const eventLog = ref('')
 

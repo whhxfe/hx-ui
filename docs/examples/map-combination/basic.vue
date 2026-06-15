@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="map-combination-demo">
     <p class="overall-desc">
       综合示例展示 HxMap、HxMapCluster、HxMapMarkers、HxMapPopup 组件的组合使用，
@@ -127,8 +127,8 @@
 
 <script setup lang="ts">
 import { ref, computed, h } from 'vue'
-import { HxMap, HxMapCluster, HxMapMarkers, HxMapPopup, registerMapMarkerShapes } from '@hx/ui'
-import type { MapMarkerItem, ClusterContentInfo } from '@hx/ui'
+import { HxMap, HxMapCluster, HxMapMarkers, HxMapPopup, registerMapMarkerShapes } from '@whhx/ui'
+import type { MapMarkerItem, ClusterContentInfo } from '@whhx/ui'
 
 // ==================== 注册自定义形状 ====================
 registerMapMarkerShapes([

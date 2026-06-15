@@ -1,4 +1,4 @@
-<template>
+﻿<template>
 	<div class="demo-section">
 		<p class="demo-title">基础开关</p>
 		<HxSwitch v-model="switchValue1" />
@@ -36,7 +36,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { HxSwitch } from "@hx/ui"
+import { HxSwitch } from "@whhx/ui"
 
 const switchValue1 = ref(false)
 const switchValue2 = ref(true)

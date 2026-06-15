@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="demo-section">
     <p class="demo-title">默认快捷日期（7/30/90天）</p>
     <HxFilterDateRange
@@ -30,8 +30,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { HxFilterDateRange } from '@hx/ui'
-import type { FilterDateRangeShortcut } from '@hx/ui'
+import { HxFilterDateRange } from '@whhx/ui'
+import type { FilterDateRangeShortcut } from '@whhx/ui'
 
 const range1 = ref('')
 const range2 = ref('')
