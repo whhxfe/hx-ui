@@ -1,8 +1,8 @@
-﻿import DefaultTheme from 'vitepress/theme'
+import DefaultTheme from 'vitepress/theme'
 /** SVG sprite：与 play 使用同一目录与 symbolId（icon-[dir]-[name]） */
 import 'virtual:svg-icons-register'
 import ElementPlus from 'element-plus'
-import { ID_INJECTION_KEY } from 'element-plus'
+import { ID_INJECTION_KEY, ZINDEX_INJECTION_KEY } from 'element-plus'
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 
@@ -21,6 +21,7 @@ export default {
   Layout,
   enhanceApp({ app }) {
     app.provide(ID_INJECTION_KEY, { prefix: 100, current: 0 })
+    app.provide(ZINDEX_INJECTION_KEY, { current: 0 })
     app.use(ElementPlus, { locale: zhCn })
     app.use(HxUI)
     app.component('DemoBlock', DemoBlock)
