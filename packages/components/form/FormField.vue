@@ -265,7 +265,7 @@
 				:showDownload="field.showDownload"
 				:fileRender="field.fileRender"
 				:filePreviewRender="field.filePreviewRender"
-				v-bind="field?.componentProps"
+				:componentProps="field?.componentProps"
 			/>
 		</template>
 
