@@ -250,7 +250,10 @@ async function handleUpload() {
 
 	if (!hasError) {
 		emit('success', results)
-		// props.onSuccess?.(results)
+		/**
+		 * @FIX 重复调用了
+		 */
+		// props.onSuccess?.(results) 
 	}
 
 	uploadedCount.value = fileList.value.length
@@ -262,6 +265,7 @@ async function handleUpload() {
 		if (props.multiple) {
 			ElMessage.success('所有文件上传完成')
 		}
+
 
 		if (props.autoCloseAfterUpload) {
 			visible.value = false
