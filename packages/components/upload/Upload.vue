@@ -79,7 +79,7 @@
 			/>
 			<component
 				v-else-if="fileRender"
-				:is="() => fileRender?.((file as any), { remove: () => uploadRef?.handleRemove(file) })"
+				:is="fileRender?.((file as any), { remove: () => uploadRef?.handleRemove(file) })"
 			/>
 		</template>
 
