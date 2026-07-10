@@ -7,41 +7,27 @@
 		{{ buttonText }}
 	</el-button>
 
-	<el-dialog
-		v-model="visible"
-		:title="dialogTitle"
-		width="520px"
-		append-to-body
-		:close-on-click-modal="false"
-		@close="handleClose"
-	>
+	<el-dialog v-model="visible" :title="dialogTitle" width="520px" append-to-body :close-on-click-modal="false"
+		@close="handleClose">
 		<!-- 模板下载 -->
 		<div v-if="resolvedTemplateUrl" class="importer-template">
 			<span class="importer-template-label">导入模板：</span>
 			<el-link type="primary" :href="resolvedTemplateUrl" :download="templateFileName" target="_blank">
-				<el-icon class="el-icon--left"><Download /></el-icon>
+				<el-icon class="el-icon--left">
+					<Download />
+				</el-icon>
 				{{ templateFileName || '下载模板' }}
 			</el-link>
 		</div>
 
 		<!-- 上传区域 -->
-		<el-upload
-			ref="uploadRef"
-			class="importer-upload-area"
-			drag
-			:action="uploadAction"
-			:accept="props.accept"
-			:limit="limit"
-			:multiple="multiple"
-			:auto-upload="false"
-			:with-credentials="props.withCredentials"
-			:name="props.name"
-			:data="props.data"
-			:on-change="handleChange"
-			:on-exceed="handleExceed"
-			:on-remove="handleRemove"
-		>
-			<el-icon class="el-icon--large"><UploadFilled /></el-icon>
+		<el-upload ref="uploadRef" class="importer-upload-area" drag :action="uploadAction" :accept="props.accept"
+			:limit="limit" :multiple="multiple" :auto-upload="false" :with-credentials="props.withCredentials"
+			:name="props.name" :data="props.data" :on-change="handleChange" :on-exceed="handleExceed"
+			:on-remove="handleRemove">
+			<el-icon class="el-icon--large">
+				<UploadFilled />
+			</el-icon>
 			<div class="el-upload__text">
 				将文件拖到此处，或<em>点击上传</em>
 			</div>
@@ -63,12 +49,7 @@
 
 		<template #footer>
 			<el-button @click="handleClose">关闭</el-button>
-			<el-button
-				type="primary"
-				:loading="uploading"
-				:disabled="fileList.length === 0"
-				@click="handleUpload"
-			>
+			<el-button type="primary" :loading="uploading" :disabled="fileList.length === 0" @click="handleUpload">
 				{{ uploading ? `上传中（${uploadedCount}/${fileList.length}）` : '上传' }}
 			</el-button>
 		</template>
@@ -97,7 +78,7 @@ const props = withDefaults(defineProps<ImporterProps>(), {
 	buttonText: '导入',
 	dialogTitle: '导入数据',
 	multiple: false,
-	limit:1,
+	limit: 1,
 	autoCloseAfterUpload: true,
 	name: 'file',
 	data: () => ({}),
@@ -283,7 +264,7 @@ async function handleUpload() {
 
 		if (props.multiple) {
 			ElMessage.success('所有文件上传完成')
-		}   
+		}
 
 
 		if (props.autoCloseAfterUpload) {
