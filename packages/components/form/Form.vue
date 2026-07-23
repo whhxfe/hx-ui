@@ -302,7 +302,7 @@ watch(
 defineExpose<FormExpose>({
 	validate: validateField,
 	reset: resetField,
-	getFormData,
+	getFormData,  
 	setFormData,
 	getElFormRef,
 })

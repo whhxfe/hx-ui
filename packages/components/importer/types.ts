@@ -37,5 +37,9 @@ export interface ImporterProps {
   /** 上传失败后回调 */
   onError?: (error: any) => void
   /** 携带 cookie，跨域时是否发送凭据，默认 false */
-  withCredentials?: boolean
+  withCredentials?: boolean,
+  /** 是否弹出上传成功的提示 */
+  showSuccessMessage?:boolean,
+  /** 是否弹出上传失败的提示 */
+  showErrorMessage?:boolean
 }
